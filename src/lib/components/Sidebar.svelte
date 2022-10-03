@@ -35,11 +35,16 @@
 				<a class="nav-link" href="/ordenes"><i class="fas fa-table" /><span>Ordenes</span></a><a
 					class="nav-link"
 					href="/agenda"><i class="far fa-clock" /><span>Agenda</span></a
-				><a class="nav-link" href="/pos"
-					><i class="far fa-money-bill-alt" /><span>Venta en fisico</span></a
 				>
+				<a class="nav-link" href="/pos">
+					<i class="far fa-money-bill-alt" />
+					<span>Venta en fisico</span>
+				</a>
+				<a href="/clientes" class="nav-link">
+					<i class="fas fa-users" />
+					<span>Clientes</span>
+				</a>
 			</li>
-			<li class="nav-item" />
 		</ul>
 		<div class="text-center d-none d-md-inline">
 			<button class="btn rounded-circle border-0" id="sidebarToggle" type="button" />

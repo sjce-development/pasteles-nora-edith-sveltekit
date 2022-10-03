@@ -32,10 +32,11 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@supabase/supabase-js": "^1.35.7",
 		"@types/chart.js": "^2.9.37",
 		"chart.js": "^3.9.1",
-		"pocketbase": "^0.7.1",
 		"sass": "^1.55.0",
+		"svelte-select": "^5.0.0-beta.28",
 		"sweetalert2": "^11.4.33"
 	}
 }

@@ -1,26 +1,27 @@
 <script lang="ts">
-	import { FILES_URL } from '$lib/constants';
-	import { pocketbase } from '$lib/pocketbase';
+	import { PUBLIC_BUCKET } from '$lib/constants';
+	import type { CarritoItem, Pastel, Venta } from '$lib/models';
+	import { supabase } from '$lib/supabase';
 	import { formatCurrency } from '$lib/utils';
 	import { onMount } from 'svelte';
 	import Swal from 'sweetalert2';
 
-	let pasteles: any[] = [];
+	let pasteles: Pastel[] = [];
 	let pageSize: number = 200;
 	let carrito: any[] = [];
 	let total: number = 0;
 
 	onMount(async () => {
-		const records = await pocketbase.records.getFullList('pasteles', pageSize, {
-			sort: 'nombre'
-		});
-		pasteles = records;
+		const { data } = await supabase.from<Pastel>('pasteles').select('*');
+		if (data) {
+			pasteles = data;
+		}
 	});
 
 	async function addToCart(index: number) {
-		let item = pasteles[index];
+		let pastel = pasteles[index];
 		// si no hay pasteles, preguntar si quiere agregar mas
-		if (item.cantidad == 0) {
+		if (pastel.cantidad == 0) {
 			const result = await Swal.fire({
 				title: 'No hay pasteles',
 				text: '¿Desea agregar más pasteles?',
@@ -38,36 +39,28 @@
 					showCancelButton: true,
 					confirmButtonText: 'Agregar',
 					showLoaderOnConfirm: true,
+					backdrop: true,
 					preConfirm: (cantidad) => {
-						return pocketbase.records.update('pasteles', item.id, {
-							cantidad: cantidad
-						});
+						return supabase
+							.from<Pastel>('pasteles')
+							.update({ cantidad: pastel.cantidad + cantidad })
+							.eq('id', pastel.id);
 					},
 					allowOutsideClick: () => !Swal.isLoading()
 				});
 				if (result.isConfirmed) {
-					item.cantidad = result.value?.cantidad;
-					pasteles = [...pasteles];
+					const data = (await result?.value)?.data;
+					if (data) {
+						pastel.cantidad += data[0].cantidad;
+						pasteles = [...pasteles];
+					}
 				}
 			} else {
 				return;
 			}
-		} else {
-			// si hay pasteles, agregar al carrito
-			let itemIndex = carrito.findIndex((i) => i.id == item.id);
-			if (itemIndex == -1) {
-				carrito.push({
-					...item,
-					cantidad: 1
-				});
-			} else {
-				carrito[itemIndex].cantidad++;
-			}
-			total += item.precio;
-			pasteles[index].cantidad--;
 		}
-		if (carrito.includes(item)) {
-			let indexOfItem = carrito.indexOf(item);
+		if (carrito.includes(pastel)) {
+			let indexOfItem = carrito.indexOf(pastel);
 			let carritoItem = carrito[indexOfItem];
 			console.log(carritoItem.cantidad, carritoItem.quantity);
 			if (carritoItem.quantity === carritoItem.cantidad) {
@@ -108,7 +101,7 @@
 	}
 
 	async function realizarVenta() {
-		Swal.fire({
+		const result = await Swal.fire({
 			title: '¿Estás seguro?',
 			text: '¿Estás seguro de realizar la venta?',
 			icon: 'warning',
@@ -116,22 +109,36 @@
 			confirmButtonColor: '#3085d6',
 			cancelButtonColor: '#d33',
 			confirmButtonText: 'Sí, realizar venta'
-		}).then((result) => {
-			if (result.isConfirmed) {
-				carrito.forEach(async (item) => {
-					await pocketbase.records.update('pasteles', item.id, {
-						cantidad: item.cantidad - item.quantity
-					});
-				});
-				Swal.fire('Venta realizada', 'La venta se ha realizado correctamente', 'success');
-			}
 		});
+		if (result.isConfirmed) {
+			carrito.forEach(async (item: CarritoItem) => {
+				await supabase
+					.from<Pastel>('pasteles')
+					.update({ cantidad: item.cantidad - item.quantity })
+					.eq('id', item.id);
+				await supabase.from<Venta>('ventas').insert([
+					{
+						nombre: item.nombre,
+						cantidad: item.quantity,
+						total
+					}
+				]);
+			});
+			await Swal.fire('Venta realizada', 'La venta se ha realizado correctamente', 'success');
+			window.location.reload();
+		}
+	}
+
+	function getImage(pastel: Pastel) {
+		return `${PUBLIC_BUCKET}pasteles/${pastel.nombre.toLowerCase()}.jpg`;
 	}
 </script>
 
-<h3 class="text-dark mb-4">Punto de venta</h3>
+<h3 class="text-dark mb-4">
+	Punto de venta <span><button type="button" class="btn btn-primary">Añadir pastel</button></span>
+</h3>
 <div class="row">
-	<div class="col-sm-4">
+	<div class="col-sm-5">
 		<div class="card shadow">
 			<div class="card-header py-3">
 				<p class="text-primary m-0 fw-bold">Cuenta</p>
@@ -160,7 +167,7 @@
 									<td>
 										<img
 											class="img-fluid img-thumbnail"
-											src="{FILES_URL}{item.id}/{item.imagen}"
+											src={getImage(item)}
 											alt={item.nombre}
 											width="100"
 										/></td
@@ -196,7 +203,7 @@
 			>Realizar venta</button
 		>
 	</div>
-	<div class="col-sm-8">
+	<div class="col-sm-7">
 		<div class="card shadow">
 			<div class="card-header py-3">
 				<p class="text-primary m-0 fw-bold">Productos en existencia</p>
@@ -246,7 +253,7 @@
 												class="rounded-circle me-2"
 												width="30"
 												height="30"
-												src="{FILES_URL}{pastel.id}/{pastel.imagen}"
+												src={getImage(pastel)}
 												alt={pastel.nombre}
 											/>{pastel.nombre}</td
 										>

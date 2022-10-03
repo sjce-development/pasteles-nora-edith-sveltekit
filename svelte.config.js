@@ -9,7 +9,10 @@ const config = {
 
 	kit: {
 		adapter: adapter()
-	}
+	},
+	optimizeDeps: {
+		exclude: ['layercake']
+	},
 };
 
 export default config;
