@@ -2,7 +2,6 @@
 	import Swal from 'sweetalert2';
 	import type { Cliente } from '$lib/models';
 	import { supabase } from '$lib/supabase';
-	import { sleep } from '$lib/utils';
 
 	let cliente: Cliente = {
 		nombre: '',
@@ -12,12 +11,10 @@
 
 	let errors: Array<string> = [];
 
-	async function agregarCliente() {
+	async function editarCliente() {
 		const nombreError = 'El nombre es requerido';
 		const telefonoError = 'El telefono es requerido y debe tener 10 digitos';
 		const correoError = 'El correo es requerido y debe ser valido';
-
-		console.log(cliente.telefono);
 
 		if (cliente.nombre === '' && !errors.includes(nombreError)) {
 			errors = [...errors, nombreError];
@@ -43,7 +40,7 @@
 			return;
 		}
 
-		const { data, error } = await supabase.from('clientes').insert([
+		const { data, error } = await supabase.from('clientes').update([
 			{
 				nombre: cliente.nombre,
 				telefono: cliente.telefono,
@@ -71,11 +68,11 @@
 
 <!-- Modal Body -->
 <!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
-<div class="modal fade" id="createClientModalId" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="editClientModalId" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title">Agregar cliente</h5>
+				<h5 class="modal-title">Editar cliente</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
 			</div>
 			<div class="modal-body">
@@ -130,8 +127,8 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-				<button type="submit	" class="btn btn-primary" on:click={agregarCliente}>Save</button>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+				<button type="submit	" class="btn btn-primary" on:click={editarCliente}>Actualizar</button>
 			</div>
 		</div>
 	</div>

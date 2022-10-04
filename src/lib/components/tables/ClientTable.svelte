@@ -74,7 +74,12 @@
 									.split(',')[0]}</td
 							>
 							<td class="fit">
-								<button class="btn btn-primary btn-sm" type="button">
+								<button
+									class="btn btn-primary btn-sm"
+									type="button"
+									data-bs-toggle="modal"
+									data-bs-target="#editClientModalId"
+								>
 									<i class="fa-solid fa-pencil" />
 								</button>
 								<button class="btn btn-primary btn-sm" type="button"
@@ -123,11 +128,3 @@
 		</div>
 	</div>
 </div>
-
-<style>
-	.table td.fit,
-	.table th.fit {
-		white-space: nowrap;
-		width: 1%;
-	}
-</style>
