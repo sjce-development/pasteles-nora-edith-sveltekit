@@ -39,8 +39,8 @@ export type Orden = {
 }
 
 export type Cliente = {
-  id: number;
-  created_at: string;
+  id?: number;
+  created_at?: string;
   nombre: string;
   telefono: string;
   correo: string;

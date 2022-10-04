@@ -3,11 +3,11 @@
 	import { supabase } from '$lib/supabase';
 	import { onMount } from 'svelte';
 
-  import Select from 'svelte-select';
+	import Select from 'svelte-select';
 
 	let clientes: Cliente[];
 
-  let cliente: string;
+	let cliente: string;
 
 	onMount(async () => {
 		const { data, error } = await supabase.from<Cliente>('clientes').select('*');
@@ -35,11 +35,11 @@
 			<div class="modal-body">
 				<div class="mb-3">
 					{#if clientes}
-            <div>
-              <button type="button" class="btn btn-primary">Crear clientes</button>
-            </div>
+						<div>
+							<button type="button" class="btn btn-primary">Crear clientes</button>
+						</div>
 						<label for="cliente" class="form-label">Cliente</label>
-            <Select items={clientes.map((cliente) => cliente.nombre)} bind:value={cliente} />
+						<Select items={clientes.map((cliente) => cliente.nombre)} bind:value={cliente} />
 					{:else}
 						<div class="spinner-border" role="status">
 							<span class="visually-hidden">Loading...</span>
