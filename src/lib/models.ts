@@ -32,7 +32,7 @@ export type Orden = {
   tamano: number;
   pan: string;
   relleno: string;
-  especifcaciones: string[];
+  especificaciones: string[];
   anticipo: number;
   restante: number;
   pagado: boolean;

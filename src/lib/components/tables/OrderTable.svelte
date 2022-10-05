@@ -1,7 +1,19 @@
 <script lang="ts">
 	import type { Orden } from '$lib/models';
+	import { supabase } from '$lib/supabase';
+	import { formatCurrency } from '$lib/utils';
+	import { onMount } from 'svelte';
 
-	let ordenes: Orden[];
+	let ordenes: Orden[] = [];
+
+	onMount(async () => {
+		const { data, error } = await supabase.from<Orden>('ordenes').select('*');
+		if (error) {
+			console.log(error);
+			return;
+		}
+		ordenes = data;
+	});
 </script>
 
 <div class="card shadow">
@@ -55,6 +67,22 @@
 					</tr>
 				</thead>
 				<tbody>
+					{#each ordenes as { nombre, tamano, pan, relleno, especificaciones, anticipo, restante, pagado }}
+						<td>{nombre}</td>
+						<td>{tamano}</td>
+						<td>{pan}</td>
+						<td>{relleno}</td>
+						<td class="fit">
+							{#each especificaciones as especificacion}
+								<div class="alert alert-primary py-0 px-1 d-inline" role="alert">
+									<strong>{especificacion}</strong>
+								</div>
+							{/each}
+						</td>
+						<td>{formatCurrency(anticipo)}</td>
+						<td>{formatCurrency(restante)}</td>
+						<td>{pagado ? '✅' : '❌'}</td>
+					{/each}
 					<tr>
 						<td>Airi Satou</td>
 						<td>6</td>
