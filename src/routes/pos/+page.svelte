@@ -1,4 +1,5 @@
 <script lang="ts">
+	import AgregarPastelModal from '$lib/components/modals/AgregarPastelModal.svelte';
 	import { PUBLIC_BUCKET } from '$lib/constants';
 	import type { CarritoItem, Pastel, Venta } from '$lib/models';
 	import { supabase } from '$lib/supabase';
@@ -7,15 +8,25 @@
 	import Swal from 'sweetalert2';
 
 	let pasteles: Pastel[] = [];
+
 	let pageSize: number = 200;
+
 	let carrito: any[] = [];
 	let total: number = 0;
 
 	onMount(async () => {
-		const { data } = await supabase.from<Pastel>('pasteles').select('*');
-		if (data) {
-			pasteles = data;
+		const { data, error } = await supabase.from<Pastel>('pasteles').select('*');
+		if (error) {
+			// Invoke swal for error
+			Swal.fire({
+				title: 'Error',
+				text: JSON.stringify(error, null, 2),
+				icon: 'error',
+				confirmButtonText: 'Ok'
+			});
+			return;
 		}
+		pasteles = data;
 	});
 
 	async function addToCart(index: number) {
@@ -55,32 +66,30 @@
 						pasteles = [...pasteles];
 					}
 				}
-			} else {
-				return;
 			}
+			return;
 		}
 		if (carrito.includes(pastel)) {
 			let indexOfItem = carrito.indexOf(pastel);
 			let carritoItem = carrito[indexOfItem];
-			console.log(carritoItem.cantidad, carritoItem.quantity);
-			if (carritoItem.quantity === carritoItem.cantidad) {
+			if (carritoItem.cantidadCarrito === carritoItem.cantidad) {
 				// Cant add item to cart
 				Swal.fire({
 					icon: 'error',
 					title: 'Oops...',
-					text: 'No puedes agregar más pasteles de este tipo al carrito'
+					text: 'No hay más pasteles disponibles para agregar al carrito'
 				});
 				return;
 			}
-			if (carritoItem.hasOwnProperty('quantity')) {
-				carritoItem.quantity += 1;
+			if (carritoItem.hasOwnProperty('cantidadCarrito')) {
+				carritoItem.cantidadCarrito += 1;
 			} else {
-				carritoItem.quantity = 2;
+				carritoItem.cantidadCarrito = 2;
 			}
 			carrito = [...carrito];
 		} else {
 			carrito = [...carrito, pasteles[index]];
-			carrito[carrito.length - 1].quantity = 1;
+			carrito[carrito.length - 1].cantidadCarrito = 1;
 		}
 
 		getCartTotal();
@@ -89,7 +98,7 @@
 	function getCartTotal() {
 		total = 0;
 		carrito.forEach((item) => {
-			total += item.quantity * item.precio;
+			total += item.cantidadCarrito * item.precio;
 		});
 	}
 
@@ -114,12 +123,12 @@
 			carrito.forEach(async (item: CarritoItem) => {
 				await supabase
 					.from<Pastel>('pasteles')
-					.update({ cantidad: item.cantidad - item.quantity })
+					.update({ cantidad: item.cantidad - item.cantidadCarrito })
 					.eq('id', item.id);
 				await supabase.from<Venta>('ventas').insert([
 					{
 						nombre: item.nombre,
-						cantidad: item.quantity,
+						cantidad: item.cantidadCarrito,
 						total
 					}
 				]);
@@ -129,13 +138,40 @@
 		}
 	}
 
+	async function deletePastel(pastelIndex: number) {
+		const result = await Swal.fire({
+			title: '¿Estás seguro?',
+			text: '¿Estás seguro de eliminar el pastel?',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Sí, eliminar'
+		});
+		if (result.isConfirmed) {
+			await supabase.from<Pastel>('pasteles').delete().eq('id', pasteles[pastelIndex].id);
+			await Swal.fire('Eliminado', 'El pastel se ha eliminado correctamente', 'success');
+			window.location.reload();
+		}
+	}
+
 	function getImage(pastel: Pastel) {
-		return `${PUBLIC_BUCKET}pasteles/${pastel.nombre.toLowerCase()}.jpg`;
+		return `${PUBLIC_BUCKET}pasteles/${pastel.nombre}.jpg`;
 	}
 </script>
 
 <h3 class="text-dark mb-4">
-	Punto de venta <span><button type="button" class="btn btn-primary">Añadir pastel</button></span>
+	Punto de venta
+	<span>
+		<button
+			type="button"
+			class="btn btn-primary"
+			data-bs-toggle="modal"
+			data-bs-target="#agregar-pastel-modal"
+		>
+			Añadir pastel</button
+		>
+	</span>
 </h3>
 <div class="row">
 	<div class="col-sm-5">
@@ -176,8 +212,8 @@
 										{item.nombre}
 									</td>
 									<td>{item.precio}</td>
-									<td>{item.quantity}</td>
-									<td>{formatCurrency(item.quantity * item.precio)}</td>
+									<td>{item.cantidadCarrito}</td>
+									<td>{formatCurrency(item.cantidadCarrito * item.precio)}</td>
 									<td>
 										<button class="btn btn-danger btn-sm" on:click={() => removeFromCart(item)}
 											>X</button
@@ -242,6 +278,7 @@
 								<th>Nombre</th>
 								<th>Precio</th>
 								<th>Cantidad</th>
+								<th />
 							</tr>
 						</thead>
 						<tbody>
@@ -259,6 +296,12 @@
 										>
 										<td>{pastel.precio}</td>
 										<td>{pastel.cantidad}</td>
+										<td>
+											<!-- Borrar pastel -->
+											<button class="btn btn-danger btn-sm" on:click={() => deletePastel(i)}
+												><i class="fa-solid fa-x" /></button
+											>
+										</td>
 									</tr>
 								{/each}
 							{:else}
@@ -304,3 +347,4 @@
 		</div>
 	</div>
 </div>
+<AgregarPastelModal />

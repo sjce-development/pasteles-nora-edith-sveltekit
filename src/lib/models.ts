@@ -4,7 +4,7 @@ export type Pastel = {
   nombre: string;
   precio: number;
   cantidad: number;
-  image?: string;
+  imagen?: string;
 }
 
 export type Venta = {
@@ -21,7 +21,7 @@ export type CarritoItem = {
   nombre: string;
   precio: number;
   cantidad: number;
-  quantity: number;
+  cantidadCarrito: number;
   total?: number;
 }
 

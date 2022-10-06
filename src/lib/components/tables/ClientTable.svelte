@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Cliente } from '$lib/models';
+	import EditClientModal from '$lib/components/modals/EditClientModal.svelte';
 	import { supabase } from '$lib/supabase';
 	import { onMount } from 'svelte';
 
@@ -63,13 +64,13 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each clientes as { nombre, telefono, correo, created_at }}
+					{#each clientes as cliente}
 						<tr>
-							<td class="fit">{nombre}</td>
-							<td class="fit">{telefono}</td>
-							<td class="fit">{correo.length !== 0 ? correo : 'n/a'}</td>
+							<td class="fit">{cliente.nombre}</td>
+							<td class="fit">{cliente.telefono}</td>
+							<td class="fit">{cliente.correo.length !== 0 ? cliente.correo : 'n/a'}</td>
 							<td class="fit"
-								>{new Date(created_at ?? '')
+								>{new Date(cliente.created_at ?? '')
 									.toLocaleString('es-MX', { dateStyle: 'long' })
 									.split(',')[0]}</td
 							>
@@ -78,7 +79,7 @@
 									class="btn btn-primary btn-sm"
 									type="button"
 									data-bs-toggle="modal"
-									data-bs-target="#editClientModalId"
+									data-bs-target="#editClientModal{cliente.id}"
 								>
 									<i class="fa-solid fa-pencil" />
 								</button>
@@ -90,6 +91,7 @@
 								>
 							</td>
 						</tr>
+						<EditClientModal {cliente} />
 					{/each}
 				</tbody>
 				<tfoot>

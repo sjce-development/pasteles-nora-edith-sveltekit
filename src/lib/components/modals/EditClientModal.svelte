@@ -3,11 +3,7 @@
 	import type { Cliente } from '$lib/models';
 	import { supabase } from '$lib/supabase';
 
-	let cliente: Cliente = {
-		nombre: '',
-		telefono: '',
-		correo: ''
-	};
+	export let cliente: Cliente;
 
 	let errors: Array<string> = [];
 
@@ -68,7 +64,13 @@
 
 <!-- Modal Body -->
 <!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
-<div class="modal fade" id="editClientModalId" tabindex="-1" role="dialog" aria-hidden="true">
+<div
+	class="modal fade"
+	id="editClientModal{cliente.id}"
+	tabindex="-1"
+	role="dialog"
+	aria-hidden="true"
+>
 	<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md" role="document">
 		<div class="modal-content">
 			<div class="modal-header">

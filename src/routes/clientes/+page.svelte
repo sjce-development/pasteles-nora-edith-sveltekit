@@ -1,7 +1,5 @@
 <script lang="ts">
 	import CreateClientModal from '$lib/components/modals/CreateClientModal.svelte';
-	import EditClientModal from '$lib/components/modals/EditClientModal.svelte';
-
 	import ClientTable from '$lib/components/tables/ClientTable.svelte';
 </script>
 
@@ -19,4 +17,3 @@
 </h3>
 <ClientTable />
 <CreateClientModal />
-<EditClientModal />
