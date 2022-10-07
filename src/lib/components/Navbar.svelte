@@ -1,3 +1,19 @@
+<script lang="ts">
+	import { supabase } from '$lib/supabase';
+	import Swal from 'sweetalert2';
+
+	async function logout() {
+		const { error } = await supabase.auth.signOut();
+		if (error) {
+			await Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: error.message
+			});
+		}
+	}
+</script>
+
 <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
 	<div class="container-fluid">
 		<button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"
@@ -14,8 +30,11 @@
 		</form>
 		<ul class="navbar-nav flex-nowrap ms-auto">
 			<li class="nav-item dropdown d-sm-none no-arrow">
-				<a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#!"
-					><i class="fas fa-search" /></a
+				<a
+					class="dropdown-toggle nav-link"
+					aria-expanded="false"
+					data-bs-toggle="dropdown"
+					href="#!"><i class="fas fa-search" /></a
 				>
 				<div
 					class="dropdown-menu dropdown-menu-end p-3 animated--grow-in"
@@ -74,7 +93,8 @@
 								<span class="small text-gray-500">December 2, 2019</span>
 								<p>Spending Alert: We've noticed unusually high spending for your account.</p>
 							</div>
-						</a><a class="dropdown-item text-center small text-gray-500" href="#!">Show All Alerts</a
+						</a><a class="dropdown-item text-center small text-gray-500" href="#!"
+							>Show All Alerts</a
 						>
 					</div>
 				</div>
@@ -94,7 +114,7 @@
 						<h6 class="dropdown-header">alerts center</h6>
 						<a class="dropdown-item d-flex align-items-center" href="#!">
 							<div class="dropdown-list-image me-3">
-								<img class="rounded-circle" src="assets/img/avatars/avatar4.jpeg" alt="asd"/>
+								<img class="rounded-circle" src="assets/img/avatars/avatar4.jpeg" alt="asd" />
 								<div class="bg-success status-indicator" />
 							</div>
 							<div class="fw-bold">
@@ -107,7 +127,7 @@
 							</div>
 						</a><a class="dropdown-item d-flex align-items-center" href="#!">
 							<div class="dropdown-list-image me-3">
-								<img class="rounded-circle" src="assets/img/avatars/avatar2.jpeg" alt="" />	
+								<img class="rounded-circle" src="assets/img/avatars/avatar2.jpeg" alt="" />
 								<div class="status-indicator" />
 							</div>
 							<div class="fw-bold">
@@ -118,7 +138,7 @@
 							</div>
 						</a><a class="dropdown-item d-flex align-items-center" href="#!">
 							<div class="dropdown-list-image me-3">
-								<img class="rounded-circle" src="assets/img/avatars/avatar3.jpeg" alt=""/>
+								<img class="rounded-circle" src="assets/img/avatars/avatar3.jpeg" alt="" />
 								<div class="bg-warning status-indicator" />
 							</div>
 							<div class="fw-bold">
@@ -144,7 +164,8 @@
 								</div>
 								<p class="small text-gray-500 mb-0">Chicken the Dog · 2w</p>
 							</div>
-						</a><a class="dropdown-item text-center small text-gray-500" href="#!">Show All Alerts</a
+						</a><a class="dropdown-item text-center small text-gray-500" href="#!"
+							>Show All Alerts</a
 						>
 					</div>
 				</div>
@@ -163,7 +184,8 @@
 						href="#!"
 						><span class="d-none d-lg-inline me-2 text-gray-600 small">Admin</span><img
 							class="border rounded-circle img-profile"
-							src="assets/img/logo.png" alt=""
+							src="assets/img/logo.png"
+							alt=""
 						/></a
 					>
 					<div class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
@@ -175,8 +197,8 @@
 							><i class="fas fa-list fa-sm fa-fw me-2 text-gray-400" />&nbsp;Activity log</a
 						>
 						<div class="dropdown-divider" />
-						<a class="dropdown-item" href="#!"
-							><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400" />&nbsp;Logout</a
+						<span class="dropdown-item pointer" on:click={logout}
+							><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400" />&nbsp;Logout</span
 						>
 					</div>
 				</div>
@@ -184,3 +206,9 @@
 		</ul>
 	</div>
 </nav>
+
+<style>
+	.pointer {
+		cursor: pointer;
+	}
+</style>
