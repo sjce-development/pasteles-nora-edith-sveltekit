@@ -8,9 +8,6 @@
 	import Swal from 'sweetalert2';
 
 	let pasteles: Pastel[] = [];
-
-	let pageSize: number = 200;
-
 	let carrito: any[] = [];
 	let total: number = 0;
 
