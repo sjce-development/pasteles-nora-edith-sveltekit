@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ChartCard from '$lib/components/charts/ChartCard.svelte';
+	import { months } from '$lib/utils';
 </script>
 
 <div class="d-sm-flex justify-content-between align-items-center mb-4">
@@ -91,30 +92,13 @@
 <div class="row">
 	<div class="col-lg-7 col-xl-8">
 		<ChartCard
-			title="Ganancias & Ventas Mensuales"
+			title="Ganancias Mensuales"
 			width={16}
 			height={5}
 			type="bar"
-			labels={[
-				[
-					'Enero',
-					'Febrero',
-					'Marzo',
-					'Abril',
-					'Mayo',
-					'Junio',
-					'Julio',
-					'Agosto',
-					'Septiembre',
-					'Octubre',
-					'Noviembre',
-					'Diciembre'
-				]
-			]}
-			info={[
-				[0, 10, 5, 2, 20, 30, 45, 50, 60, 70, 80, 90],
-				[0, 10, 5, 2, 20, 30, 45, 50, 60, 70, 80, 90]
-			]}
+			label="Ganancias"
+			labels={months}
+			info={[0, 10, 5, 2, 20, 30, 45, 50, 60, 70, 80, 90]}
 		/>
 	</div>
 	<div class="col-lg-5 col-xl-4">
@@ -129,7 +113,7 @@
 						type="button"><i class="fas fa-ellipsis-v text-gray-400" /></button
 					>
 					<div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
-						<p class="text-center dropdown-header">dropdown header:</p>
+						<p class="text-center dropdown-header">Actions</p>
 						<a class="dropdown-item" href="#!">&nbsp;Action</a><a class="dropdown-item" href="#!"
 							>&nbsp;Another action</a
 						>

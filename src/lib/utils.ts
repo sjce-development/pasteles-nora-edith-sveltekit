@@ -19,3 +19,18 @@ export function random_rgba(transparency = 0.2): string[] {
   const b = Math.round(Math.random() * 255);
   return [`rgba(${r},${g},${b},${transparency})`, `rgba(${r},${g},${b})`];
 }
+
+export const months = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre'
+]

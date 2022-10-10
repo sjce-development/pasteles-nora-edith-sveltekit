@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Chart from '$lib/components/charts/Chart.svelte';
-	import type { ChartConfig, ChartDataset } from '$lib/models';
 	import { onMount } from 'svelte';
-	import { Line } from 'svelte-chartjs';
+
+	import type { ChartConfig, ChartDataset } from '$lib/models';
 
 	export let title: string;
 
@@ -10,45 +10,45 @@
 	export let height: number;
 
 	export let type: string;
+	export let label: string;
 	export let labels: string[];
-	export let info: number[] | number[][];
+	export let info: number[];
 
-	let fechaInicial: string = new Date().toLocaleDateString('es-MX');
-	let fechaFinal: string = new Date().toLocaleDateString('es-MX');
+	let fechaInicial: Date = new Date();
+	let fechaFinal: Date = new Date();
 
 	let config: ChartConfig;
 
 	onMount(() => {
-		const datasets: ChartDataset[] = info.map((iData, index) => {
-				return {
-					labels: labels[index],
-					data: iData,
-					borderColor: `hsl(${index * 360}, 70%, 50%)`,
-					backgroundColor: `hsl(${index * 360}, 70%, 50%)`
-				};
-			}),
-			config = {
-				type,
-				data: {
-					labels,
-					datasets
+		const dataset: ChartDataset = {
+			label,
+			data: info,
+			backgroundColor: 'rgba(78, 115, 223, 0.2)',
+			borderColor: 'rgba(78, 115, 223, 1)',
+			borderWidth: 1
+		};
+		config = {
+			type,
+			data: {
+				labels,
+				datasets: [dataset]
+			},
+			options: {
+				scales: {
+					y: {
+						beginAtZero: true
+					}
 				},
-				options: {
-					scales: {
-						y: {
-							beginAtZero: true
-						}
-					},
-					responsive: true
-				}
-			};
+				responsive: true
+			}
+		};
 	});
 </script>
 
 <div class="card shadow mb-4">
 	<div class="card-header d-flex justify-content-between align-items-center">
 		<h6 class="text-primary fw-bold m-0">{title}</h6>
-		<div class="dropdown no-arrow">
+		<!-- <div class="dropdown no-arrow">
 			<button
 				class="btn btn-link btn-sm dropdown-toggle"
 				aria-expanded="false"
@@ -56,14 +56,14 @@
 				type="button"><i class="fas fa-ellipsis-v text-gray-600" /></button
 			>
 			<div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
-				<p class="text-center dropdown-header">dropdown header:</p>
+				<p class="text-center dropdown-header">Actions</p>
 				<a class="dropdown-item" href="#!">&nbsp;Action</a><a class="dropdown-item" href="#!"
 					>&nbsp;Another action</a
 				>
 				<div class="dropdown-divider" />
 				<a class="dropdown-item" href="#!">&nbsp;Something else here</a>
 			</div>
-		</div>
+		</div> -->
 	</div>
 	<div class="card-body">
 		<div class="row">
@@ -78,7 +78,6 @@
 						aria-describedby="fechaInicial"
 						bind:value={fechaInicial}
 					/>
-					<small id="fechaInicial" class="text-muted">Fecha Inicial</small>
 				</div>
 			</div>
 			<div class="col">
@@ -92,7 +91,6 @@
 						aria-describedby="fechaFinal"
 						bind:value={fechaFinal}
 					/>
-					<small id="fechaFinal" class="text-muted">Fecha Final</small>
 				</div>
 			</div>
 		</div>
