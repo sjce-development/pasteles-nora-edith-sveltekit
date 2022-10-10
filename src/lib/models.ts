@@ -45,3 +45,22 @@ export type Cliente = {
   telefono: string;
   correo: string;
 }
+
+export type ChartConfig = {
+  type: string;
+  data: ChartData;
+  options: any;
+};
+
+export type ChartData = {
+  labels: string[];
+  datasets: ChartDataset[];
+}
+
+export type ChartDataset = {
+  label: string;
+  data: number[];
+  backgroundColor: string[];
+  borderColor: string[];
+  borderWidth: number;
+}

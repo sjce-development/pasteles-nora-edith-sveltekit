@@ -12,3 +12,10 @@ export function sleep(milliseconds: number) {
     currentDate = Date.now();
   } while (currentDate - date < milliseconds);
 }
+
+export function random_rgba(transparency = 0.2): string[] {
+  const r = Math.round(Math.random() * 255);
+  const g = Math.round(Math.random() * 255);
+  const b = Math.round(Math.random() * 255);
+  return [`rgba(${r},${g},${b},${transparency})`, `rgba(${r},${g},${b})`];
+}

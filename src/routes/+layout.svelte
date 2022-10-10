@@ -3,10 +3,11 @@
 	import Navbar from '../lib/components/Navbar.svelte';
 	import Footer from '../lib/components/Footer.svelte';
 
-	import 'sweetalert2/src/sweetalert2.scss';
-	import { browser } from '$app/environment';
-	import type { LayoutData } from '.svelte-kit/types/src/routes/$types';
 	import type { User } from '@supabase/supabase-js';
+
+	import 'sweetalert2/src/sweetalert2.scss';
+
+	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
 	import { supabase } from '$lib/supabase';
 
