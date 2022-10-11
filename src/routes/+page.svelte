@@ -1,6 +1,79 @@
 <script lang="ts">
 	import ChartCard from '$lib/components/charts/ChartCard.svelte';
-	import { months } from '$lib/utils';
+	import { locale } from '$lib/constants';
+	import type { Orden } from '$lib/models';
+	import { supabase } from '$lib/supabase';
+	import { formatCurrency, months } from '$lib/utils';
+	import { onMount } from 'svelte';
+
+	let ganancias: number;
+	let ordenes: Orden[];
+	let ordenesCompletas: number;
+
+	let fechaInicial: HTMLInputElement;
+	let fechaFinal: HTMLInputElement;
+
+	onMount(async () => {
+		setFechas();
+		await setData();
+	});
+
+	function setFechas() {
+		const fechaInicialLS = localStorage.getItem('fechaInicial');
+		const fechaFinalLS = localStorage.getItem('fechaFinal');
+		if (fechaInicialLS) {
+			fechaInicial.valueAsDate = new Date(fechaInicialLS);
+			localStorage.setItem('fechaInicial', fechaInicial.value);
+		} else {
+			fechaInicial.valueAsDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
+		}
+		if (fechaFinalLS) {
+			fechaFinal.valueAsDate = new Date(fechaFinalLS);
+			localStorage.setItem('fechaFinal', fechaFinal.value);
+		} else {
+			fechaFinal.valueAsDate = new Date();
+		}
+	}
+
+	async function setData() {
+		ganancias = await fetchGanancias();
+		ordenes = await fetchOrdenes();
+		ordenesCompletas = ordenes.filter((orden) => orden.estado === 'terminado').length;
+	}
+
+	async function fetchGanancias(): Promise<number> {
+		let sum: number = 0;
+		const { data, error } = await supabase
+			.from('ventas')
+			.select('*')
+			.lt('created_at', fechaFinal.valueAsDate?.toISOString())
+			.gt('created_at', fechaInicial.valueAsDate?.toISOString());
+		if (error) {
+			return -1;
+		}
+		console.log(data);
+		data.forEach((venta) => {
+			sum += venta.total;
+		});
+		return sum;
+	}
+
+	async function fetchOrdenes(): Promise<Orden[]> {
+		// If dates are not set
+		if (fechaInicial.valueAsDate === null || fechaFinal.valueAsDate === null) {
+			return [] as Orden[];
+		}
+		// Get ordenes from supabase
+		const { data, error } = await supabase
+			.from<Orden>('ordenes')
+			.select('*')
+			.lt('created_at', fechaFinal.valueAsDate?.toISOString())
+			.gt('created_at', fechaInicial.valueAsDate?.toISOString());
+		if (error) {
+			return [] as Orden[];
+		}
+		return data;
+	}
 </script>
 
 <div class="d-sm-flex justify-content-between align-items-center mb-4">
@@ -8,6 +81,33 @@
 	<a class="btn btn-primary btn-sm d-none d-sm-inline-block" role="button" href="#!"
 		><i class="fas fa-download fa-sm text-white-50" />&nbsp;Generate Report</a
 	>
+</div>
+<div class="row">
+	<div class="col mb-3">
+		<label for="fechaInicial" class="form-label">Fecha Inicial</label>
+		<input
+			type="date"
+			class="form-control"
+			name="fechaInicial"
+			id="fechaInicial"
+			aria-describedby="helpId"
+			bind:this={fechaInicial}
+			on:change={setData}
+		/>
+	</div>
+	<div class="col mb-3">
+		<label for="fechaFinal" class="form-label">Fecha Final</label>
+		<input
+			type="date"
+			class="form-control"
+			name="fechaFinal"
+			id="fechaFinal"
+			aria-describedby="helpId"
+			placeholder=""
+			bind:this={fechaFinal}
+			on:change={setData}
+		/>
+	</div>
 </div>
 <div class="row">
 	<div class="col-md-6 col-xl-3 mb-4">
@@ -18,7 +118,7 @@
 						<div class="text-uppercase text-primary fw-bold text-xs mb-1">
 							<span>Ganancias totales</span>
 						</div>
-						<div class="text-dark fw-bold h5 mb-0"><span>$40,000</span></div>
+						<div class="text-dark fw-bold h5 mb-0"><span>{formatCurrency(ganancias)}</span></div>
 					</div>
 					<div class="col-auto"><i class="fas fa-calendar fa-2x text-gray-300" /></div>
 				</div>
@@ -78,9 +178,9 @@
 				<div class="row align-items-center no-gutters">
 					<div class="col me-2">
 						<div class="text-uppercase text-warning fw-bold text-xs mb-1">
-							<span>Pending Requests</span>
+							<span>Ordenes Completas</span>
 						</div>
-						<div class="text-dark fw-bold h5 mb-0"><span>18</span></div>
+						<div class="text-dark fw-bold h5 mb-0"><span>{ordenesCompletas}</span></div>
 					</div>
 					<div class="col-auto"><i class="fas fa-comments fa-2x text-gray-300" /></div>
 				</div>

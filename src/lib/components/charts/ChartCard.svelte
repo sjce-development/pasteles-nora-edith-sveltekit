@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte';
 
 	import type { ChartConfig, ChartDataset } from '$lib/models';
+	import { colors } from '$lib/constants';
 
 	export let title: string;
 
@@ -23,8 +24,8 @@
 		const dataset: ChartDataset = {
 			label,
 			data: info,
-			backgroundColor: 'rgba(78, 115, 223, 0.2)',
-			borderColor: 'rgba(78, 115, 223, 1)',
+			borderColor: colors.primary,
+			backgroundColor: colors.primary_transparent,
 			borderWidth: 1
 		};
 		config = {

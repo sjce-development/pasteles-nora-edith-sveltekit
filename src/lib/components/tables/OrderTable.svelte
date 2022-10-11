@@ -3,6 +3,7 @@
 	import { supabase } from '$lib/supabase';
 	import { formatCurrency } from '$lib/utils';
 	import { onMount } from 'svelte';
+	import Especificacion from '$lib/components/alerts/Especificacion.svelte';
 
 	let ordenes: Orden[] = [];
 
@@ -74,9 +75,7 @@
 						<td>{relleno}</td>
 						<td class="fit">
 							{#each especificaciones as especificacion}
-								<div class="alert alert-primary py-0 px-1 d-inline" role="alert">
-									<strong>{especificacion}</strong>
-								</div>
+								<Especificacion {especificacion} />
 							{/each}
 						</td>
 						<td>{formatCurrency(anticipo)}</td>

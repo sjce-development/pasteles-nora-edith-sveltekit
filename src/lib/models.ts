@@ -36,6 +36,7 @@ export type Orden = {
   anticipo: number;
   restante: number;
   pagado: boolean;
+  estado: string;
 }
 
 export type Cliente = {
