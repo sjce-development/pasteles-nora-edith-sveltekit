@@ -1,23 +1,26 @@
 <script lang="ts">
 	import CreateClientModal from '$lib/components/modals/CreateClientModal.svelte';
-	import type { Cliente, Orden } from '$lib/models';
-	import { pasteles } from '$lib/constants';
+	import type { Cliente, Orden, PastelesConfig } from '$lib/models';
+	import { convertirOrdenSelect } from '$lib/utils';
 	import { supabase } from '$lib/supabase';
 	import Select from 'svelte-select';
-	import { onMount } from 'svelte';
+	import Swal from 'sweetalert2';
 
-	let clientes: Cliente[];
+	export let clientes: Cliente[];
+	export let pasteles: PastelesConfig;
 
-	let orden: Orden = {} as Orden;
+	let orden: any = {};
 
-	onMount(async () => {
-		const { data, error } = await supabase.from<Cliente>('clientes').select('*');
+	async function guardarOrden() {
+		const newOrden: Orden = convertirOrdenSelect(orden);
+		const { data, error } = await supabase.from<Orden>('ordenes').insert([newOrden]);
 		if (error) {
 			alert(JSON.stringify(error, null, 2));
 			return;
 		}
-		clientes = data;
-	});
+		await Swal.fire('Orden creada', 'La orden se ha creado correctamente', 'success');
+		window.location.reload();
+	}
 </script>
 
 <div
@@ -62,67 +65,73 @@
 						</div>
 					{/if}
 				</div>
+				<!-- Tamaño -->
 				<div class="mb-3">
 					<label for="tamano" class="form-label">Tamaño</label>
 					<Select
 						name="tamano"
 						items={pasteles.tamanos}
-						placeholder={pasteles.tamanos[0].toString()}
+						placeholder="Selecciona un tamaño"
+						justValue={true}
 						bind:value={orden.tamano}
 					/>
 				</div>
+				<!-- Pan -->
 				<div class="mb-3">
 					<label for="" class="form-label">Pan</label>
 					<Select
 						name="pan"
 						items={pasteles.pan}
-						placeholder={pasteles.pan[0].toString()}
+						placeholder="Selecciona un pan"
 						bind:value={orden.pan}
 					/>
 				</div>
+				<!-- Relleno -->
 				<div class="mb-3">
 					<label for="relleno" class="form-label">Relleno</label>
 					<Select
 						name="relleno"
 						items={pasteles.rellenos}
-						placeholder={pasteles.rellenos[0].toString()}
+						placeholder="Selecciona un relleno"
 						bind:value={orden.relleno}
 					/>
 				</div>
+				<!-- Especificaciones -->
 				<div class="mb-3">
-					<!-- TODO: Create store to store especificaciones -->
-					<label for="relleno" class="form-label">Especificaciones</label>
+					<label for="especificaciones" class="form-label">Especificaciones</label>
 					<Select
-						name="relleno"
-						items={pasteles.rellenos}
-						placeholder={pasteles.rellenos[0].toString()}
-						bind:value={orden.relleno}
+						name="especificaciones"
+						items={pasteles.especificaciones}
+						placeholder="Selecciona la/s especificaciónes"
+						multiple={true}
+						bind:value={orden.especificaciones}
 					/>
 				</div>
+				<!-- Anticipo -->
 				<div class="mb-3">
-					<label for="relleno" class="form-label">Relleno</label>
-					<Select
-						name="relleno"
-						items={pasteles.rellenos}
-						placeholder={pasteles.rellenos[0].toString()}
-						bind:value={orden.relleno}
-					/>
-				</div>
-				<div class="mb-3">
-					<label for="" class="form-label">Name</label>
+					<label for="anticipo" class="form-label">Anticipo</label>
 					<input
-						type="text"
+						type="number"
 						class="form-control"
-						name=""
-						id=""
-						aria-describedby="helpId"
-						placeholder=""
+						id="anticipo"
+						placeholder="$123.45"
+						bind:value={orden.anticipo}
+					/>
+				</div>
+				<!-- Hora de entrega -->
+				<div class="mb-3">
+					<label for="horaEntrega" class="form-label">Hora de entrega</label>
+					<input
+						type="datetime-local"
+						class="form-control"
+						id="horaEntrega"
+						bind:value={orden.hora_de_entrega}
 					/>
 				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary">Save changes</button>
+				<button type="button" class="btn btn-primary" on:click={guardarOrden}>Save changes</button>
 			</div>
 		</div>
 	</div>

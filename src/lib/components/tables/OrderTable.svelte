@@ -68,7 +68,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each ordenes as { nombre, tamano, pan, relleno, especificaciones, anticipo, restante, pagado }}
+					{#each ordenes as { nombre, tamano, pan, relleno, especificaciones, anticipo }}
 						<td>{nombre}</td>
 						<td>{tamano}</td>
 						<td>{pan}</td>

@@ -16,10 +16,12 @@
 
 <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
 	<div class="container-fluid">
-		<button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"
-			><i class="fas fa-bars" /></button
-		>
-		<form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
+		<!-- Burger menu -->
+		<!-- <button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"
+			><i class="fas fa-bars" />
+		</button> -->
+		<!-- Search bar -->
+		<!-- <form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
 			<div class="input-group">
 				<input
 					class="bg-light form-control border-0 small"
@@ -27,7 +29,7 @@
 					placeholder="Buscar por..."
 				/><button class="btn btn-primary py-0" type="button"><i class="fas fa-search" /></button>
 			</div>
-		</form>
+		</form> -->
 		<ul class="navbar-nav flex-nowrap ms-auto">
 			<li class="nav-item dropdown d-sm-none no-arrow">
 				<a
@@ -56,46 +58,14 @@
 					</form>
 				</div>
 			</li>
+			<!-- Configuracion -->
 			<li class="nav-item dropdown no-arrow mx-1">
 				<div class="nav-item dropdown no-arrow">
-					<a
-						class="dropdown-toggle nav-link"
-						aria-expanded="false"
-						data-bs-toggle="dropdown"
-						href="#!"
-						><span class="badge bg-danger badge-counter">3+</span><i class="fas fa-bell fa-fw" /></a
-					>
-					<div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in">
-						<h6 class="dropdown-header">alerts center</h6>
-						<a class="dropdown-item d-flex align-items-center" href="#!">
-							<div class="me-3">
-								<div class="bg-primary icon-circle"><i class="fas fa-file-alt text-white" /></div>
-							</div>
-						</a><a class="dropdown-item d-flex align-items-center" href="#!">
-							<div class="me-3">
-								<div class="bg-success icon-circle"><i class="fas fa-donate text-white" /></div>
-							</div>
-							<div>
-								<span class="small text-gray-500">December 7, 2019</span>
-								<p>$290.29 has been deposited into your account!</p>
-							</div>
-						</a><a class="dropdown-item d-flex align-items-center" href="#!">
-							<div class="me-3">
-								<div class="bg-warning icon-circle">
-									<i class="fas fa-exclamation-triangle text-white" />
-								</div>
-							</div>
-							<div>
-								<span class="small text-gray-500">December 2, 2019</span>
-								<p>Spending Alert: We've noticed unusually high spending for your account.</p>
-							</div>
-						</a><a class="dropdown-item text-center small text-gray-500" href="#!"
-							>Show All Alerts</a
-						>
-					</div>
+					<a class="nav-link" href="/configuracion"><i class="fa-solid fa-gear" /></a>
 				</div>
 			</li>
-			<li class="nav-item dropdown no-arrow mx-1">
+			<!-- Notificaciones -->
+			<!-- <li class="nav-item dropdown no-arrow mx-1">
 				<div class="nav-item dropdown no-arrow">
 					<a
 						class="dropdown-toggle nav-link"
@@ -169,7 +139,7 @@
 					class="shadow dropdown-list dropdown-menu dropdown-menu-end"
 					aria-labelledby="alertsDropdown"
 				/>
-			</li>
+			</li> -->
 			<div class="d-none d-sm-block topbar-divider" />
 			<li class="nav-item dropdown no-arrow">
 				<div class="nav-item dropdown no-arrow">

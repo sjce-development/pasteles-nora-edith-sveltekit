@@ -1,3 +1,9 @@
+export enum Estados {
+  pendiente = 'pendiente',
+  en_curso = 'en_curso',
+  terminado = 'terminado',
+}
+
 export type Pastel = {
   id: number;
   created_at: string;
@@ -26,17 +32,17 @@ export type CarritoItem = {
 }
 
 export type Orden = {
-  id: number;
-  created_at: string;
+  id?: number;
+  created_at?: string;
   nombre: string;
   tamano: number;
   pan: string;
   relleno: string;
   especificaciones: string[];
   anticipo: number;
-  restante: number;
-  pagado: boolean;
   estado: string;
+  hora_de_entrega: string;
+  total: number;
 }
 
 export type Cliente = {
@@ -64,4 +70,29 @@ export type ChartDataset = {
   backgroundColor: string | string[];
   borderColor: string | string[];
   borderWidth: number;
+}
+
+export type SelectItem = {
+  value: string | number;
+  label: string;
+  group: string;
+}
+
+export type PastelesConfig = {
+  tamanos: SelectItem[];
+  pan: SelectItem[];
+  rellenos: SelectItem[];
+  especificaciones: SelectItem[];
+}
+
+export type Categoria = {
+  id: number;
+  created_at: string;
+  nombre: string;
+}
+
+export type Especificacion = {
+  nombre: string;
+  precio: number;
+  categoria: string;
 }

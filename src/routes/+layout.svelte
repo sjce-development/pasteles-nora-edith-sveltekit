@@ -10,8 +10,13 @@
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
 	import { supabase } from '$lib/supabase';
+	import { loading } from '$lib/loading';
+	import { navigating } from '$app/stores';
+	import Loader from '$lib/components/Loader.svelte';
 
 	let user: User | null;
+
+	$: $loading = !!$navigating;
 
 	onMount(async () => {
 		user = supabase.auth.user();
@@ -31,7 +36,13 @@
 				<div id="content">
 					<Navbar />
 					<div class="container-fluid">
-						<slot />
+						{#if $loading}
+							<div class="d-flex justify-content-center align-items-center" style="height: 80vh">
+								<Loader />
+							</div>
+						{:else}
+							<slot />
+						{/if}
 					</div>
 				</div>
 				<Footer />
