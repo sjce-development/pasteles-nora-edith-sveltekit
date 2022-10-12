@@ -96,3 +96,10 @@ export type Especificacion = {
   precio: number;
   categoria: string;
 }
+
+export type ModalField = {
+  name: string;
+  value: string | number;
+  type: string;
+  required: string;
+};

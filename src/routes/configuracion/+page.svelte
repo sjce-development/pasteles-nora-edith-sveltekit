@@ -1,5 +1,7 @@
 <script lang="ts">
-	import type { Categoria, Especificacion } from '$lib/models';
+	import CreateModal from '$lib/components/modals/CreateModal.svelte';
+	import ModalButton from '$lib/components/modals/ModalButton.svelte';
+	import type { Categoria, Especificacion, ModalField } from '$lib/models';
 	import { capitalize, formatCurrency } from '$lib/utils';
 	import type { PageData } from './$types';
 
@@ -7,6 +9,29 @@
 
 	const categorias: Categoria[] = data.categorias;
 	const especificaciones: Especificacion[] = data.especificaciones;
+
+	const modalId: string = '#createEspecificacionModal';
+
+	const fields: ModalField[] = [
+		{
+			name: 'Categoria',
+			value: 'categoria',
+			type: 'text',
+			required: 'true'
+		},
+		{
+			name: 'Nombre',
+			value: 'nombre',
+			type: 'text',
+			required: 'true'
+		},
+		{
+			name: 'Precio',
+			value: 'precio',
+			type: 'number',
+			required: 'true'
+		}
+	];
 
 	function getEspecificacion(categoria: Categoria) {
 		return especificaciones.filter(
@@ -17,17 +42,9 @@
 
 <h3 class="text-dark mb-4">
 	Configuración
-	<span>
-		<button
-			type="button"
-			class="btn btn-primary"
-			data-bs-toggle="modal"
-			data-bs-target="#createEspecificacionModal"
-		>
-			Crear especificación
-		</button>
-	</span>
+	<ModalButton {modalId} title="Agregar especificación" />
 </h3>
+<CreateModal title="Agregar especificación" {modalId} {fields} category="especificaciones" />
 <div class="row">
 	<div class="col-md-6 col-xl-3 mb-4">
 		<div class="card shadow border-left-primary py-2">
