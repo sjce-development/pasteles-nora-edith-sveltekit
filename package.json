@@ -13,6 +13,9 @@
 		"format": "prettier --plugin-search-dir . --write ."
 	},
 	"devDependencies": {
+		"@fullcalendar/common": "^5.11.3",
+		"@fullcalendar/core": "^5.11.3",
+		"@fullcalendar/daygrid": "^5.11.3",
 		"@playwright/test": "^1.25.0",
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
@@ -27,6 +30,7 @@
 		"prettier-plugin-svelte": "^2.7.0",
 		"svelte": "^3.44.0",
 		"svelte-check": "^2.7.1",
+		"svelte-fullcalendar": "^2.0.0-beta.0",
 		"svelte-preprocess": "^4.10.6",
 		"tslib": "^2.3.1",
 		"typescript": "^4.7.4",

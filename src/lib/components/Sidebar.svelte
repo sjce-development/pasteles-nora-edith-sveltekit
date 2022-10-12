@@ -1,3 +1,7 @@
+<script lang="ts">
+	import { routes } from '$lib/routes';
+</script>
+
 <nav
 	class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0"
 >
@@ -25,26 +29,14 @@
 		</a>
 		<hr class="sidebar-divider my-0" />
 		<ul class="navbar-nav text-light" id="accordionSidebar">
-			<li class="nav-item">
-				<a class="nav-link active" href="/"
-					><i class="fas fa-tachometer-alt" /><span>Dashboard</span></a
-				>
-			</li>
-			<li class="nav-item" />
-			<li class="nav-item">
-				<a class="nav-link" href="/ordenes"><i class="fas fa-table" /><span>Ordenes</span></a><a
-					class="nav-link"
-					href="/agenda"><i class="far fa-clock" /><span>Agenda</span></a
-				>
-				<a class="nav-link" href="/pos">
-					<i class="far fa-money-bill-alt" />
-					<span>Venta en fisico</span>
-				</a>
-				<a href="/clientes" class="nav-link">
-					<i class="fas fa-users" />
-					<span>Clientes</span>
-				</a>
-			</li>
+			{#each routes as route}
+				<li class="nav-item">
+					<a class="nav-link" href={route.path}>
+						<i class={route.icon} />
+						<span>{route.name}</span>
+					</a>
+				</li>
+			{/each}
 		</ul>
 		<div class="text-center d-none d-md-inline">
 			<button class="btn rounded-circle border-0" id="sidebarToggle" type="button" />
