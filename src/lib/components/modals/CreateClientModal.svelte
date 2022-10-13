@@ -17,8 +17,6 @@
 		const telefonoError = 'El telefono es requerido y debe tener 10 digitos';
 		const correoError = 'El correo es requerido y debe ser valido';
 
-		console.log(cliente.telefono);
-
 		if (cliente.nombre === '' && !errors.includes(nombreError)) {
 			errors = [...errors, nombreError];
 		} else {

@@ -28,8 +28,6 @@
 	async function insertData() {
 		const { data, error } = await supabase.from(category).insert([object]);
 		if (error) {
-			console.log(object);
-			console.log(`Error pastel: ${JSON.stringify(error, null, 2)}`);
 			Swal.fire({
 				icon: 'error',
 				title: 'Oops...',

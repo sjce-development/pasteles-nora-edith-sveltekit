@@ -9,14 +9,11 @@
 	async function agregarPastel(event: any) {
 		const nombre = event.target.nombre.value;
 		const precio = Number.parseFloat(event.target.precio.value);
-		const cantidad = Number.parseInt(event.target.cantidad.value);
-		const imagen = event.target[3].files[0];
+		const categoria = event.target.cantidad.value;
 
-		// Nombre, precio, cantidad e imagen
 		const nombreError = 'El nombre es requerido';
 		const precioError = 'El precio es requerido';
-		const cantidadError = 'La cantidad es requerida';
-		const imagenError = 'La imagen es requerida';
+		const categoriaError = 'La categoria es requerida';
 
 		if (nombre === '' && !errors.includes(nombreError)) {
 			errors = [...errors, nombreError];
@@ -30,30 +27,24 @@
 			errors = errors.filter((error) => error !== precioError);
 		}
 
-		if (cantidad <= 0 && !errors.includes(cantidadError)) {
-			errors = [...errors, cantidadError];
+		if (categoria === '' && !errors.includes(categoriaError)) {
+			errors = [...errors, categoriaError];
 		} else {
-			errors = errors.filter((error) => error !== cantidadError);
-		}
-
-		if (imagen === undefined && !errors.includes(imagenError)) {
-			errors = [...errors, imagenError];
-		} else {
-			errors = errors.filter((error) => error !== imagenError);
+			errors = errors.filter((error) => error !== categoriaError);
 		}
 
 		if (errors.length > 0) {
 			return;
 		}
 
-		const { data: dataPastel, error: errorPastel } = await supabase.from('pasteles').insert([
+		const { data, error } = await supabase.from('especificacion').insert([
 			{
-				nombre: nombre,
-				precio: precio,
-				cantidad: cantidad
+				categoria,
+				nombre,
+				precio
 			}
 		]);
-		if (errorPastel) {
+		if (error) {
 			Swal.fire({
 				icon: 'error',
 				title: 'Oops...',
@@ -61,24 +52,11 @@
 			});
 			return;
 		}
-
-		const { data: dataImagen, error: errorImagen } = await supabase.storage
-			.from('pasteles')
-			.upload(`${dataPastel[0].nombre}`, imagen, {
-				cacheControl: '3600',
-				upsert: false
-			});
-
-		if (errorImagen) {
-			Swal.fire({
-				icon: 'error',
-				title: 'Oops...',
-				text: 'Algo salió mal, intente de nuevo'
-			});
-      await supabase.from('pasteles').delete().eq('id', dataPastel[0].id);
-			return;
-		}
-		await Swal.fire('Pastel agregado', 'El pastel ha sido agregado correctamente', 'success');
+		await Swal.fire(
+			'Especificacion agregada',
+			'La especificacion ha sido agregada correctamente',
+			'success'
+		);
 		window.location.reload();
 	}
 
@@ -128,19 +106,6 @@
 				name="cantidad"
 				id="cantidad"
 			/>
-		</div>
-		<div class="mb-3">
-			<label for="imagen" class="form-label">Imagen *</label>
-			<input
-				type="file"
-				class="form-control"
-				aria-describedby="imagenHelpId"
-				placeholder="pastel.jpg"
-				name="imagen"
-				id="imagen"
-			/>
-			<small id="imagenHelpId" class="form-text text-muted">La imagen debe ser de máximo 50mb</small
-			>
 		</div>
 		<button type="submit" class="btn btn-primary">Button</button>
 	</form>

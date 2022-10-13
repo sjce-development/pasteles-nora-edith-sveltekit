@@ -11,6 +11,7 @@
 				text: error.message
 			});
 		}
+		window.location.reload();
 	}
 </script>
 

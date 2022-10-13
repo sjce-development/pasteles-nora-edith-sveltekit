@@ -12,8 +12,7 @@ export const load: PageServerLoad = async () => {
 async function getCategorias(): Promise<Categoria[]> {
     const { data, error } = await supabase.from<Categoria>('categorias').select('*');
     if (error) {
-        console.log(error);
-        return [];
+        return [] as Categoria[];
     }
     return data;
 }
@@ -21,8 +20,7 @@ async function getCategorias(): Promise<Categoria[]> {
 async function getEspecificaciones(): Promise<Especificacion[]> {
     const { data, error } = await supabase.from<Especificacion>('especificaciones').select('*');
     if (error) {
-        console.log(error);
-        return [];
+        return [] as Especificacion[];
     }
     return data;
 }

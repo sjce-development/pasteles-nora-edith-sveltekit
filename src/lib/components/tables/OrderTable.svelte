@@ -10,7 +10,6 @@
 	onMount(async () => {
 		const { data, error } = await supabase.from<Orden>('ordenes').select('*');
 		if (error) {
-			console.log(error);
 			return;
 		}
 		ordenes = data;

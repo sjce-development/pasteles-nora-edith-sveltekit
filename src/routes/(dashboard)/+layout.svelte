@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Sidebar from '../lib/components/Sidebar.svelte';
-	import Navbar from '../lib/components/Navbar.svelte';
-	import Footer from '../lib/components/Footer.svelte';
+	import Sidebar from '../../lib/components/Sidebar.svelte';
+	import Navbar from '../../lib/components/Navbar.svelte';
+	import Footer from '../../lib/components/Footer.svelte';
 
 	import type { User } from '@supabase/supabase-js';
 
@@ -15,7 +15,6 @@
 	import Loader from '$lib/components/Loader.svelte';
 
 	let user: User | null;
-
 	$: $loading = !!$navigating;
 
 	onMount(async () => {

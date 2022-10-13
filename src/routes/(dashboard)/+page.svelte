@@ -1,14 +1,15 @@
 <script lang="ts">
 	import ChartCard from '$lib/components/charts/ChartCard.svelte';
-	import { locale } from '$lib/constants';
-	import type { Orden } from '$lib/models';
+	import type { Orden, Venta } from '$lib/models';
 	import { supabase } from '$lib/supabase';
 	import { formatCurrency, months } from '$lib/utils';
 	import { onMount } from 'svelte';
 
-	let ganancias: number;
-	let ordenes: Orden[];
+	export let ordenes: Orden[];
+	export let ventas: Venta[];
+
 	let ordenesCompletas: number;
+	let ganancias: number;
 
 	let fechaInicial: HTMLInputElement;
 	let fechaFinal: HTMLInputElement;
@@ -21,12 +22,14 @@
 	function setFechas() {
 		const fechaInicialLS = localStorage.getItem('fechaInicial');
 		const fechaFinalLS = localStorage.getItem('fechaFinal');
+
 		if (fechaInicialLS) {
 			fechaInicial.valueAsDate = new Date(fechaInicialLS);
 			localStorage.setItem('fechaInicial', fechaInicial.value);
 		} else {
 			fechaInicial.valueAsDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
 		}
+
 		if (fechaFinalLS) {
 			fechaFinal.valueAsDate = new Date(fechaFinalLS);
 			localStorage.setItem('fechaFinal', fechaFinal.value);
@@ -51,7 +54,6 @@
 		if (error) {
 			return -1;
 		}
-		console.log(data);
 		data.forEach((venta) => {
 			sum += venta.total;
 		});
