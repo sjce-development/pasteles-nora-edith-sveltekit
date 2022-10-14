@@ -1,63 +1,65 @@
 <script lang="ts">
 	import ChartCard from '$lib/components/charts/ChartCard.svelte';
-	import type { Orden, Venta } from '$lib/models';
+	import { Estados, type Orden, type Venta } from '$lib/models';
 	import { supabase } from '$lib/supabase';
 	import { formatCurrency, months } from '$lib/utils';
+	import type { PageData } from '.svelte-kit/types/src/routes/(dashboard)/$types';
 	import { onMount } from 'svelte';
 
-	export let ordenes: Orden[];
-	export let ventas: Venta[];
+	export let data: PageData;
 
-	let ordenesCompletas: number;
-	let ganancias: number;
+	let ordenes: Orden[];
+	let ventas: Venta[];
+
+	let ordenesCompletas: number = 0;
+	let ganancias: number = 0;
 
 	let fechaInicial: HTMLInputElement;
 	let fechaFinal: HTMLInputElement;
 
 	onMount(async () => {
+		ventas = data.ventas ? data.ventas : [];
+		ordenes = data.ordenes ? data.ordenes : [];
 		setFechas();
-		await setData();
+		setData();
 	});
 
 	function setFechas() {
-		const fechaInicialLS = localStorage.getItem('fechaInicial');
-		const fechaFinalLS = localStorage.getItem('fechaFinal');
+		// Generate date 1 year ago
+		const date = new Date();
+		date.setFullYear(date.getFullYear() - 1);
+		const yearAgo = date.toISOString().split('T')[0];
 
-		if (fechaInicialLS) {
-			fechaInicial.valueAsDate = new Date(fechaInicialLS);
-			localStorage.setItem('fechaInicial', fechaInicial.value);
-		} else {
-			fechaInicial.valueAsDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
+		const now = new Date().toISOString().split('T')[0];
+
+		fechaFinal.value = now;
+		fechaInicial.value = yearAgo;
+	}
+
+	function setData() {
+		ganancias = 0;
+		if (ventas && ventas.length > 0) {
+			ventas.forEach((venta) => {
+				ganancias += venta.total;
+			});
 		}
-
-		if (fechaFinalLS) {
-			fechaFinal.valueAsDate = new Date(fechaFinalLS);
-			localStorage.setItem('fechaFinal', fechaFinal.value);
-		} else {
-			fechaFinal.valueAsDate = new Date();
+		if (ordenes && ordenes.length > 0) {
+			ordenesCompletas = ordenes.filter((orden) => orden.estado === Estados.terminado).length;
 		}
 	}
 
-	async function setData() {
-		ganancias = await fetchGanancias();
+	async function fetchData() {
+		ventas = await fetchVentas();
 		ordenes = await fetchOrdenes();
-		ordenesCompletas = ordenes.filter((orden) => orden.estado === 'terminado').length;
+		setData();
 	}
 
-	async function fetchGanancias(): Promise<number> {
-		let sum: number = 0;
-		const { data, error } = await supabase
-			.from('ventas')
-			.select('*')
-			.lt('created_at', fechaFinal.valueAsDate?.toISOString())
-			.gt('created_at', fechaInicial.valueAsDate?.toISOString());
-		if (error) {
-			return -1;
-		}
-		data.forEach((venta) => {
-			sum += venta.total;
-		});
-		return sum;
+	async function fetchVentas() {
+		const data = await fetch(
+			'/api/ventas?fechaInicial=' + fechaInicial.value + '&fechaFinal=' + fechaFinal.value
+		);
+		const ventas: Venta[] = await data.json();
+		return ventas;
 	}
 
 	async function fetchOrdenes(): Promise<Orden[]> {
@@ -94,7 +96,7 @@
 			id="fechaInicial"
 			aria-describedby="helpId"
 			bind:this={fechaInicial}
-			on:change={setData}
+			on:change={fetchData}
 		/>
 	</div>
 	<div class="col mb-3">
@@ -107,7 +109,7 @@
 			aria-describedby="helpId"
 			placeholder=""
 			bind:this={fechaFinal}
-			on:change={setData}
+			on:change={fetchData}
 		/>
 	</div>
 </div>

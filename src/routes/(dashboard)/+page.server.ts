@@ -1,6 +1,6 @@
 import type { Orden, Venta } from '$lib/models';
 import { supabase } from '$lib/supabase';
-import type { PageServerLoad } from '../../../.svelte-kit/types/src/routes/$types';
+import type { PageServerLoad } from '.svelte-kit/types/src/routes/(dashboard)/$types';
 
 export const load: PageServerLoad = async () => {
     const ventas = await fetchVentas();
