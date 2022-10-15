@@ -4,7 +4,8 @@
 
 	onMount(() => {
 		if (window.location.pathname === '/') {
-			window.location.href = '/ordenes';
+			window.location.href = '/';
+			window.location.reload();
 		}
 	});
 </script>
