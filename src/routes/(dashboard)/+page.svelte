@@ -17,12 +17,26 @@
 	let fechaInicial: HTMLInputElement;
 	let fechaFinal: HTMLInputElement;
 
+	let ventasChart: { data: number[]; labels: string[] } = {
+		data: [],
+		labels: []
+	};
+
 	onMount(async () => {
 		ventas = data.ventas ? data.ventas : [];
 		ordenes = data.ordenes ? data.ordenes : [];
 		setFechas();
 		setData();
+		setChartData();
 	});
+
+	function setChartData() {
+		// ventas por mes
+		ventasChart.data = new Array(12).fill(0);
+		ventas.forEach((venta) => {
+			ventasChart.data[new Date(venta.created_at).getMonth()] += venta.total;
+		});
+	}
 
 	function setFechas() {
 		// Generate date 1 year ago
@@ -31,7 +45,6 @@
 		const yearAgo = date.toISOString().split('T')[0];
 
 		const now = new Date().toISOString().split('T')[0];
-
 		fechaFinal.value = now;
 		fechaInicial.value = yearAgo;
 	}
@@ -196,13 +209,13 @@
 <div class="row">
 	<div class="col-lg-7 col-xl-8">
 		<ChartCard
-			title="Ganancias Mensuales"
+			title="Ganancias Diarias"
 			width={16}
 			height={5}
 			type="bar"
 			label="Ganancias"
 			labels={months}
-			info={[0, 10, 5, 2, 20, 30, 45, 50, 60, 70, 80, 90]}
+			info={ventasChart.data}
 		/>
 	</div>
 	<div class="col-lg-5 col-xl-4">
