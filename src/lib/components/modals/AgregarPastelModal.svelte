@@ -4,6 +4,8 @@
 	import { supabase } from '$lib/supabase';
 	import BaseModal from './BaseModal.svelte';
 
+	export let title: string;
+	export let modalId: string;
 	let errors: Array<string> = [];
 
 	async function agregarPastel(event: any) {
@@ -75,7 +77,7 @@
 				title: 'Oops...',
 				text: 'Algo salió mal, intente de nuevo'
 			});
-      await supabase.from('pasteles').delete().eq('id', dataPastel[0].id);
+			await supabase.from('pasteles').delete().eq('id', dataPastel[0].id);
 			return;
 		}
 		await Swal.fire('Pastel agregado', 'El pastel ha sido agregado correctamente', 'success');
@@ -89,7 +91,7 @@
 	async function cta() {}
 </script>
 
-<BaseModal {cta} title="Agregar pastel" successButtonString="Guardar" id="agregar-pastel-modal">
+<BaseModal {cta} {title} successButtonString="Guardar" id={modalId}>
 	{#if errors.length > 0}
 		{#each errors as error}
 			<div class="alert alert-danger d-flex" style="justify-content: space-between;" role="alert">

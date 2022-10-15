@@ -1,16 +1,23 @@
 <script lang="ts">
 	import Swal from 'sweetalert2';
-	import type { Pastel } from '$lib/models';
+	import type { Categoria, Especificacion } from '$lib/models';
 	import { supabase } from '$lib/supabase';
 	import BaseModal from './BaseModal.svelte';
+	export let title: string;
+	export let id: string;
+	export let categoria: Categoria;
 
 	let errors: Array<string> = [];
 
-	async function agregarPastel(event: any) {
+	function dismissError(error: string) {
+		errors = errors.filter((e) => e !== error);
+	}
+
+	async function cta(event: any) {
 		const nombre = event.target.nombre.value;
 		const precio = Number.parseFloat(event.target.precio.value);
-		const categoria = event.target.cantidad.value;
 
+		// Nombre, precio, cantidad e imagen
 		const nombreError = 'El nombre es requerido';
 		const precioError = 'El precio es requerido';
 		const categoriaError = 'La categoria es requerida';
@@ -27,21 +34,15 @@
 			errors = errors.filter((error) => error !== precioError);
 		}
 
-		if (categoria === '' && !errors.includes(categoriaError)) {
-			errors = [...errors, categoriaError];
-		} else {
-			errors = errors.filter((error) => error !== categoriaError);
-		}
-
 		if (errors.length > 0) {
 			return;
 		}
 
-		const { data, error } = await supabase.from('especificacion').insert([
+		const { data, error } = await supabase.from<Especificacion>('especificaciones').insert([
 			{
-				categoria,
 				nombre,
-				precio
+				precio,
+				categoria: categoria.nombre
 			}
 		]);
 		if (error) {
@@ -52,22 +53,17 @@
 			});
 			return;
 		}
+
 		await Swal.fire(
-			'Especificacion agregada',
-			'La especificacion ha sido agregada correctamente',
+			'Especificación agregada',
+			'La especificación ha sido agregado correctamente',
 			'success'
 		);
 		window.location.reload();
 	}
-
-	function dismissError(error: string) {
-		errors = errors.filter((e) => e !== error);
-	}
-
-	async function cta() {}
 </script>
 
-<BaseModal {cta} title="Agregar pastel" successButtonString="Guardar" id="agregar-pastel-modal">
+<BaseModal {cta} {id} {title}>
 	{#if errors.length > 0}
 		{#each errors as error}
 			<div class="alert alert-danger d-flex" style="justify-content: space-between;" role="alert">
@@ -81,32 +77,18 @@
 			</div>
 		{/each}
 	{/if}
-	<form on:submit|preventDefault={agregarPastel}>
-		<div class="mb-3">
-			<label for="nombre" class="form-label">Nombre *</label>
-			<input
-				type="text"
-				class="form-control"
-				name="nombre"
-				id="nombre"
-				placeholder="Nombre del pastel"
-			/>
-		</div>
-		<div class="mb-3">
-			<label for="precio" class="form-label">Precio *</label>
-			<input type="number" class="form-control" name="precio" id="precio" placeholder="$200.00" />
-		</div>
-		<div class="mb-3">
-			<label for="cantidad" class="form-label">Cantidad</label>
-			<input
-				type="number"
-				class="form-control"
-				aria-describedby="cantidadHelpId"
-				placeholder="3"
-				name="cantidad"
-				id="cantidad"
-			/>
-		</div>
-		<button type="submit" class="btn btn-primary">Button</button>
-	</form>
+	<div class="mb-3">
+		<label for="nombre" class="form-label">Nombre *</label>
+		<input
+			type="text"
+			class="form-control"
+			name="nombre"
+			id="nombre"
+			placeholder="Nombre de la especificación"
+		/>
+	</div>
+	<div class="mb-3">
+		<label for="precio" class="form-label">Precio *</label>
+		<input type="number" class="form-control" name="precio" id="precio" placeholder="$200.00" />
+	</div>
 </BaseModal>

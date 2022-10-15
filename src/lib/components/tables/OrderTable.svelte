@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Orden } from '$lib/models';
+	import { Estados, type Orden } from '$lib/models';
 	import { supabase } from '$lib/supabase';
 	import { formatCurrency } from '$lib/utils';
 	import { onMount } from 'svelte';
@@ -67,19 +67,25 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each ordenes as { nombre, tamano, pan, relleno, especificaciones, anticipo }}
-						<td>{nombre}</td>
-						<td>{tamano}</td>
-						<td>{pan}</td>
-						<td>{relleno}</td>
+					{#each ordenes as orden}
+						<td>{orden.nombre}</td>
+						<td>{orden.tamano}</td>
+						<td>{orden.pan}</td>
+						<td>{orden.relleno}</td>
 						<td class="fit">
-							{#each especificaciones as especificacion}
+							{#each orden.especificaciones as especificacion}
 								<Especificacion {especificacion} />
 							{/each}
 						</td>
-						<td>{formatCurrency(anticipo)}</td>
-						<td>{formatCurrency(restante)}</td>
-						<td>{pagado ? '✅' : '❌'}</td>
+						<td>{formatCurrency(orden.anticipo)}</td>
+						<td>{formatCurrency(orden.total-orden.anticipo)}</td>
+						{#if orden.estado === Estados.terminado}
+							<td>✅</td>
+						{:else if orden.estado === Estados.en_curso}
+							<td>🕛</td>
+						{:else}
+							<td>❌</td>
+						{/if}
 					{/each}
 					<tr>
 						<td>Airi Satou</td>

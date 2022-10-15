@@ -11,6 +11,9 @@
 	let carrito: any[] = [];
 	let total: number = 0;
 
+	let title: string = 'Agregar pastel';
+	let modalId: string = 'agregar-pastel-modal';
+
 	onMount(async () => {
 		const { data, error } = await supabase.from<Pastel>('pasteles').select('*');
 		if (error) {
@@ -164,9 +167,9 @@
 			type="button"
 			class="btn btn-primary"
 			data-bs-toggle="modal"
-			data-bs-target="#agregar-pastel-modal"
+			data-bs-target="#{modalId}"
 		>
-			Añadir pastel</button
+			{title}</button
 		>
 	</span>
 </h3>
@@ -344,4 +347,4 @@
 		</div>
 	</div>
 </div>
-<AgregarPastelModal />
+<AgregarPastelModal {title} {modalId} />

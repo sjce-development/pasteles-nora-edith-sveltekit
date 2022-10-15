@@ -1,8 +1,9 @@
 <script lang="ts">
 	import ChartCard from '$lib/components/charts/ChartCard.svelte';
+	import { months } from '$lib/constants';
 	import { Estados, type Orden, type Venta } from '$lib/models';
 	import { supabase } from '$lib/supabase';
-	import { formatCurrency, months } from '$lib/utils';
+	import { formatCurrency } from '$lib/utils';
 	import type { PageData } from '.svelte-kit/types/src/routes/(dashboard)/$types';
 	import { onMount } from 'svelte';
 

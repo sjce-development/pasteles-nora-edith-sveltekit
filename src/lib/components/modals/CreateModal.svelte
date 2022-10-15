@@ -10,12 +10,10 @@
 	export let title: string;
 
 	let object: any = {};
-
 	let data: any = {};
-
 	let errors: string[] = [];
 
-	async function agregarEspecificacion(event: any) {
+	async function agregar(event: any) {
 		setErrors();
 		if (errors.length > 0) {
 			await Swal.fire('Error', 'Por favor, revisa los campos', 'error');

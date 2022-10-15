@@ -4,7 +4,7 @@
 </script>
 
 <span>
-	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target={modalId}>
+	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{modalId}">
 		{title}
 	</button>
 </span>

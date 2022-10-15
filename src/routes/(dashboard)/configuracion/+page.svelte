@@ -1,5 +1,5 @@
 <script lang="ts">
-	import CreateModal from '$lib/components/modals/CreateModal.svelte';
+	import AgregarEspecificacionModal from '$lib/components/modals/AgregarEspecificacionModal.svelte';
 	import ModalButton from '$lib/components/modals/ModalButton.svelte';
 	import type { Categoria, Especificacion, ModalField } from '$lib/models';
 	import { capitalize, formatCurrency } from '$lib/utils';
@@ -9,8 +9,6 @@
 
 	const categorias: Categoria[] = data.categorias;
 	const especificaciones: Especificacion[] = data.especificaciones;
-
-	const modalId: string = '#createEspecificacionModal';
 
 	const fields: ModalField[] = [
 		{
@@ -40,11 +38,7 @@
 	}
 </script>
 
-<h3 class="text-dark mb-4">
-	Configuración
-	<ModalButton {modalId} title="Agregar especificación" />
-</h3>
-<CreateModal title="Agregar especificación" {modalId} {fields} category="especificaciones" />
+<h3 class="text-dark mb-4">Configuración</h3>
 <div class="row">
 	<div class="col-md-6 col-xl-3 mb-4">
 		<div class="card shadow border-left-primary py-2">
@@ -92,14 +86,26 @@
 		<div class="col">
 			<div class="card">
 				<div class="card-body">
-					<h5 class="card-title">{capitalize(categoria.nombre)}</h5>
+					<div class="d-flex justify-content-between align-content-end">
+						<h5 class="card-title">
+							{capitalize(categoria.nombre)}
+						</h5>
+						<button
+							type="button"
+							class="btn btn-primary"
+							data-bs-toggle="modal"
+							data-bs-target="#{`agregar${categoria.nombre}`}"
+						>
+							<i class="fas fa-plus" />
+						</button>
+					</div>
 					<div class="table-responsive">
 						<table class="table">
 							<thead>
 								<tr>
-									<th scope="col">Nombre</th>
-									<th scope="col">Precio</th>
-									<th scope="col" class="fit" />
+									<th>Nombre</th>
+									<th>Precio</th>
+									<th class="fit" />
 								</tr>
 							</thead>
 							<tbody>
@@ -123,5 +129,10 @@
 				</div>
 			</div>
 		</div>
+		<AgregarEspecificacionModal
+			title={`Agregar ${categoria.nombre}`}
+			id={`agregar${categoria.nombre}`}
+			{categoria}
+		/>
 	{/each}
 </div>

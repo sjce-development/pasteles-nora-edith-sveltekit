@@ -1,11 +1,10 @@
-import type { Especificacion, Orden, SelectItem } from "./models";
+import type { Categoria, Especificacion, Orden, SelectItem } from "./models";
 
 export function formatCurrency(amount: number) {
   const options = { style: 'currency', currency: 'MXN' };
   const numberFormat = new Intl.NumberFormat('es-MX', options);
   return numberFormat.format(amount);
 }
-
 
 export function sleep(milliseconds: number) {
   const date = Date.now();
@@ -22,20 +21,15 @@ export function random_rgba(transparency = 0.2): string[] {
   return [`rgba(${r},${g},${b},${transparency})`, `rgba(${r},${g},${b})`];
 }
 
-export const months = [
-  'Enero',
-  'Febrero',
-  'Marzo',
-  'Abril',
-  'Mayo',
-  'Junio',
-  'Julio',
-  'Agosto',
-  'Septiembre',
-  'Octubre',
-  'Noviembre',
-  'Diciembre'
-]
+export function formatCategory(items: Categoria[]): SelectItem[] {
+  if (items.length === 0) return [];
+  const group = 'categoria';
+  return items.map((item: Categoria) => {
+    const label: string = item.nombre;
+    const value: string = item.nombre.toLowerCase().replace(' ', '-');
+    return { value, label, group }
+  });
+}
 
 export function formatEspecificacion(items: Especificacion[]): SelectItem[] {
   if (items.length === 0) return [];
