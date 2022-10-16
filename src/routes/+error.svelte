@@ -2,9 +2,7 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 
-	onMount(() => {
-		
-	});
+	onMount(() => {});
 </script>
 
 <div class="center">
