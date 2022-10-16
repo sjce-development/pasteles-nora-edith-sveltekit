@@ -35,14 +35,15 @@ export type Orden = {
   id?: number;
   created_at?: string;
   nombre: string;
+  anticipo: number;
+  hora_de_entrega: string;
+  estado: string;
   tamano: number;
+  total?: number;
   pan: string;
   relleno: string;
-  especificaciones: string[];
-  anticipo: number;
-  estado: string;
-  hora_de_entrega: string;
-  total: number;
+  decorado: string[];
+  impreso: boolean;
 }
 
 export type Cliente = {

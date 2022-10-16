@@ -4,7 +4,7 @@ import { formatEspecificacion } from '$lib/utils';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-    const pasteles: PastelesConfig = await setPastelesConfig();    
+    const pasteles: PastelesConfig = await setPastelesConfig();
     const clientes: Cliente[] = await getClientes();
     return {
         pasteles,
@@ -25,7 +25,7 @@ async function setPastelesConfig(): Promise<PastelesConfig> {
     const tamanos: SelectItem[] = formatEspecificacion(await getEspecificacion('tamano'));
     const pan: SelectItem[] = formatEspecificacion(await getEspecificacion('pan'));
     const rellenos: SelectItem[] = formatEspecificacion(await getEspecificacion('relleno'));
-    const especificaciones: SelectItem[] = formatEspecificacion(await getEspecificacion('especificacion'));
+    const especificaciones: SelectItem[] = formatEspecificacion(await getEspecificacion('decorado'));
     return { tamanos, pan, rellenos, especificaciones };
 }
 

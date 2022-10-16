@@ -11,7 +11,7 @@
 	</div>
 </div>
 
-<style type="text/css">
+<style>
 	@keyframes ldio-zpp3oj9i7h {
 		0% {
 			background: #f8b26a;

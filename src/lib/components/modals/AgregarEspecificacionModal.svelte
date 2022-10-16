@@ -54,11 +54,13 @@
 			return;
 		}
 
-		await Swal.fire(
-			'Especificación agregada',
-			'La especificación ha sido agregado correctamente',
-			'success'
-		);
+		await Swal.fire({
+			title: 'Especificación agregada',
+			text: 'La especificación se agregó correctamente',
+			icon: 'success',
+			showCancelButton: false,
+			timer: 1000
+		});
 		window.location.reload();
 	}
 </script>

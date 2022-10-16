@@ -1,8 +1,13 @@
+import { locale } from "./constants";
 import type { Categoria, Especificacion, Orden, SelectItem } from "./models";
+import { supabase } from "./supabase";
 
-export function formatCurrency(amount: number) {
+export function formatCurrency(amount: number, absolute?: boolean) {
   const options = { style: 'currency', currency: 'MXN' };
   const numberFormat = new Intl.NumberFormat('es-MX', options);
+  if (absolute) {
+    amount = Math.abs(amount);
+  }
   return numberFormat.format(amount);
 }
 
@@ -56,29 +61,34 @@ export function formatEspecificacion(items: Especificacion[]): SelectItem[] {
   });
 }
 
-export function calcularTotalOrden(orden: { anticipo?: any; especificaciones: any; nombre?: { value: any; }; pan: any; relleno: any; tamano: any; hora_de_entrega?: any; }): number {
-  // Calculate total of orden
+export async function calcularTotalOrden(orden: Orden): Promise<number> {
   let total = 0;
-  orden.tamano.forEach((t: { precio: number }) => {
-    total += t.precio;
-  });
-  orden.pan.forEach((p: { precio: number }) => {
-    total += p.precio;
-  });
-  orden.relleno.forEach((r: { precio: number }) => {
-    total += r.precio;
-  });
-  orden.especificaciones.forEach((e: { precio: number }) => {
-    total += e.precio;
+  const { data, error } = await supabase
+    .from<Especificacion>('especificaciones')
+    .select('*');
+  if (error) throw error;
+
+  const tamano: Especificacion | undefined = data.find((especificacion: Especificacion) => especificacion.nombre === orden.tamano.toString());
+  if (tamano) total += tamano.precio;
+
+  const pan: Especificacion | undefined = data.find((especificacion: Especificacion) => especificacion.nombre === orden.pan);
+  if (pan) total += pan.precio;
+
+  const relleno: Especificacion | undefined = data.find((especificacion: Especificacion) => especificacion.nombre === orden.relleno);
+  if (relleno) total += relleno.precio;
+
+  orden.decorado.forEach((decorado: string) => {
+    const item: Especificacion | undefined = data.find((especificacion: Especificacion) => especificacion.nombre === decorado);
+    if (item) total += item.precio;
   });
   return total;
 }
 
-export function convertirOrdenSelect(orden: { anticipo: any; especificaciones: { value: any; }[]; nombre: { value: any; }; pan: { value: any; }; relleno: { value: any; }; tamano: { value: any; }; hora_de_entrega: any; }): Orden {
-  const total = calcularTotalOrden(orden);
-  return {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function convertirOrdenSelect(orden: any): Promise<Orden> {
+  const newOrden: Orden = {
     anticipo: orden.anticipo,
-    especificaciones: orden.especificaciones.map((especificacion: { value: any }) => {
+    decorado: orden.decorado.map((especificacion: { value: string }) => {
       return especificacion.value;
     }),
     nombre: orden.nombre.value,
@@ -86,11 +96,25 @@ export function convertirOrdenSelect(orden: { anticipo: any; especificaciones: {
     relleno: orden.relleno.value,
     tamano: orden.tamano.value,
     estado: 'pendiente',
-    hora_de_entrega: orden.hora_de_entrega,
-    total: total
+    hora_de_entrega: new Date(orden.hora_de_entrega).toISOString(),
+    impreso: false
   };
+  const total = await calcularTotalOrden(newOrden);
+  newOrden.total = total;
+  return newOrden;
 }
 
 export function capitalize(word: string): string {
   return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+export function formatDate(date: string | Date): string {
+  return new Date(date).toLocaleString(locale, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true
+  })
 }

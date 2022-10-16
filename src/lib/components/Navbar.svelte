@@ -151,7 +151,7 @@
 						href="#!"
 						><span class="d-none d-lg-inline me-2 text-gray-600 small">Admin</span><img
 							class="border rounded-circle img-profile"
-							src="assets/img/logo.png"
+							src="/assets/img/logo.png"
 							alt=""
 						/></a
 					>

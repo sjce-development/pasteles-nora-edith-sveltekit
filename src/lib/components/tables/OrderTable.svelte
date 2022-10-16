@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { Estados, type Orden } from '$lib/models';
 	import { supabase } from '$lib/supabase';
-	import { formatCurrency } from '$lib/utils';
+	import { formatCurrency, formatDate } from '$lib/utils';
 	import { onMount } from 'svelte';
 	import Especificacion from '$lib/components/alerts/Especificacion.svelte';
+	import { goto } from '$app/navigation';
+	import { browser } from '$app/environment';
+	import { locale } from '$lib/constants';
 
 	let ordenes: Orden[] = [];
 
@@ -14,11 +17,22 @@
 		}
 		ordenes = data;
 	});
+
+	function goToPdf() {
+		if (browser) {
+			window.open('/pdf', '_blank')?.focus();
+		}
+	}
 </script>
 
 <div class="card shadow">
 	<div class="card-header py-3">
-		<p class="text-primary m-0 fw-bold">Ordenes</p>
+		<span class="text-primary m-0 fw-bold">Ordenes</span>
+		<span>
+			<button class="btn btn-primary btn-sm" type="button" on:click={goToPdf}>
+				<i class="fa-solid fa-print" /> Imprimir ordenes
+			</button>
+		</span>
 	</div>
 	<div class="card-body">
 		<div class="row">
@@ -56,74 +70,58 @@
 			<table class="table my-0" id="dataTable">
 				<thead>
 					<tr>
+						<th class="fit">Impreso</th>
 						<th>Nombre</th>
 						<th>Tamaño</th>
 						<th>Pan</th>
 						<th>Relleno</th>
 						<th>Especificaciones</th>
+						<th>Fecha de entrega</th>
 						<th>Anticipo</th>
 						<th>Restante</th>
-						<th>Pagado</th>
+						<th class="fit">Pagado</th>
 					</tr>
 				</thead>
 				<tbody>
 					{#each ordenes as orden}
-						<td>{orden.nombre}</td>
-						<td>{orden.tamano}</td>
-						<td>{orden.pan}</td>
-						<td>{orden.relleno}</td>
-						<td class="fit">
-							{#each orden.especificaciones as especificacion}
-								<Especificacion {especificacion} />
-							{/each}
-						</td>
-						<td>{formatCurrency(orden.anticipo)}</td>
-						<td>{formatCurrency(orden.total-orden.anticipo)}</td>
-						{#if orden.estado === Estados.terminado}
-							<td>✅</td>
-						{:else if orden.estado === Estados.en_curso}
-							<td>🕛</td>
-						{:else}
-							<td>❌</td>
-						{/if}
+						<tr>
+							<td class="fit">
+								{#if orden.impreso}
+									<i style="color: green" class="fa-solid fa-print" />
+								{:else}
+									<i style="color: orange" class="fa-solid fa-clock" />
+								{/if}
+							</td>
+							<td>{orden.nombre}</td>
+							<td>{orden.tamano}</td>
+							<td>{orden.pan}</td>
+							<td>{orden.relleno}</td>
+							<td class="fit">
+								{#each orden.decorado as especificacion}
+									<Especificacion {especificacion} />
+								{/each}
+							</td>
+							<td class="fit">{formatDate(orden.hora_de_entrega)}</td>
+							<td>{formatCurrency(orden.anticipo)}</td>
+							<td>{formatCurrency((orden.total || 0) - orden.anticipo)}</td>
+							{#if orden.estado === Estados.terminado}
+								<td>✅</td>
+							{:else if orden.estado === Estados.en_curso}
+								<td>🕛</td>
+							{:else}
+								<td>❌</td>
+							{/if}
+							<td class="fit">
+								<button class="btn btn-primary btn-sm" type="button">
+									<i class="fas fa-edit" />
+								</button>
+								<button class="btn btn-danger btn-sm" type="button">
+									<i class="fas fa-trash" />
+								</button>
+							</td>
+						</tr>
 					{/each}
-					<tr>
-						<td>Airi Satou</td>
-						<td>6</td>
-						<td>Chocolate</td>
-						<td>Chocolate</td>
-						<td class="fit">
-							<div class="alert alert-primary py-0 px-1 d-inline" role="alert">
-								<strong>Foto</strong>
-							</div>
-							<div class="alert alert-primary py-0 px-1 d-inline" role="alert">
-								<strong>Foto</strong>
-							</div>
-							<div class="alert alert-primary py-0 px-1 d-inline" role="alert">
-								<strong>Foto</strong>
-							</div>
-							<div class="alert alert-primary py-0 px-1 d-inline" role="alert">
-								<strong>Foto</strong>
-							</div>
-							<div class="alert alert-primary py-0 px-1 d-inline" role="alert">
-								<strong>Foto</strong>
-							</div>
-						</td>
-						<td>$200</td>
-						<td>$0</td>
-						<td>✅</td>
-					</tr>
 				</tbody>
-				<tfoot>
-					<tr>
-						<td><strong>Name</strong></td>
-						<td><strong>Position</strong></td>
-						<td><strong>Office</strong></td>
-						<td><strong>Age</strong></td>
-						<td><strong>Start date</strong></td>
-						<td><strong>Salary</strong></td>
-					</tr>
-				</tfoot>
 			</table>
 		</div>
 		<div class="row">

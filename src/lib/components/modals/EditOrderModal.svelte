@@ -6,13 +6,11 @@
 	import Select from 'svelte-select';
 	import Swal from 'sweetalert2';
 
+	export let orden: Orden;
 	export let clientes: Cliente[];
 	export let pasteles: PastelesConfig;
 
-	let orden: any = {};
-
 	async function guardarOrden() {
-		console.log('asd')
 		const newOrden: Orden = await convertirOrdenSelect(orden);
 		const { data, error } = await supabase.from<Orden>('ordenes').insert([newOrden]);
 		if (error) {
