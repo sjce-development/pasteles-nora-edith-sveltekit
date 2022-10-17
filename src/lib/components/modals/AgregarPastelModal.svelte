@@ -83,29 +83,9 @@
 		await Swal.fire('Pastel agregado', 'El pastel ha sido agregado correctamente', 'success');
 		window.location.reload();
 	}
-
-	function dismissError(error: string) {
-		errors = errors.filter((e) => e !== error);
-	}
-
-	async function cta() {}
 </script>
 
-<BaseModal {cta} {title} successButtonString="Guardar" id={modalId}>
-	{#if errors.length > 0}
-		{#each errors as error}
-			<div class="alert alert-danger d-flex" style="justify-content: space-between;" role="alert">
-				{error}
-				<i
-					class="fa-solid fa-x"
-					on:click={() => {
-						dismissError(error);
-					}}
-				/>
-			</div>
-		{/each}
-	{/if}
-	<form on:submit|preventDefault={agregarPastel}>
+<BaseModal cta={agregarPastel} {title} id={modalId}>
 		<div class="mb-3">
 			<label for="nombre" class="form-label">Nombre *</label>
 			<input
@@ -144,6 +124,4 @@
 			<small id="imagenHelpId" class="form-text text-muted">La imagen debe ser de máximo 50mb</small
 			>
 		</div>
-		<button type="submit" class="btn btn-primary">Button</button>
-	</form>
 </BaseModal>

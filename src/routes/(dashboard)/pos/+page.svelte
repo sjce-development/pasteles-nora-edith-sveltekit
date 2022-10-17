@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import AgregarPastelModal from '$lib/components/modals/AgregarPastelModal.svelte';
 	import { PUBLIC_BUCKET } from '$lib/constants';
 	import type { CarritoItem, Pastel, Venta } from '$lib/models';
@@ -156,7 +157,7 @@
 	}
 
 	function getImage(pastel: Pastel) {
-		return `${PUBLIC_BUCKET}pasteles/${pastel.nombre}.jpg`;
+		return `${PUBLIC_BUCKET}pasteles/${pastel.nombre}`;
 	}
 </script>
 
@@ -284,7 +285,7 @@
 						<tbody>
 							{#if pasteles}
 								{#each pasteles as pastel, i}
-									<tr on:click={() => addToCart(i)}>
+									<tr class="pointer" on:click={() => addToCart(i)}>
 										<td
 											><img
 												class="rounded-circle me-2"
@@ -301,6 +302,12 @@
 											<button class="btn btn-danger btn-sm" on:click={() => deletePastel(i)}
 												><i class="fa-solid fa-x" /></button
 											>
+											<!-- Editar pastel -->
+											<button
+												class="btn btn-warning btn-sm"
+												on:click={() => goto(`pos/${pastel.nombre}`)}
+												><i class="fa-solid fa-pen" /></button
+											>
 										</td>
 									</tr>
 								{/each}
@@ -308,16 +315,9 @@
 								Loading
 							{/if}
 						</tbody>
-						<tfoot>
-							<tr>
-								<td><strong>Nombre</strong></td>
-								<td><strong>Precio</strong></td>
-								<td><strong>Cantidad</strong></td>
-							</tr>
-						</tfoot>
 					</table>
 				</div>
-				<div class="row">
+				<!-- <div class="row">
 					<div class="col-md-6 align-self-center">
 						<p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">
 							Showing 1 to 10 of 27
@@ -342,7 +342,7 @@
 							</ul>
 						</nav>
 					</div>
-				</div>
+				</div> -->
 			</div>
 		</div>
 	</div>
