@@ -75,7 +75,7 @@
 		setData();
 	}
 
-	async function fetchVentas() {
+	async function fetchVentas(): Promise<Venta[]> {
 		const data = await fetch(
 			'/api/ventas?fechaInicial=' + fechaInicial.value + '&fechaFinal=' + fechaFinal.value
 		);
@@ -135,57 +135,26 @@
 	</div>
 </div>
 <div class="row">
-	<DashboardCard
-		title="Ganancias totales"
-		data={formatCurrency(ganancias)}
-		icon="fas fa-calendar"
-	/>
 	<div class="col-md-6 col-xl-3 mb-4">
-		<div class="card shadow border-start-success py-2">
-			<div class="card-body">
-				<div class="row align-items-center no-gutters">
-					<div class="col me-2">
-						<div class="text-uppercase text-success fw-bold text-xs mb-1">
-							<span>Earnings (annual)</span>
-						</div>
-						<div class="text-dark fw-bold h5 mb-0"><span>$215,000</span></div>
-					</div>
-					<div class="col-auto"><i class="fas fa-dollar-sign fa-2x text-gray-300" /></div>
-				</div>
-			</div>
-		</div>
+		<DashboardCard
+			title="Ganancias totales"
+			data={formatCurrency(ganancias)}
+			icon="fas fa-calendar"
+		/>
 	</div>
 	<div class="col-md-6 col-xl-3 mb-4">
-		<div class="card shadow border-start-info py-2">
-			<div class="card-body">
-				<div class="row align-items-center no-gutters">
-					<div class="col me-2">
-						<div class="text-uppercase text-info fw-bold text-xs mb-1">
-							<span>Tasks</span>
-						</div>
-						<div class="row g-0 align-items-center">
-							<div class="col-auto">
-								<div class="text-dark fw-bold h5 mb-0 me-3"><span>50%</span></div>
-							</div>
-							<div class="col">
-								<div class="progress progress-sm">
-									<!-- <div
-										class="progress-bar bg-info"
-										aria-valuenow="50"
-										aria-valuemin="0"
-										aria-valuemax="100"
-										style="width: 50%;"
-									>
-										<span class="visually-hidden">50%</span>
-									</div> -->
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-auto"><i class="fas fa-clipboard-list fa-2x text-gray-300" /></div>
-				</div>
-			</div>
-		</div>
+		<DashboardCard title="Ordenes completas" data={ordenesCompletas} icon="fas fa-dollar-sign" />
+	</div>
+	<div class="col-md-6 col-xl-3 mb-4">
+		{#if ordenes && ventas}
+			<DashboardCard
+				title="Ventas totales"
+				data={ordenes.length + ventas.length}
+				icon="fas fa-dollar-sign"
+			/>
+		{:else}
+			<DashboardCard title="Ventas totales" data={0} icon="fas fa-dollar-sign" />
+		{/if}
 	</div>
 	<div class="col-md-6 col-xl-3 mb-4">
 		<div class="card shadow border-start-warning py-2">
