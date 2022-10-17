@@ -1,58 +1,59 @@
 <script lang="ts">
-	import type { Cliente, Pastel, Venta } from '$lib/models';
-	import EditClientModal from '$lib/components/modals/EditClientModal.svelte';
+	import type { Cliente, Orden } from '$lib/models';
 	import { supabase } from '$lib/supabase';
 	import { onMount } from 'svelte';
-	import { formatCurrency } from '$lib/utils';
 
-	let ventas: Venta[] = [];
-	let pasteles: Pastel[] = [];
+	let ordenes: Orden[] = [];
+	let clientes: Cliente[] = [];
 
 	let parsedData: any[] = [];
 
 	onMount(async () => {
-		await fetchVentas();
-		await fetchPasteles();
+		await fetchOrdenes();
+		await fetchClientes();
 
-		pasteles.forEach((pastel) => {
+
+    // Add name of client to parsed data
+		clientes.forEach((cliente) => {
 			parsedData.push({
-				nombre: pastel.nombre,
-				cantidad: 0,
+				nombre: cliente.nombre,
 				total: 0
 			});
 		});
 
-		ventas.forEach((venta) => {
-			parsedData.forEach((pastel) => {
-				if (pastel.nombre === venta.nombre) {
-					pastel.total += venta.total;
-					pastel.cantidad += venta.cantidad;
+		ordenes.forEach((orden: Orden) => {
+			parsedData.forEach((cliente) => {
+				if (cliente.nombre === orden.nombre) {
+					cliente.total += 1;
 				}
 			});
 		});
 
 		// Sort parsed data by cantidad
-		parsedData.sort((a, b) => b.cantidad - a.cantidad);
+		parsedData.sort((a, b) => b.total - a.total);
+
+    // parsedData maximum length is 10
+    parsedData = parsedData.slice(0, 10);
 
 		parsedData = [...parsedData];
 	});
 
-	async function fetchVentas() {
-		const { data, error } = await supabase
-			.from<Venta>('ventas')
-			.select('*')
-			.order('nombre', { ascending: false });
-		if (error) throw Error(error.message);
-		ventas = data;
+	async function fetchOrdenes() {
+    const { data, error } = await supabase
+      .from<Orden>('ordenes')
+      .select('*')
+      .order('nombre', { ascending: false });
+    if (error) throw Error(error.message);
+    ordenes = data;
 	}
 
-	async function fetchPasteles() {
+	async function fetchClientes() {
 		const { data, error } = await supabase
-			.from('pasteles')
+			.from('clientes')
 			.select('*')
 			.order('nombre', { ascending: false });
 		if (error) throw Error(error.message);
-		pasteles = data;
+		clientes = data;
 	}
 </script>
 
@@ -71,7 +72,6 @@
 				<thead>
 					<tr>
 						<th class="fit">Nombre</th>
-						<th class="fit">Cantidad</th>
 						<th class="fit">Total</th>
 					</tr>
 				</thead>
@@ -79,8 +79,7 @@
 					{#each parsedData as data}
 						<tr>
 							<td class="fit">{data.nombre}</td>
-							<td class="fit">{data.cantidad}</td>
-							<td class="fit">{formatCurrency(data.total)}</td>
+							<td class="fit">{data.total}</td>
 						</tr>
 					{/each}
 				</tbody>

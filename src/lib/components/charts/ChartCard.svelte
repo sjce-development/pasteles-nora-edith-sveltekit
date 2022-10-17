@@ -98,10 +98,6 @@
 		<div class="chart-area">
 			{#if type === 'bar'}
 				<Chart {width} {height} {config} />
-			{:else if type === 'line'}
-				<!-- <Line
-					data={}
-				/> -->
 			{:else}
 				<p>no chart</p>
 			{/if}

@@ -1,5 +1,8 @@
 <script lang="ts">
+	import { gananciasTotales } from '$lib/stores';
+	import DashboardCard from '$lib/components/card/DashboardCard.svelte';
 	import ChartCard from '$lib/components/charts/ChartCard.svelte';
+	import ClientesFrecuentesTable from '$lib/components/tables/ClientesFrecuentesTable.svelte';
 	import PastelesVendidosTable from '$lib/components/tables/PastelesVendidosTable.svelte';
 	import { months } from '$lib/constants';
 	import { Estados, type Orden, type Venta } from '$lib/models';
@@ -58,9 +61,12 @@
 				ganancias += venta.total;
 			});
 		}
+
 		if (ordenes && ordenes.length > 0) {
 			ordenesCompletas = ordenes.filter((orden) => orden.estado === Estados.terminado).length;
 		}
+
+		gananciasTotales.update((n) => formatCurrency(ganancias));
 	}
 
 	async function fetchData() {
@@ -129,21 +135,11 @@
 	</div>
 </div>
 <div class="row">
-	<div class="col-md-6 col-xl-3 mb-4">
-		<div class="card shadow border-start-primary py-2">
-			<div class="card-body">
-				<div class="row align-items-center no-gutters">
-					<div class="col me-2">
-						<div class="text-uppercase text-primary fw-bold text-xs mb-1">
-							<span>Ganancias totales</span>
-						</div>
-						<div class="text-dark fw-bold h5 mb-0"><span>{formatCurrency(ganancias)}</span></div>
-					</div>
-					<div class="col-auto"><i class="fas fa-calendar fa-2x text-gray-300" /></div>
-				</div>
-			</div>
-		</div>
-	</div>
+	<DashboardCard
+		title="Ganancias totales"
+		data={formatCurrency(ganancias)}
+		icon="fas fa-calendar"
+	/>
 	<div class="col-md-6 col-xl-3 mb-4">
 		<div class="card shadow border-start-success py-2">
 			<div class="card-body">
@@ -227,128 +223,7 @@
 <!-- End: Chart -->
 <div class="row">
 	<div class="col-lg-6 mb-4">
-		<div class="card shadow mb-4">
-			<div class="card-header py-3">
-				<h6 class="text-primary fw-bold m-0">Projects</h6>
-			</div>
-			<div class="card-body">
-				<h4 class="small fw-bold">Server migration<span class="float-end">20%</span></h4>
-				<div class="progress mb-4">
-					<!-- <div
-						class="progress-bar bg-danger"
-						aria-valuenow="20"
-						aria-valuemin="0"
-						aria-valuemax="100"
-						style="width: 20%;"
-					>
-						<span class="visually-hidden">20%</span>
-					</div> -->
-				</div>
-				<h4 class="small fw-bold">Sales tracking<span class="float-end">40%</span></h4>
-				<div class="progress mb-4">
-					<!-- <div
-						class="progress-bar bg-warning"
-						aria-valuenow="40"
-						aria-valuemin="0"
-						aria-valuemax="100"
-						style="width: 40%;"
-					>
-						<span class="visually-hidden">40%</span>
-					</div> -->
-				</div>
-				<h4 class="small fw-bold">Customer Database<span class="float-end">60%</span></h4>
-				<div class="progress mb-4">
-					<!-- <div
-						class="progress-bar bg-primary"
-						aria-valuenow="60"
-						aria-valuemin="0"
-						aria-valuemax="100"
-						style="width: 60%;"
-					>
-						<span class="visually-hidden">60%</span>
-					</div> -->
-				</div>
-				<h4 class="small fw-bold">Payout Details<span class="float-end">80%</span></h4>
-				<div class="progress mb-4">
-					<!-- <div
-						class="progress-bar bg-info"
-						aria-valuenow="80"
-						aria-valuemin="0"
-						aria-valuemax="100"
-						style="width: 80%;"
-					>
-						<span class="visually-hidden">80%</span>
-					</div> -->
-				</div>
-				<h4 class="small fw-bold">Account setup<span class="float-end">Complete!</span></h4>
-				<div class="progress mb-4">
-					<!-- <div
-						class="progress-bar bg-success"
-						aria-valuenow="100"
-						aria-valuemin="0"
-						aria-valuemax="100"
-						style="width: 100%;"
-					>
-						<span class="visually-hidden">100%</span>
-					</div> -->
-				</div>
-			</div>
-		</div>
-		<div class="card shadow mb-4">
-			<div class="card-header py-3">
-				<h6 class="text-primary fw-bold m-0">Todo List</h6>
-			</div>
-			<ul class="list-group list-group-flush">
-				<li class="list-group-item">
-					<div class="row align-items-center no-gutters">
-						<div class="col me-2">
-							<h6 class="mb-0"><strong>Lunch meeting</strong></h6>
-							<span class="text-xs">10:30 AM</span>
-						</div>
-						<div class="col-auto">
-							<div class="form-check">
-								<input class="form-check-input" type="checkbox" id="formCheck-1" /><label
-									class="form-check-label"
-									for="formCheck-1"
-								/>
-							</div>
-						</div>
-					</div>
-				</li>
-				<li class="list-group-item">
-					<div class="row align-items-center no-gutters">
-						<div class="col me-2">
-							<h6 class="mb-0"><strong>Lunch meeting</strong></h6>
-							<span class="text-xs">11:30 AM</span>
-						</div>
-						<div class="col-auto">
-							<div class="form-check">
-								<input class="form-check-input" type="checkbox" id="formCheck-2" /><label
-									class="form-check-label"
-									for="formCheck-2"
-								/>
-							</div>
-						</div>
-					</div>
-				</li>
-				<li class="list-group-item">
-					<div class="row align-items-center no-gutters">
-						<div class="col me-2">
-							<h6 class="mb-0"><strong>Lunch meeting</strong></h6>
-							<span class="text-xs">12:30 AM</span>
-						</div>
-						<div class="col-auto">
-							<div class="form-check">
-								<input class="form-check-input" type="checkbox" id="formCheck-3" /><label
-									class="form-check-label"
-									for="formCheck-3"
-								/>
-							</div>
-						</div>
-					</div>
-				</li>
-			</ul>
-		</div>
+		<ClientesFrecuentesTable />
 	</div>
 	<div class="col">
 		<div class="row">
