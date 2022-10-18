@@ -97,7 +97,8 @@ export async function convertirOrdenSelect(orden: any): Promise<Orden> {
     tamano: orden.tamano.value,
     estado: 'pendiente',
     hora_de_entrega: new Date(orden.hora_de_entrega).toISOString(),
-    impreso: false
+    impreso: false,
+    pagado: false,
   };
   const total = await calcularTotalOrden(newOrden);
   newOrden.total = total;
@@ -125,5 +126,5 @@ export function formatHoraDeEntrega(date: string | Date): string {
   const [year, month, day] = newDate[0].split('-');
   const [hour, minute] = newDate[1].split(':');
   return `${year}-${month}-${day} ${hour}:${minute}:00`;
-  
+
 }
