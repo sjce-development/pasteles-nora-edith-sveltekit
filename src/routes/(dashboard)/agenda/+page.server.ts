@@ -7,7 +7,9 @@ export const load: PageServerLoad = async () => {
         .from<Orden>('ordenes')
         .select('*')
         .order('created_at', { ascending: false });
-    if (error) throw Error('Error al cargar las ordenes');
+    if (error) {
+        return [] as Orden[];
+    };
     const ordenes = data;
     return {
         ordenes

@@ -1,11 +1,12 @@
 <script lang="ts">
-	import Sidebar from '../../lib/components/Sidebar.svelte';
-	import Navbar from '../../lib/components/Navbar.svelte';
-	import Footer from '../../lib/components/Footer.svelte';
+	import Sidebar from '$lib/components/Sidebar.svelte';
+	import Navbar from '$lib/components/Navbar.svelte';
+	import Footer from '$lib/components/Footer.svelte';
 
 	import type { User } from '@supabase/supabase-js';
 
 	import 'sweetalert2/src/sweetalert2.scss';
+	import 'bootstrap-icons/font/bootstrap-icons.css';
 
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';

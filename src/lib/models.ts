@@ -44,6 +44,7 @@ export type Orden = {
   relleno: string;
   decorado: string[];
   impreso: boolean;
+  pagado: boolean;
 }
 
 export type Cliente = {
