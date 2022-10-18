@@ -118,3 +118,12 @@ export function formatDate(date: string | Date): string {
     hour12: true
   })
 }
+
+export function formatHoraDeEntrega(date: string | Date): string {
+  // Make date into format yyyy-mm-dd yy:mm:ss
+  const newDate = new Date(date).toISOString().split('T');
+  const [year, month, day] = newDate[0].split('-');
+  const [hour, minute] = newDate[1].split(':');
+  return `${year}-${month}-${day} ${hour}:${minute}:00`;
+  
+}

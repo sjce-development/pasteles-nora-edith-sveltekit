@@ -9,7 +9,6 @@ export const load: PageServerLoad = async () => {
         .order('created_at', { ascending: false });
     if (error) throw Error('Error al cargar las ordenes');
     const ordenes = data;
-    console.log(ordenes);
     return {
         ordenes
     };

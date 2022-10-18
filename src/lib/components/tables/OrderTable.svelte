@@ -7,6 +7,7 @@
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
 	import { locale } from '$lib/constants';
+	import Swal from 'sweetalert2';
 
 	let ordenes: Orden[] = [];
 
@@ -22,6 +23,19 @@
 		if (browser) {
 			window.open('/pdf', '_blank')?.focus();
 		}
+	}
+
+	async function goToOrden(id: number): Promise<void> {
+		if (id === -1) {
+			Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'No se pudo encontrar la orden'
+			}).then(() => {
+				return;
+			});
+		}
+		goto(`/ordenes/${id}`);
 	}
 </script>
 
@@ -112,7 +126,11 @@
 								<td>❌</td>
 							{/if}
 							<td class="fit">
-								<button class="btn btn-primary btn-sm" type="button">
+								<button
+									class="btn btn-primary btn-sm"
+									type="button"
+									on:click={() => goToOrden(orden.id || -1)}
+								>
 									<i class="fas fa-edit" />
 								</button>
 								<button class="btn btn-danger btn-sm" type="button">
