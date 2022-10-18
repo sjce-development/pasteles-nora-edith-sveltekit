@@ -28,23 +28,25 @@
 	};
 
 	onMount(async () => {
-		ventas = data.ventas ? data.ventas : [];
-		ordenes = data.ordenes ? data.ordenes : [];
-		setFechas();
+		ventas = data.ventas;
+		ordenes = data.ordenes;
 		setData();
-		setChartData();
 	});
 
 	function setChartData() {
-		// ventas por mes
-		ventasChart.data = new Array(12).fill(0);
+		const ventasChartData = new Array(12).fill(0);
+		const ventasChartLabels = months;
 		ventas.forEach((venta) => {
-			ventasChart.data[new Date(venta.created_at).getMonth()] += venta.total;
+			ventasChartData[new Date(venta.created_at).getMonth()] += venta.total;
 		});
+
+		ventasChart = {
+			data: ventasChartData,
+			labels: ventasChartLabels
+		};
 	}
 
 	function setFechas() {
-		// Generate date 1 year ago
 		const date = new Date();
 		date.setFullYear(date.getFullYear() - 1);
 		const yearAgo = date.toISOString().split('T')[0];
@@ -55,6 +57,7 @@
 	}
 
 	function setData() {
+		setFechas();
 		ganancias = 0;
 		if (ventas && ventas.length > 0) {
 			ventas.forEach((venta) => {
@@ -66,7 +69,10 @@
 			ordenesCompletas = ordenes.filter((orden) => orden.estado === Estados.terminado).length;
 		}
 
-		gananciasTotales.update((n) => formatCurrency(ganancias));
+		gananciasTotales.update((n) => {
+			return formatCurrency(ganancias);
+		});
+		setChartData();
 	}
 
 	async function fetchData() {
@@ -181,7 +187,7 @@
 			height={5}
 			type="bar"
 			label="Ganancias"
-			labels={months}
+			labels={ventasChart.labels}
 			info={ventasChart.data}
 		/>
 	</div>
