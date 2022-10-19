@@ -12,7 +12,6 @@
 	let orden: any = {};
 
 	async function guardarOrden() {
-		console.log('asd')
 		const newOrden: Orden = await convertirOrdenSelect(orden);
 		const { data, error } = await supabase.from<Orden>('ordenes').insert([newOrden]);
 		if (error) {
@@ -44,7 +43,7 @@
 							<label for="cliente" class="form-label">Cliente</label>
 							<div class="col-sm-10">
 								<Select
-									items={clientes.map((cliente) => cliente.nombre)}
+									items={clientes.map((cliente) => `${cliente.nombre} - ${cliente.telefono}`)}
 									placeholder="Selecciona un cliente"
 									bind:value={orden.nombre}
 								/>

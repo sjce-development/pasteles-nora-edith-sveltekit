@@ -53,13 +53,13 @@
 			<div class="col-md-6 text-nowrap">
 				<div id="dataTable_length" class="dataTables_length" aria-controls="dataTable">
 					<label class="form-label"
-						>Show&nbsp;<select class="d-inline-block form-select form-select-sm">
+						>Show <select class="d-inline-block form-select form-select-sm">
 							<option value="10" selected>10</option>
 							<option value="25">25</option>
 							<option value="50">50</option>
 							<option value="100">100</option>
-						</select>&nbsp;</label
-					>
+						</select>
+					</label>
 				</div>
 			</div>
 			<div class="col-md-6">
@@ -94,6 +94,8 @@
 						<th>Anticipo</th>
 						<th>Restante</th>
 						<th class="fit">Pagado</th>
+						<th class="fit">Estado</th>
+						<th />
 					</tr>
 				</thead>
 				<tbody>
@@ -118,13 +120,23 @@
 							<td class="fit">{formatDate(orden.hora_de_entrega)}</td>
 							<td>{formatCurrency(orden.anticipo)}</td>
 							<td>{formatCurrency((orden.total || 0) - orden.anticipo)}</td>
-							{#if orden.estado === Estados.terminado}
-								<td>✅</td>
-							{:else if orden.estado === Estados.en_curso}
-								<td>🕛</td>
-							{:else}
-								<td>❌</td>
-							{/if}
+
+							<td>
+								{#if orden.estado === Estados.terminado}
+									✅
+								{:else if orden.estado === Estados.en_curso}
+									🕛
+								{:else}
+									❌
+								{/if}
+							</td>
+							<td>
+								{#if orden.pagado}
+									✅
+								{:else}
+									❌
+								{/if}
+							</td>
 							<td class="fit">
 								<button
 									class="btn btn-primary btn-sm"

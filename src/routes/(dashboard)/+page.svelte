@@ -13,8 +13,8 @@
 
 	export let data: PageData;
 
-	let ordenes: Orden[];
-	let ventas: Venta[];
+	let ordenes: Orden[] = [];
+	let ventas: Venta[] = [];
 
 	let ordenesCompletas: number = 0;
 	let ganancias: number = 0;
@@ -149,9 +149,6 @@
 		/>
 	</div>
 	<div class="col-md-6 col-xl-3 mb-4">
-		<DashboardCard title="Ordenes completas" data={ordenesCompletas} icon="fas fa-dollar-sign" />
-	</div>
-	<div class="col-md-6 col-xl-3 mb-4">
 		{#if ordenes && ventas}
 			<DashboardCard
 				title="Ventas totales"
@@ -163,19 +160,10 @@
 		{/if}
 	</div>
 	<div class="col-md-6 col-xl-3 mb-4">
-		<div class="card shadow border-start-warning py-2">
-			<div class="card-body">
-				<div class="row align-items-center no-gutters">
-					<div class="col me-2">
-						<div class="text-uppercase text-warning fw-bold text-xs mb-1">
-							<span>Ordenes Completas</span>
-						</div>
-						<div class="text-dark fw-bold h5 mb-0"><span>{ordenesCompletas}</span></div>
-					</div>
-					<div class="col-auto"><i class="fas fa-comments fa-2x text-gray-300" /></div>
-				</div>
-			</div>
-		</div>
+		<DashboardCard title="Ordenes completas" data={ordenesCompletas} icon="fas fa-dollar-sign" />
+	</div>
+	<div class="col-md-6 col-xl-3 mb-4">
+		<DashboardCard title="Ordenes totales" data={ordenes.length} icon="fas fa-dollar-sign" />
 	</div>
 </div>
 <!-- Ganancias Diarias -->
