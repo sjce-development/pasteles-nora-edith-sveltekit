@@ -43,7 +43,7 @@
 								bind:value={password}
 							/>
 						</div>
-						<button class="btn btn-primary" on:click={register}>Submit</button>
+						<button class="btn btn-primary" on:click|preventDefault={register}>Submit</button>
 					</form>
 				</div>
 			</div>
