@@ -8,7 +8,13 @@
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title fs-5" {id}>{title}</h5>
+				<h5 class="modal-title fs-5" {id}>
+					{#if title !== 'tamano'}
+						{title}
+					{:else}
+						Tamaño
+					{/if}
+				</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
 			</div>
 			<div class="modal-body">

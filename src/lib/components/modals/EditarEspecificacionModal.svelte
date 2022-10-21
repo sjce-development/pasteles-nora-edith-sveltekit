@@ -3,9 +3,11 @@
 	import type { Categoria, Especificacion } from '$lib/models';
 	import { supabase } from '$lib/supabase';
 	import BaseModal from './BaseModal.svelte';
+
 	export let title: string;
 	export let id: string;
 	export let categoria: Categoria;
+	export let especificacion: Especificacion;
 
 	let errors: Array<string> = [];
 
@@ -19,15 +21,13 @@
 		let peso: number = 0;
 		let numeroPanes: string;
 
-		if (categoria.nombre === 'tamano') {
+		if (categoria.nombre === 'pan') {
 			peso = Number.parseInt(event.target.peso.value);
 			numeroPanes = event.target.numeroPanes.value;
 		} else {
 			peso = -1;
 			numeroPanes = '';
 		}
-
-		console.log(peso, numeroPanes);
 
 		// Nombre, precio, cantidad e imagen
 		const nombreError = 'El nombre es requerido';
@@ -63,15 +63,16 @@
 			return;
 		}
 
-		const { data, error } = await supabase.from<Especificacion>('especificaciones').insert([
-			{
+		const { data, error } = await supabase
+			.from<Especificacion>('especificaciones')
+			.update({
 				nombre,
 				precio,
 				categoria: categoria.nombre,
 				peso: peso ? peso : undefined,
 				numero_de_panes: numeroPanes ? numeroPanes : undefined
-			}
-		]);
+			})
+			.eq('id', especificacion.id);
 		if (error) {
 			Swal.fire({
 				icon: 'error',
@@ -107,30 +108,48 @@
 		{/each}
 	{/if}
 	<div class="mb-3">
-		<label for="nombre" class="form-label">Cantidad de personas *</label>
+		<label for="nombre" class="form-label"
+			>{categoria.nombre !== 'tamano' ? 'Nombre *' : 'Cantidad de personas'}</label
+		>
 		<input
 			type="text"
 			class="form-control"
 			name="nombre"
 			id="nombre"
-			placeholder="Ej. 10-15 personas"
+			value={especificacion.nombre}
 		/>
 	</div>
 	<div class="mb-3">
 		<label for="precio" class="form-label">Precio *</label>
-		<input type="number" class="form-control" name="precio" id="precio" placeholder="$200.00" />
+		<input
+			type="number"
+			class="form-control"
+			name="precio"
+			id="precio"
+			value={especificacion.precio}
+		/>
 	</div>
 	{#if categoria.nombre === 'tamano'}
 		<div class="mb-3">
 			<label for="peso" class="form-label">Peso *</label>
-			<input type="number" class="form-control" name="peso" id="peso" placeholder="500g" />
-			<small>El peso tiene que estar en gramos</small>
+			<input
+				type="number"
+				class="form-control"
+				name="peso"
+				id="peso"
+				value={especificacion.peso}
+			/>
 		</div>
-		<!-- Número de panes -->
+		<!-- NUmero de panes -->
 		<div class="mb-3">
 			<label for="numeroPanes" class="form-label">Número de panes *</label>
-			<input type="number" class="form-control" name="numeroPanes" id="numeroPanes" value="1" />
-			<small>1 pan y plancha son equivalentes</small>
+			<input
+				type="number"
+				class="form-control"
+				name="numeroPanes"
+				id="numeroPanes"
+				value={especificacion.numero_de_panes}
+			/>
 		</div>
 	{/if}
 </BaseModal>

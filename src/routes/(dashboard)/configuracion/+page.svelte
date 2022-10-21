@@ -1,44 +1,89 @@
 <script lang="ts">
 	import AgregarEspecificacionModal from '$lib/components/modals/AgregarEspecificacionModal.svelte';
+	import EditarEspecificacionModal from '$lib/components/modals/EditarEspecificacionModal.svelte';
 	import ModalButton from '$lib/components/modals/ModalButton.svelte';
 	import type { Categoria, Especificacion, ModalField } from '$lib/models';
+	import { supabase } from '$lib/supabase';
 	import { capitalize, formatCurrency } from '$lib/utils';
+	import { onMount } from 'svelte';
+	import Swal from 'sweetalert2';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
 
 	const categorias: Categoria[] = data.categorias;
 	const especificaciones: Especificacion[] = data.especificaciones;
-
-	const fields: ModalField[] = [
+	let espeficacionesPorCategoria: [
 		{
-			name: 'Categoria',
-			value: 'categoria',
-			type: 'text',
-			required: 'true'
-		},
-		{
-			name: 'Nombre',
-			value: 'nombre',
-			type: 'text',
-			required: 'true'
-		},
-		{
-			name: 'Precio',
-			value: 'precio',
-			type: 'number',
-			required: 'true'
+			categoria: Categoria;
+			especificaciones: Especificacion[];
 		}
 	];
+	// onMount(async () => {
+	// 	categorias.forEach((categoria) => {
+	// 		if (espeficacionesPorCategoria === undefined) {
+	// 			espeficacionesPorCategoria = [
+	// 				{
+	// 					categoria,
+	// 					especificaciones: especificaciones.filter(
+	// 						(especificacion) => especificacion.categoria === categoria.nombre
+	// 					)
+	// 				}
+	// 			];
+	// 			return;
+	// 		} else {
+	// 			espeficacionesPorCategoria.push({
+	// 				categoria,
+	// 				especificaciones: especificaciones.filter(
+	// 					(especificacion) => especificacion.categoria === categoria.nombre
+	// 				)
+	// 			});
+	// 		}
+	// 		espeficacionesPorCategoria = [...espeficacionesPorCategoria];
+	// 	});
+	// });
 
 	function getEspecificacion(categoria: Categoria) {
 		return especificaciones.filter(
 			(especificacion) => especificacion.categoria === categoria.nombre
 		);
 	}
+
+	async function deleteEspecificacion(id: number) {
+		// confirm if user wants to delete the specificacion
+		const { isConfirmed } = await Swal.fire({
+			title: '¿Estás seguro?',
+			text: 'No podrás revertir esta acción',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Sí, eliminar',
+			cancelButtonText: 'Cancelar'
+		});
+
+		if (!isConfirmed) {
+			return;
+		}
+
+		const { error } = await supabase.from('especificaciones').delete().eq('id', id);
+		if (error) {
+			await Swal.fire({
+				icon: 'error',
+				title: 'Error',
+				text: 'No se pudo eliminar la especificación'
+			});
+			return;
+		}
+		await Swal.fire({
+			icon: 'success',
+			title: 'Éxito',
+			text: 'Especificación eliminada'
+		});
+		window.location.reload();
+	}
 </script>
 
 <h3 class="text-dark mb-4">Configuración</h3>
+<!-- Tarjetas -->
 <div class="row">
 	<div class="col-md-6 col-xl-3 mb-4">
 		<div class="card shadow border-left-primary py-2">
@@ -80,13 +125,15 @@
 		</div>
 	</div>
 </div>
+<!-- Tarjetas -->
 
+<!-- Tablas -->
 <div class="row">
 	{#each categorias as categoria}
-		<div class="col">
+		<div class="col-sm-12 col-md-6 col- col-lg-4 mb-3">
 			<div class="card">
 				<div class="card-body">
-					<div class="d-flex justify-content-between align-content-end">
+					<div class="d-flex justify-content-between align-content-end mb-1">
 						<h5 class="card-title">
 							{capitalize(categoria.nombre)}
 						</h5>
@@ -99,13 +146,23 @@
 							<i class="fas fa-plus" />
 						</button>
 					</div>
-					<div class="table-responsive">
+					<div class="table-responsive table-overflow">
 						<table class="table">
-							<thead>
+							<thead class="header bg-body">
 								<tr>
-									<th>Nombre</th>
+									{#if categoria.nombre !== 'tamano'}
+										<th>Nombre</th>
+									{:else}
+										<th>Cantidad de personas</th>
+									{/if}
 									<th>Precio</th>
-									<th class="fit" />
+									{#if categoria.nombre === 'tamano'}
+										<th>Peso</th>
+										<th># de panes</th>
+									{/if}
+									<th class="fit">
+										<i class="fas fa-cog" />
+									</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -113,15 +170,33 @@
 									<tr>
 										<td>{especificacion.nombre}</td>
 										<td>{formatCurrency(especificacion.precio)}</td>
+										{#if categoria.nombre === 'tamano'}
+											<td>{especificacion.peso}</td>
+											<td>{especificacion.numero_de_panes}</td>
+										{/if}
 										<td class="fit">
-											<button type="button" class="btn btn-primary btn-sm">
+											<ModalButton
+												modalId={`editar${especificacion.nombre}`}
+												hasIcon={true}
+												title=""
+											>
 												<i class="fa-solid fa-pen-to-square" />
-											</button>
-											<button type="button" class="btn btn-danger btn-sm">
+											</ModalButton>
+											<button
+												type="button"
+												class="btn btn-danger btn-sm"
+												on:click={() => deleteEspecificacion(especificacion.id)}
+											>
 												<i class="fa-solid fa-trash" />
 											</button>
 										</td>
 									</tr>
+									<EditarEspecificacionModal
+										title={`Editar especificación: ${especificacion.nombre}`}
+										id={`editar${especificacion.nombre}`}
+										{categoria}
+										{especificacion}
+									/>
 								{/each}
 							</tbody>
 						</table>
@@ -136,3 +211,16 @@
 		/>
 	{/each}
 </div>
+
+<style>
+	.table-overflow {
+		height: 40vh;
+		overflow-x: auto;
+		overflow-y: scroll;
+	}
+
+	.header {
+		position: sticky;
+		top: 0;
+	}
+</style>

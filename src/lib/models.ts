@@ -34,17 +34,19 @@ export type CarritoItem = {
 export type Orden = {
   id?: number;
   created_at?: string;
-  nombre: string;
+  telefono: string;
   anticipo: number;
   hora_de_entrega: string;
   estado: string;
-  tamano: number;
   total?: number;
+  nombre: string;
+  tamano: number;
   pan: string;
   relleno: string;
   decorado: string[];
   impreso: boolean;
   pagado: boolean;
+  numero_de_panes: number;
 }
 
 export type Cliente = {
@@ -95,9 +97,12 @@ export type Categoria = {
 }
 
 export type Especificacion = {
+  id: number;
   nombre: string;
   precio: number;
   categoria: string;
+  peso?: number;
+  numero_de_panes?: string;
 }
 
 export type ModalField = {

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Swal from 'sweetalert2';
 	import { supabase } from '$lib/supabase';
-	import BaseModal from './BaseModal.svelte';
+	import BaseModal from '../modals/BaseModal.svelte';
 	import type { ModalField } from '$lib/models';
 
 	export let modalId: string;
@@ -69,7 +69,7 @@
 	}
 </script>
 
-<BaseModal {title} successButtonString="Guardar" id={modalId} cta={insertData}>
+<BaseModal {title} id={modalId} cta={insertData}>
 	{#if errors.length > 0}
 		{#each errors as error}
 			<div class="alert alert-danger d-flex" style="justify-content: space-between;" role="alert">

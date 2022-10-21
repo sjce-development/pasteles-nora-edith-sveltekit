@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { formatDate, formatHoraDeEntrega } from '$lib/utils';
+	import { formatCurrency, formatDate, formatHoraDeEntrega } from '$lib/utils';
 	import type { PageData } from '.svelte-kit/types/src/routes/(dashboard)/$types';
 	import { onMount } from 'svelte';
 
@@ -38,7 +38,7 @@
 					<td>{orden.pan}</td>
 					<td>{orden.relleno}</td>
 					<td>{orden.decorado}</td>
-					<td>{orden.anticipo}</td>
+					<td>{orden.anticipo ?? formatCurrency(0)}</td>
 					<td>{orden.total || 0 - orden.anticipo}</td>
 					<td>{orden.pagado ? 'Sí' : 'No'}</td>
 					<td

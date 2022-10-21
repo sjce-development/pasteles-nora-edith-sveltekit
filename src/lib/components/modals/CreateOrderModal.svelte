@@ -13,9 +13,19 @@
 
 	async function guardarOrden() {
 		const newOrden: Orden = await convertirOrdenSelect(orden);
+
+		if (newOrden.anticipo === newOrden.total) {
+			newOrden.pagado = true;
+		}
+
 		const { data, error } = await supabase.from<Orden>('ordenes').insert([newOrden]);
+
 		if (error) {
-			alert(JSON.stringify(error, null, 2));
+			await Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'Algo salió mal, intente de nuevo'
+			});
 			return;
 		}
 		await Swal.fire('Orden creada', 'La orden se ha creado correctamente', 'success');

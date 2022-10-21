@@ -6,7 +6,6 @@
 	import Especificacion from '$lib/components/alerts/Especificacion.svelte';
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
-	import { locale } from '$lib/constants';
 	import Swal from 'sweetalert2';
 
 	let ordenes: Orden[] = [];
