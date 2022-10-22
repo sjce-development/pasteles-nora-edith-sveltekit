@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { gananciasTotales } from '$lib/stores';
+	import { gananciasMensuales, gananciasTotales } from '$lib/stores';
 	import DashboardCard from '$lib/components/card/DashboardCard.svelte';
-	import ChartCard from '$lib/components/charts/ChartCard.svelte';
+	import GananciasMensuales from '$lib/components/charts/GananciasMensuales.svelte';
 	import ClientesFrecuentesTable from '$lib/components/tables/ClientesFrecuentesTable.svelte';
 	import PastelesVendidosTable from '$lib/components/tables/PastelesVendidosTable.svelte';
 	import { months } from '$lib/constants';
@@ -40,10 +40,12 @@
 			ventasChartData[new Date(venta.created_at).getMonth()] += venta.total;
 		});
 
-		ventasChart = {
-			data: ventasChartData,
-			labels: ventasChartLabels
-		};
+		gananciasMensuales.update((n) => {
+			return {
+				data: ventasChartData,
+				labels: ventasChartLabels
+			};
+		});
 	}
 
 	function setFechas() {
@@ -140,6 +142,7 @@
 		/>
 	</div>
 </div>
+<!-- Tarjetas -->
 <div class="row">
 	<div class="col-md-6 col-xl-3 mb-4">
 		<DashboardCard
@@ -169,15 +172,7 @@
 <!-- Ganancias Diarias -->
 <div class="row">
 	<div class="col-lg-7 col-xl-8">
-		<ChartCard
-			title="Ganancias Diarias"
-			width={16}
-			height={5}
-			type="bar"
-			label="Ganancias"
-			labels={ventasChart.labels}
-			info={ventasChart.data}
-		/>
+		<GananciasMensuales />
 	</div>
 	<div class="col-lg-5 col-xl-4">
 		<PastelesVendidosTable />

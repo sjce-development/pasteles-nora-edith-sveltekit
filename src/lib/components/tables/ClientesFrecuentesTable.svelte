@@ -12,14 +12,17 @@
 		await fetchOrdenes();
 		await fetchClientes();
 
-
-    // Add name of client to parsed data
+		// Add name of client to parsed data
 		clientes.forEach((cliente) => {
 			parsedData.push({
 				nombre: cliente.nombre,
 				total: 0
 			});
 		});
+
+		if (ordenes.length === 0) {
+			return;
+		}
 
 		ordenes.forEach((orden: Orden) => {
 			parsedData.forEach((cliente) => {
@@ -32,19 +35,19 @@
 		// Sort parsed data by cantidad
 		parsedData.sort((a, b) => b.total - a.total);
 
-    // parsedData maximum length is 10
-    parsedData = parsedData.slice(0, 10);
+		// parsedData maximum length is 10
+		parsedData = parsedData.slice(0, 10);
 
 		parsedData = [...parsedData];
 	});
 
 	async function fetchOrdenes() {
-    const { data, error } = await supabase
-      .from<Orden>('ordenes')
-      .select('*')
-      .order('nombre', { ascending: false });
-    if (error) throw Error(error.message);
-    ordenes = data;
+		const { data, error } = await supabase
+			.from<Orden>('ordenes')
+			.select('*')
+			.order('nombre', { ascending: false });
+		if (error) throw Error(error.message);
+		ordenes = data;
 	}
 
 	async function fetchClientes() {
