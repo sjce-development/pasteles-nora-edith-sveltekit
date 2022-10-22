@@ -5,7 +5,13 @@
 </script>
 
 <span>
-	<button type="button" class="btn btn-primary" class:btn-sm={hasIcon === true} data-bs-toggle="modal" data-bs-target="#{modalId}">
+	<button
+		type="button"
+		class="btn btn-primary"
+		class:btn-sm={hasIcon === true}
+		data-bs-toggle="modal"
+		data-bs-target="#{modalId}"
+	>
 		{#if hasIcon}
 			<slot />
 		{:else}

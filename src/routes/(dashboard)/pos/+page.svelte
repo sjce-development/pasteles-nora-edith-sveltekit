@@ -4,7 +4,7 @@
 	import { PUBLIC_BUCKET } from '$lib/constants';
 	import type { CarritoItem, Pastel, Venta } from '$lib/models';
 	import { supabase } from '$lib/supabase';
-	import { formatCurrency } from '$lib/utils';
+	import Utils from '$lib/utils';
 	import { onMount } from 'svelte';
 	import Swal from 'sweetalert2';
 
@@ -214,7 +214,7 @@
 									</td>
 									<td>{item.precio}</td>
 									<td>{item.cantidadCarrito}</td>
-									<td>{formatCurrency(item.cantidadCarrito * item.precio)}</td>
+									<td>{Utils.formatCurrency(item.cantidadCarrito * item.precio)}</td>
 									<td>
 										<button class="btn btn-danger btn-sm" on:click={() => removeFromCart(item)}
 											>X</button
@@ -229,7 +229,7 @@
 						</tbody>
 						<tfoot>
 							<tr>
-								<td><strong>Total: </strong>{formatCurrency(total)}</td>
+								<td><strong>Total: </strong>{Utils.formatCurrency(total)}</td>
 							</tr>
 						</tfoot>
 					</table>

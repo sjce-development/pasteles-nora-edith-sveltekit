@@ -1,7 +1,7 @@
 <script lang="ts">
 	import CreateClientModal from '$lib/components/modals/CreateClientModal.svelte';
 	import type { Cliente, Orden, PastelesConfig } from '$lib/models';
-	import { convertirOrdenSelect } from '$lib/utils';
+	import Utils from '$lib/utils';
 	import { supabase } from '$lib/supabase';
 	import Select from 'svelte-select';
 	import Swal from 'sweetalert2';
@@ -11,7 +11,7 @@
 	export let pasteles: PastelesConfig;
 
 	async function guardarOrden() {
-		const newOrden: Orden = await convertirOrdenSelect(orden);
+		const newOrden: Orden = await Utils.convertirOrdenSelect(orden);
 		const { data, error } = await supabase.from<Orden>('ordenes').insert([newOrden]);
 		if (error) {
 			alert(JSON.stringify(error, null, 2));

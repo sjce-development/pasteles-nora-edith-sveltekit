@@ -8,7 +8,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import Swal from 'sweetalert2';
-	import { formatDate, formatHoraDeEntrega } from '$lib/utils';
+	import Utils from '$lib/utils';
 
 	export let data: PageData;
 
@@ -55,7 +55,7 @@
 						return `
 							<div class="d-flex justify-content-between">
 								<div>${orden.nombre}</div>
-								<div>${formatDate(orden.hora_de_entrega)}</div>
+								<div>${Utils.formatDate(orden.hora_de_entrega)}</div>
 							</div>
 						`;
 					})}

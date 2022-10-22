@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Orden } from '$lib/models';
-	import { formatHoraDeEntrega } from '$lib/utils';
+	import Utils from '$lib/utils';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -9,7 +9,7 @@
 
 	function onDateChange(e: any) {
 		const date = new Date(e.target.value);
-		orden.hora_de_entrega = formatHoraDeEntrega(date);
+		orden.hora_de_entrega = Utils.formatHoraDeEntrega(date);
 	}
 </script>
 

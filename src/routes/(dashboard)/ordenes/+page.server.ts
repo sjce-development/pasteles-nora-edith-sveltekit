@@ -1,6 +1,6 @@
 import type { Cliente, Especificacion, PastelesConfig, SelectItem } from '$lib/models';
 import { supabase } from '$lib/supabase';
-import { formatEspecificacion } from '$lib/utils';
+import Utils from '$lib/utils';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
@@ -22,10 +22,10 @@ async function getClientes(): Promise<Cliente[]> {
 }
 
 async function setPastelesConfig(): Promise<PastelesConfig> {
-    const tamanos: SelectItem[] = formatEspecificacion(await getEspecificacion('tamano'));
-    const pan: SelectItem[] = formatEspecificacion(await getEspecificacion('pan'));
-    const rellenos: SelectItem[] = formatEspecificacion(await getEspecificacion('relleno'));
-    const especificaciones: SelectItem[] = formatEspecificacion(await getEspecificacion('decorado'));
+    const tamanos: SelectItem[] = Utils.formatEspecificacion(await getEspecificacion('tamano'));
+    const pan: SelectItem[] = Utils.formatEspecificacion(await getEspecificacion('pan'));
+    const rellenos: SelectItem[] = Utils.formatEspecificacion(await getEspecificacion('relleno'));
+    const especificaciones: SelectItem[] = Utils.formatEspecificacion(await getEspecificacion('decorado'));
     return { tamanos, pan, rellenos, especificaciones };
 }
 

@@ -3,7 +3,7 @@
 	import EditClientModal from '$lib/components/modals/EditClientModal.svelte';
 	import { supabase } from '$lib/supabase';
 	import { onMount } from 'svelte';
-	import { formatCurrency } from '$lib/utils';
+	import Utils from '$lib/utils';
 
 	let ventas: Venta[] = [];
 	let pasteles: Pastel[] = [];
@@ -80,7 +80,7 @@
 						<tr>
 							<td class="fit">{data.nombre}</td>
 							<td class="fit">{data.cantidad}</td>
-							<td class="fit">{formatCurrency(data.total)}</td>
+							<td class="fit">{Utils.formatCurrency(data.total)}</td>
 						</tr>
 					{/each}
 				</tbody>

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Swal from 'sweetalert2';
-	import type { Pastel } from '$lib/models';
 	import { supabase } from '$lib/supabase';
 	import BaseModal from './BaseModal.svelte';
 

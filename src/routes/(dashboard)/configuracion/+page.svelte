@@ -4,7 +4,7 @@
 	import ModalButton from '$lib/components/modals/ModalButton.svelte';
 	import type { Categoria, Especificacion, ModalField } from '$lib/models';
 	import { supabase } from '$lib/supabase';
-	import { capitalize, formatCurrency } from '$lib/utils';
+	import Utils from '$lib/utils';
 	import { onMount } from 'svelte';
 	import Swal from 'sweetalert2';
 	import type { PageData } from './$types';
@@ -135,7 +135,7 @@
 				<div class="card-body">
 					<div class="d-flex justify-content-between align-content-end mb-1">
 						<h5 class="card-title">
-							{capitalize(categoria.nombre)}
+							{Utils.capitalize(categoria.nombre)}
 						</h5>
 						<button
 							type="button"
@@ -169,7 +169,7 @@
 								{#each getEspecificacion(categoria) as especificacion}
 									<tr>
 										<td>{especificacion.nombre}</td>
-										<td>{formatCurrency(especificacion.precio)}</td>
+										<td>{Utils.formatCurrency(especificacion.precio)}</td>
 										{#if categoria.nombre === 'tamano'}
 											<td>{especificacion.peso}</td>
 											<td>{especificacion.numero_de_panes}</td>

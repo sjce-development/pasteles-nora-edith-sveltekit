@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { gananciasMensuales, gananciasTotales } from '$lib/stores';
+	import { gananciasTotales } from '$lib/stores';
 	import DashboardCard from '$lib/components/card/DashboardCard.svelte';
 	import GananciasMensuales from '$lib/components/charts/GananciasMensuales.svelte';
 	import ClientesFrecuentesTable from '$lib/components/tables/ClientesFrecuentesTable.svelte';
@@ -7,7 +7,7 @@
 	import { months } from '$lib/constants';
 	import { Estados, type Orden, type Venta } from '$lib/models';
 	import { supabase } from '$lib/supabase';
-	import { formatCurrency } from '$lib/utils';
+	import Utils from '$lib/utils';
 	import type { PageData } from '.svelte-kit/types/src/routes/(dashboard)/$types';
 	import { onMount } from 'svelte';
 
@@ -33,21 +33,6 @@
 		setData();
 	});
 
-	function setChartData() {
-		const ventasChartData = new Array(12).fill(0);
-		const ventasChartLabels = months;
-		ventas.forEach((venta) => {
-			ventasChartData[new Date(venta.created_at).getMonth()] += venta.total;
-		});
-
-		gananciasMensuales.update((n) => {
-			return {
-				data: ventasChartData,
-				labels: ventasChartLabels
-			};
-		});
-	}
-
 	function setFechas() {
 		const date = new Date();
 		date.setFullYear(date.getFullYear() - 1);
@@ -72,9 +57,8 @@
 		}
 
 		gananciasTotales.update((n) => {
-			return formatCurrency(ganancias);
+			return Utils.formatCurrency(ganancias);
 		});
-		setChartData();
 	}
 
 	async function fetchData() {
@@ -147,7 +131,7 @@
 	<div class="col-md-6 col-xl-3 mb-4">
 		<DashboardCard
 			title="Ganancias totales"
-			data={formatCurrency(ganancias)}
+			data={Utils.formatCurrency(ganancias)}
 			icon="fas fa-calendar"
 		/>
 	</div>

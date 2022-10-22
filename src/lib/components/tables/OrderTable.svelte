@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Estados, type Orden } from '$lib/models';
 	import { supabase } from '$lib/supabase';
-	import { formatCurrency, formatDate } from '$lib/utils';
+	import Utils from '$lib/utils';
 	import { onMount } from 'svelte';
 	import Especificacion from '$lib/components/alerts/Especificacion.svelte';
 	import { goto } from '$app/navigation';
@@ -116,9 +116,9 @@
 									<Especificacion {especificacion} />
 								{/each}
 							</td>
-							<td class="fit">{formatDate(orden.hora_de_entrega)}</td>
-							<td>{formatCurrency(orden.anticipo)}</td>
-							<td>{formatCurrency((orden.total || 0) - orden.anticipo)}</td>
+							<td class="fit">{Utils.formatDate(orden.hora_de_entrega)}</td>
+							<td>{Utils.formatCurrency(orden.anticipo)}</td>
+							<td>{Utils.formatCurrency((orden.total || 0) - orden.anticipo)}</td>
 
 							<td>
 								{#if orden.estado === Estados.terminado}
