@@ -27,7 +27,7 @@
 </script>
 
 {#if user === null}
-	<slot />
+	<Loader />
 {:else}
 	<div id="page-top">
 		<div id="wrapper">

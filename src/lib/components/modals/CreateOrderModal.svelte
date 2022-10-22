@@ -90,9 +90,9 @@
 				<div class="mb-3">
 					<label for="" class="form-label">Pan</label>
 					<Select
-						name="pan"
+						name="harina"
 						items={pasteles.pan}
-						placeholder="Selecciona un pan"
+						placeholder="Selecciona un tipo de harina"
 						bind:value={orden.pan}
 					/>
 				</div>

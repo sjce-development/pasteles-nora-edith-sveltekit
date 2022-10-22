@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { ChartConfig, ChartDataset, Orden, Venta } from '$lib/models';
+	import type { ChartConfig, Orden, Venta } from '$lib/models';
 	import { locale, months } from '$lib/constants';
 	import { supabase } from '$lib/supabase';
 	import { colors } from '$lib/constants';
-	import Utils from '$lib/utils';
 	import Chart from 'chart.js/auto';
 	import { onMount } from 'svelte';
+	import Utils from '$lib/utils';
 
 	let unique = {};
 
@@ -18,8 +18,6 @@
 	let fechaFinal: Date = new Date();
 
 	let config: ChartConfig;
-
-	let dataset: ChartDataset;
 
 	let labels: string[] = [];
 	let parsedData: Map<string, number> = new Map<string, number>();
@@ -49,90 +47,90 @@
 		setChartConfig();
 	});
 
-	function setLabels() {
-		function diff(from: string, to: string) {
-			var arr = [];
-			var datFrom = new Date('1 ' + from);
-			var datTo = new Date('1 ' + to);
-			var fromYear = datFrom.getFullYear();
-			var toYear = datTo.getFullYear();
-			var diffYear = 12 * (toYear - fromYear) + datTo.getMonth();
+	function diff(from: string, to: string) {
+		let arr = [];
+		let datFrom = new Date('1 ' + from);
+		let datTo = new Date('1 ' + to);
+		let fromYear = datFrom.getFullYear();
+		let toYear = datTo.getFullYear();
+		let diffYear = 12 * (toYear - fromYear) + datTo.getMonth();
 
-			for (var i = datFrom.getMonth(); i <= diffYear; i++) {
-				arr.push(months[i % 12] + ' ' + Math.floor(fromYear + i / 12));
-			}
-
-			return arr;
+		for (let i = datFrom.getMonth(); i <= diffYear; i++) {
+			arr.push(months[i % 12] + ' ' + Math.floor(fromYear + i / 12));
 		}
 
-		// Add 7 hours to fechaInicial
-		// to account for timezone
-		fechaInicial.setHours(fechaInicial.getHours() + 7);
-		fechaFinal.setHours(fechaFinal.getHours() + 7);
+		return arr;
+	}
+
+	function setLabels() {
+		fechaInicial.setHours(0, 0, 0, 0);
+		fechaInicial.setDate(1);
+
+		fechaFinal.setHours(23, 59, 59, 999);
+		fechaFinal.setDate(0);
+		fechaFinal.setMonth(fechaFinal.getMonth() + 1);
 
 		let inicio =
-			Utils.capitalize(fechaInicial.toLocaleString('default', { month: 'long' })) +
+			Utils.capitalize(fechaInicial.toLocaleString(locale, { month: 'long' })) +
 			' ' +
-			fechaInicial.toLocaleString('default', { year: 'numeric' });
+			fechaInicial.toLocaleString(locale, { year: 'numeric' });
 
 		let fin =
-			Utils.capitalize(fechaFinal.toLocaleString('default', { month: 'long' })) +
+			Utils.capitalize(fechaFinal.toLocaleString(locale, { month: 'long' })) +
 			' ' +
-			fechaFinal.toLocaleString('default', { year: 'numeric' });
+			fechaFinal.toLocaleString(locale, { year: 'numeric' });
+
+		// console.log(fechaInicial.toLocaleString(locale, { month: 'long', year: 'numeric', day: 'numeric', hour: 'numeric'}));
+		// console.log(fechaFinal.toLocaleString(locale, { month: 'long', year: 'numeric', day: 'numeric', hour: 'numeric'}));
+
+		console.log(inicio, fin);
 
 		labels = diff(inicio, fin);
+		console.log(labels);
+	}
+
+	function generateLabel(venta: string) {
+		let ventaString: string | string[] = new Date(venta).toLocaleString(locale, {
+			month: 'long',
+			year: 'numeric'
+		});
+		ventaString = ventaString
+			.replace('de', '')
+			.split(' ')
+			.filter((venta) => venta !== '');
+		return Utils.capitalize(ventaString[0]) + ' ' + ventaString[1];
 	}
 
 	function parseData() {
-		function generateLabel(venta: string) {
-			let ventaString: string | string[] = new Date(venta).toLocaleString(locale, {
-				month: 'long',
-				year: 'numeric'
+		parsedData.clear();
+
+		if (labels.length === 1) {
+			parsedData.set(labels[0], 0);
+		} else {
+			labels.forEach((label) => {
+				parsedData.set(label, 0);
 			});
-			ventaString = ventaString
-				.replace('de', '')
-				.split(' ')
-				.filter((venta) => venta !== '');
-			return Utils.capitalize(ventaString[0]) + ' ' + ventaString[1];
 		}
-		// Order ventas by labels order
-		labels.forEach((label: string) => {
-			if (ventas.length === 0) return;
-			ventas.forEach(({ created_at, total }: { created_at: string; total: number }) => {
-				let itemLabel: string = generateLabel(created_at);
-				if (itemLabel !== label) return;
 
-				if (parsedData.get(itemLabel) === undefined) {
-					let ventaValue = total;
-					parsedData.set(itemLabel, ventaValue);
-					return;
-				} else {
-					let ventaValue = parsedData.get(itemLabel);
-					if (ventaValue === undefined) return;
-					parsedData.set(itemLabel, ventaValue + total);
-				}
+		parsedData.forEach((value: number, key: string) => {
+			ordenes.forEach((orden: Orden) => {
+				if (orden.created_at === undefined) return;
+				if (orden.total === undefined) return;
+				if (generateLabel(orden.created_at) !== key) return;
+				parsedData.set(key, value + orden.total);
 			});
-
-			// let venta = ventas.find((venta) => generateLabel(venta.created_at) === label);
-			// if (venta) {
-			// 	parsedData.push(venta.total);
-			// } else {
-			// 	parsedData.push(0);
-			// }
-			// if (ordenes && ordenes.length > 0) {
-			// 	let orden = ordenes.find((orden) => generateLabel(orden.created_at ?? '') === label);
-			// 	if (orden) {
-			// 		parsedData.push(orden.total);
-			// 	} else {
-			// 		parsedData.push(0);
-			// 	}
-			// }
+			ventas.forEach((venta: Venta) => {
+				if (venta.created_at === undefined) return;
+				if (venta.total === undefined) return;
+				if (generateLabel(venta.created_at) !== key) return;
+				parsedData.set(key, value + venta.total);
+			});
 		});
 	}
 
 	async function setChartConfig() {
 		let info = Array.from(parsedData.values());
-		dataset = {
+		let dataset = {
 			label: 'Ganancias Mensuales',
 			data: info,
 			borderColor: colors.primary,
@@ -166,7 +164,7 @@
 			.order('created_at', { ascending: true });
 
 		if (error) {
-			console.log(error);
+			console.error(error);
 		} else {
 			ordenes = data;
 		}
@@ -181,16 +179,24 @@
 			.order('created_at', { ascending: true });
 
 		if (error) {
-			console.log(error);
+			console.error(error);
 			return;
 		}
 		ventas = data;
 	}
 
 	async function handleDateChange() {
-		unique = {};
 		if (fechaInicialElement.valueAsDate === null || fechaFinalElement.valueAsDate === null) {
 			return;
+		}
+
+		if (fechaInicialElement.valueAsDate > fechaFinalElement.valueAsDate) {
+			let temp = fechaInicial;
+			fechaInicial = fechaFinal;
+			fechaFinal = temp;
+
+			fechaInicialElement.valueAsDate = fechaInicial;
+			fechaFinalElement.valueAsDate = fechaFinal;
 		}
 
 		fechaInicial.setFullYear(parseInt(fechaInicialElement.value.split('-')[0]));
@@ -202,11 +208,14 @@
 		setLabels();
 		await fetchOrdenes();
 		await fetchVentas();
+		parseData();
 		setChartConfig();
-		console.log(parsedData);
+
+		// This resets the component
+		unique = {};
 	}
 
-	const handleChart = (element: any, config: any) => {
+	function handleChart(element: any, config: any) {
 		let chart = new Chart(element, config);
 
 		return {
@@ -218,7 +227,7 @@
 				chart.destroy();
 			}
 		};
-	};
+	}
 </script>
 
 <div class="card shadow mb-4">

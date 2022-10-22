@@ -2,7 +2,6 @@
 	import Swal from 'sweetalert2';
 	import type { Cliente } from '$lib/models';
 	import { supabase } from '$lib/supabase';
-	import { sleep } from '$lib/utils';
 
 	let cliente: Cliente = {
 		nombre: '',

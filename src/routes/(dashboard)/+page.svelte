@@ -22,11 +22,6 @@
 	let fechaInicial: HTMLInputElement;
 	let fechaFinal: HTMLInputElement;
 
-	let ventasChart: { data: number[]; labels: string[] } = {
-		data: [],
-		labels: []
-	};
-
 	onMount(async () => {
 		ventas = data.ventas;
 		ordenes = data.ordenes;
@@ -93,130 +88,132 @@
 	}
 </script>
 
-<div class="d-sm-flex justify-content-between align-items-center mb-4">
-	<h3 class="text-dark mb-0">Dashboard</h3>
-	<a class="btn btn-primary btn-sm d-none d-sm-inline-block" role="button" href="#!"
-		><i class="fas fa-download fa-sm text-white-50" />&nbsp;Generate Report</a
-	>
-</div>
-<div class="row">
-	<div class="col mb-3">
-		<label for="fechaInicial" class="form-label">Fecha Inicial</label>
-		<input
-			type="date"
-			class="form-control"
-			name="fechaInicial"
-			id="fechaInicial"
-			aria-describedby="helpId"
-			bind:this={fechaInicial}
-			on:change={fetchData}
-		/>
-	</div>
-	<div class="col mb-3">
-		<label for="fechaFinal" class="form-label">Fecha Final</label>
-		<input
-			type="date"
-			class="form-control"
-			name="fechaFinal"
-			id="fechaFinal"
-			aria-describedby="helpId"
-			placeholder=""
-			bind:this={fechaFinal}
-			on:change={fetchData}
-		/>
-	</div>
-</div>
-<!-- Tarjetas -->
-<div class="row">
-	<div class="col-md-6 col-xl-3 mb-4">
-		<DashboardCard
-			title="Ganancias totales"
-			data={Utils.formatCurrency(ganancias)}
-			icon="fas fa-calendar"
-		/>
-	</div>
-	<div class="col-md-6 col-xl-3 mb-4">
-		{#if ordenes && ventas}
-			<DashboardCard
-				title="Ventas totales"
-				data={ordenes.length + ventas.length}
-				icon="fas fa-dollar-sign"
+<main>
+	<section class="d-sm-flex justify-content-between align-items-center mb-4">
+		<h3 class="text-dark mb-0">Dashboard</h3>
+		<a class="btn btn-primary btn-sm d-none d-sm-inline-block" role="button" href="#!"
+			><i class="fas fa-download fa-sm text-white-50" />&nbsp;Generate Report</a
+		>
+	</section>
+	<section class="row">
+		<div class="col mb-3">
+			<label for="fechaInicial" class="form-label">Fecha Inicial</label>
+			<input
+				type="date"
+				class="form-control"
+				name="fechaInicial"
+				id="fechaInicial"
+				aria-describedby="helpId"
+				bind:this={fechaInicial}
+				on:change={fetchData}
 			/>
-		{:else}
-			<DashboardCard title="Ventas totales" data={0} icon="fas fa-dollar-sign" />
-		{/if}
-	</div>
-	<div class="col-md-6 col-xl-3 mb-4">
-		<DashboardCard title="Ordenes completas" data={ordenesCompletas} icon="fas fa-dollar-sign" />
-	</div>
-	<div class="col-md-6 col-xl-3 mb-4">
-		<DashboardCard title="Ordenes totales" data={ordenes.length} icon="fas fa-dollar-sign" />
-	</div>
-</div>
-<!-- Ganancias Diarias -->
-<div class="row">
-	<div class="col-lg-7 col-xl-8">
-		<GananciasMensuales />
-	</div>
-	<div class="col-lg-5 col-xl-4">
-		<PastelesVendidosTable />
-	</div>
-</div>
-<!-- End: Chart -->
-<div class="row">
-	<div class="col-lg-6 mb-4">
-		<ClientesFrecuentesTable />
-	</div>
-	<div class="col">
-		<div class="row">
-			<div class="col-lg-6 mb-4">
-				<div class="card text-white bg-primary shadow">
-					<div class="card-body">
-						<p class="m-0">Primary</p>
-						<p class="text-white-50 small m-0">#4e73df</p>
+		</div>
+		<div class="col mb-3">
+			<label for="fechaFinal" class="form-label">Fecha Final</label>
+			<input
+				type="date"
+				class="form-control"
+				name="fechaFinal"
+				id="fechaFinal"
+				aria-describedby="helpId"
+				placeholder=""
+				bind:this={fechaFinal}
+				on:change={fetchData}
+			/>
+		</div>
+	</section>
+	<!-- Tarjetas -->
+	<section class="row">
+		<div class="col-md-6 col-xl-3 mb-4">
+			<DashboardCard
+				title="Ganancias totales"
+				data={Utils.formatCurrency(ganancias)}
+				icon="fas fa-calendar"
+			/>
+		</div>
+		<div class="col-md-6 col-xl-3 mb-4">
+			{#if ordenes && ventas}
+				<DashboardCard
+					title="Ventas totales"
+					data={ordenes.length + ventas.length}
+					icon="fas fa-dollar-sign"
+				/>
+			{:else}
+				<DashboardCard title="Ventas totales" data={0} icon="fas fa-dollar-sign" />
+			{/if}
+		</div>
+		<div class="col-md-6 col-xl-3 mb-4">
+			<DashboardCard title="Ordenes completas" data={ordenesCompletas} icon="fas fa-dollar-sign" />
+		</div>
+		<div class="col-md-6 col-xl-3 mb-4">
+			<DashboardCard title="Ordenes totales" data={ordenes.length} icon="fas fa-dollar-sign" />
+		</div>
+	</section>
+	<!-- Ganancias Diarias -->
+	<section class="row">
+		<div class="col-lg-7 col-xl-8">
+			<GananciasMensuales />
+		</div>
+		<div class="col-lg-5 col-xl-4">
+			<PastelesVendidosTable />
+		</div>
+	</section>
+	<!-- End: Chart -->
+	<section class="row">
+		<div class="col-lg-6 mb-4">
+			<ClientesFrecuentesTable />
+		</div>
+		<div class="col">
+			<div class="row">
+				<div class="col-lg-6 mb-4">
+					<div class="card text-white bg-primary shadow">
+						<div class="card-body">
+							<p class="m-0">Primary</p>
+							<p class="text-white-50 small m-0">#4e73df</p>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="col-lg-6 mb-4">
-				<div class="card text-white bg-success shadow">
-					<div class="card-body">
-						<p class="m-0">Success</p>
-						<p class="text-white-50 small m-0">#1cc88a</p>
+				<div class="col-lg-6 mb-4">
+					<div class="card text-white bg-success shadow">
+						<div class="card-body">
+							<p class="m-0">Success</p>
+							<p class="text-white-50 small m-0">#1cc88a</p>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="col-lg-6 mb-4">
-				<div class="card text-white bg-info shadow">
-					<div class="card-body">
-						<p class="m-0">Info</p>
-						<p class="text-white-50 small m-0">#36b9cc</p>
+				<div class="col-lg-6 mb-4">
+					<div class="card text-white bg-info shadow">
+						<div class="card-body">
+							<p class="m-0">Info</p>
+							<p class="text-white-50 small m-0">#36b9cc</p>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="col-lg-6 mb-4">
-				<div class="card text-white bg-warning shadow">
-					<div class="card-body">
-						<p class="m-0">Warning</p>
-						<p class="text-white-50 small m-0">#f6c23e</p>
+				<div class="col-lg-6 mb-4">
+					<div class="card text-white bg-warning shadow">
+						<div class="card-body">
+							<p class="m-0">Warning</p>
+							<p class="text-white-50 small m-0">#f6c23e</p>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="col-lg-6 mb-4">
-				<div class="card text-white bg-danger shadow">
-					<div class="card-body">
-						<p class="m-0">Danger</p>
-						<p class="text-white-50 small m-0">#e74a3b</p>
+				<div class="col-lg-6 mb-4">
+					<div class="card text-white bg-danger shadow">
+						<div class="card-body">
+							<p class="m-0">Danger</p>
+							<p class="text-white-50 small m-0">#e74a3b</p>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="col-lg-6 mb-4">
-				<div class="card text-white bg-secondary shadow">
-					<div class="card-body">
-						<p class="m-0">Secondary</p>
-						<p class="text-white-50 small m-0">#858796</p>
+				<div class="col-lg-6 mb-4">
+					<div class="card text-white bg-secondary shadow">
+						<div class="card-body">
+							<p class="m-0">Secondary</p>
+							<p class="text-white-50 small m-0">#858796</p>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</div>
+	</section>
+</main>
