@@ -1,4 +1,4 @@
-import type { Categoria, Especificacion, Orden, SelectItem } from "$lib/models";
+import type { Categoria, Especificacion, Orden, OrdenSelect, SelectItem } from "$lib/models";
 import { supabase } from "$lib/supabase";
 import { locale } from "$lib/constants";
 
@@ -90,13 +90,16 @@ export default class Utils {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static async convertirOrdenSelect(orden: any): Promise<Orden> {
+  static async convertirOrdenSelect(orden: OrdenSelect): Promise<Orden> {
+    const nombre: string = orden.client.value.split('-')[0];
+    const telefono: string = orden.client.value.split('-')[1].replace(' ', '');
+
     const newOrden: Orden = {
       anticipo: orden.anticipo,
       decorado: orden.decorado.map((especificacion: { value: string }) => {
         return especificacion.value;
       }),
-      nombre: orden.nombre.value,
+      nombre,
       harina: orden.harina.value,
       relleno: orden.relleno.value,
       tamano: orden.tamano.value,
@@ -104,7 +107,7 @@ export default class Utils {
       hora_de_entrega: new Date(orden.hora_de_entrega).toISOString(),
       impreso: false,
       pagado: false,
-      telefono: '',
+      telefono,
       numero_de_panes: 1
     };
     const total = await this.calcularTotalOrden(newOrden);

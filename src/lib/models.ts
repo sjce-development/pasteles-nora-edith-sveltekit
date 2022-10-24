@@ -40,13 +40,23 @@ export type Orden = {
   estado: string;
   total?: number;
   nombre: string;
-  tamano: number;
+  tamano: string;
   harina: string;
   relleno: string;
   decorado: string[];
   impreso: boolean;
   pagado: boolean;
   numero_de_panes: number;
+}
+
+export type OrdenSelect = {
+  anticipo: number;
+  decorado: { value: string; }[];
+  client: { value: string; };
+  harina: { value: string; };
+  relleno: { value: string; };
+  tamano: { value: string; };
+  hora_de_entrega: string;
 }
 
 export type Cliente = {

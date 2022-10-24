@@ -1,6 +1,6 @@
 <script lang="ts">
-	import CreateOrderModal from '$lib/components/modals/CreateOrderModal.svelte';
-	import OrderTable from '$lib/components/tables/OrderTable.svelte';
+	import CreateOrderModal from './CreateOrderModal.svelte';
+	import OrderTable from './OrderTable.svelte';
 	export let data: any;
 </script>
 

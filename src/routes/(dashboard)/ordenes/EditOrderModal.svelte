@@ -6,26 +6,15 @@
 	import Select from 'svelte-select';
 	import Swal from 'sweetalert2';
 
+	export let orden: Orden;
 	export let clientes: Cliente[];
 	export let pasteles: PastelesConfig;
 
-	let orden: any = {};
-
 	async function guardarOrden() {
 		const newOrden: Orden = await Utils.convertirOrdenSelect(orden);
-
-		if (newOrden.anticipo === newOrden.total) {
-			newOrden.pagado = true;
-		}
-
 		const { data, error } = await supabase.from<Orden>('ordenes').insert([newOrden]);
-
 		if (error) {
-			await Swal.fire({
-				icon: 'error',
-				title: 'Oops...',
-				text: 'Algo salió mal, intente de nuevo'
-			});
+			alert(JSON.stringify(error, null, 2));
 			return;
 		}
 		await Swal.fire('Orden creada', 'La orden se ha creado correctamente', 'success');
@@ -53,7 +42,7 @@
 							<label for="cliente" class="form-label">Cliente</label>
 							<div class="col-sm-10">
 								<Select
-									items={clientes.map((cliente) => `${cliente.nombre} - ${cliente.telefono}`)}
+									items={clientes.map((cliente) => cliente.nombre)}
 									placeholder="Selecciona un cliente"
 									bind:value={orden.nombre}
 								/>
@@ -86,13 +75,13 @@
 						bind:value={orden.tamano}
 					/>
 				</div>
-				<!-- Harina -->
+				<!-- harina -->
 				<div class="mb-3">
-					<label for="harina" class="form-label">Harina</label>
+					<label for="" class="form-label">Harina</label>
 					<Select
 						name="harina"
-						items={pasteles.harina}
-						placeholder="Selecciona un tipo de harina"
+						items={pasteles.harinas}
+						placeholder="Selecciona un harina"
 						bind:value={orden.harina}
 					/>
 				</div>

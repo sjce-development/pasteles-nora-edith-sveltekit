@@ -1,20 +1,32 @@
 <script lang="ts">
 	import CreateClientModal from '$lib/components/modals/CreateClientModal.svelte';
-	import type { Cliente, Orden, PastelesConfig } from '$lib/models';
+	import type { Cliente, Orden, OrdenSelect, PastelesConfig } from '$lib/models';
 	import Utils from '$lib/utils';
 	import { supabase } from '$lib/supabase';
 	import Select from 'svelte-select';
 	import Swal from 'sweetalert2';
 
-	export let orden: Orden;
 	export let clientes: Cliente[];
 	export let pasteles: PastelesConfig;
 
+	let orden: OrdenSelect = {} as OrdenSelect;
+
 	async function guardarOrden() {
 		const newOrden: Orden = await Utils.convertirOrdenSelect(orden);
-		const { data, error } = await supabase.from<Orden>('ordenes').insert([newOrden]);
+		console.table(newOrden);
+
+		if (newOrden.anticipo === newOrden.total) {
+			newOrden.pagado = true;
+		}
+
+		const { data, error } = await supabase.from<Orden>('ordenes').insert(newOrden);
+
 		if (error) {
-			alert(JSON.stringify(error, null, 2));
+			await Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'Algo salió mal, intente de nuevo'
+			});
 			return;
 		}
 		await Swal.fire('Orden creada', 'La orden se ha creado correctamente', 'success');
@@ -42,9 +54,9 @@
 							<label for="cliente" class="form-label">Cliente</label>
 							<div class="col-sm-10">
 								<Select
-									items={clientes.map((cliente) => cliente.nombre)}
+									items={clientes.map((cliente) => `${cliente.nombre}-${cliente.telefono}`)}
 									placeholder="Selecciona un cliente"
-									bind:value={orden.nombre}
+									bind:value={orden.client}
 								/>
 							</div>
 							<div class="col-sm-2">
@@ -75,13 +87,13 @@
 						bind:value={orden.tamano}
 					/>
 				</div>
-				<!-- harina -->
+				<!-- Harina -->
 				<div class="mb-3">
-					<label for="" class="form-label">Harina</label>
+					<label for="harina" class="form-label">Harina</label>
 					<Select
 						name="harina"
-						items={pasteles.harina}
-						placeholder="Selecciona un harina"
+						items={pasteles.harinas}
+						placeholder="Selecciona un tipo de harina"
 						bind:value={orden.harina}
 					/>
 				</div>

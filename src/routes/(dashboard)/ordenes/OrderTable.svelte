@@ -149,6 +149,12 @@
 								</button>
 							</td>
 						</tr>
+					{:else}
+						<tr>
+							<td colspan="12" class="text-center">
+								No hay ordenes
+							</td>
+						</tr>
 					{/each}
 				</tbody>
 			</table>
