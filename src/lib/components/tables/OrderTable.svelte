@@ -86,7 +86,7 @@
 						<th class="fit">Impreso</th>
 						<th>Nombre</th>
 						<th>Tamaño</th>
-						<th>Pan</th>
+						<th>Harina</th>
 						<th>Relleno</th>
 						<th>Especificaciones</th>
 						<th>Fecha de entrega</th>
@@ -109,7 +109,7 @@
 							</td>
 							<td>{orden.nombre}</td>
 							<td>{orden.tamano}</td>
-							<td>{orden.pan}</td>
+							<td>{orden.harina}</td>
 							<td>{orden.relleno}</td>
 							<td class="fit">
 								{#each orden.decorado as especificacion}

@@ -23,10 +23,10 @@ async function getClientes(): Promise<Cliente[]> {
 
 async function setPastelesConfig(): Promise<PastelesConfig> {
     const tamanos: SelectItem[] = Utils.formatEspecificacion(await getEspecificacion('tamano'));
-    const pan: SelectItem[] = Utils.formatEspecificacion(await getEspecificacion('pan'));
+    const harinas: SelectItem[] = Utils.formatEspecificacion(await getEspecificacion('harina'));
     const rellenos: SelectItem[] = Utils.formatEspecificacion(await getEspecificacion('relleno'));
     const especificaciones: SelectItem[] = Utils.formatEspecificacion(await getEspecificacion('decorado'));
-    return { tamanos, pan, rellenos, especificaciones };
+    return { tamanos, harinas, rellenos, especificaciones };
 }
 
 async function getEspecificacion(categoria: string): Promise<Especificacion[]> {

@@ -41,7 +41,7 @@ export type Orden = {
   total?: number;
   nombre: string;
   tamano: number;
-  pan: string;
+  harina: string;
   relleno: string;
   decorado: string[];
   impreso: boolean;
@@ -85,7 +85,7 @@ export type SelectItem = {
 
 export type PastelesConfig = {
   tamanos: SelectItem[];
-  pan: SelectItem[];
+  harinas: SelectItem[];
   rellenos: SelectItem[];
   especificaciones: SelectItem[];
 }

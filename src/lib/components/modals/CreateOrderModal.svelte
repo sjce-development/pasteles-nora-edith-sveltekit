@@ -86,14 +86,14 @@
 						bind:value={orden.tamano}
 					/>
 				</div>
-				<!-- Pan -->
+				<!-- Harina -->
 				<div class="mb-3">
-					<label for="" class="form-label">Pan</label>
+					<label for="harina" class="form-label">Harina</label>
 					<Select
 						name="harina"
-						items={pasteles.pan}
+						items={pasteles.harina}
 						placeholder="Selecciona un tipo de harina"
-						bind:value={orden.pan}
+						bind:value={orden.harina}
 					/>
 				</div>
 				<!-- Relleno -->

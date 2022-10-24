@@ -21,7 +21,7 @@
 			<tr>
 				<th>Nombre</th>
 				<th>Tamaño</th>
-				<th>Pan</th>
+				<th>Parina</th>
 				<th>Relleno</th>
 				<th>Decorado</th>
 				<th>Anticipo</th>
@@ -35,7 +35,7 @@
 				<tr class="">
 					<td>{orden.nombre}</td>
 					<td>{orden.tamano}</td>
-					<td>{orden.pan}</td>
+					<td>{orden.harina}</td>
 					<td>{orden.relleno}</td>
 					<td>{orden.decorado}</td>
 					<td>{orden.anticipo ?? Utils.formatCurrency(0)}</td>

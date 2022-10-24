@@ -76,8 +76,8 @@ export default class Utils {
     const tamano: Especificacion | undefined = data.find((especificacion: Especificacion) => especificacion.nombre === orden.tamano.toString());
     if (tamano) total += tamano.precio;
 
-    const pan: Especificacion | undefined = data.find((especificacion: Especificacion) => especificacion.nombre === orden.pan);
-    if (pan) total += pan.precio;
+    const harina: Especificacion | undefined = data.find((especificacion: Especificacion) => especificacion.nombre === orden.harina);
+    if (harina) total += harina.precio;
 
     const relleno: Especificacion | undefined = data.find((especificacion: Especificacion) => especificacion.nombre === orden.relleno);
     if (relleno) total += relleno.precio;
@@ -97,7 +97,7 @@ export default class Utils {
         return especificacion.value;
       }),
       nombre: orden.nombre.value,
-      pan: orden.pan.value,
+      harina: orden.harina.value,
       relleno: orden.relleno.value,
       tamano: orden.tamano.value,
       estado: 'pendiente',
