@@ -12,7 +12,6 @@
 
 	onMount(() => {
 		pastel = data.pastel;
-		console.log(pastel);
 	});
 
 	async function editarPastel(event: any) {

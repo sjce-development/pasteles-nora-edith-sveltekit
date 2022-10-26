@@ -27,8 +27,6 @@
 			numeroPanes = '';
 		}
 
-		console.log(peso, numeroPanes);
-
 		// Nombre, precio, cantidad e imagen
 		const nombreError = 'El nombre es requerido';
 		const precioError = 'El precio es requerido';

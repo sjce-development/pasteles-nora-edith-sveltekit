@@ -62,7 +62,7 @@
 
 <div class="card shadow">
 	<div class="card-header pt-3">
-		<p class="text-primary m-0 fw-bold">Pasteles Vendidos</p>
+		<p class="text-primary m-0 fw-bold">Clientes frecuentes</p>
 	</div>
 	<div class="card-body pt-0">
 		<div

@@ -80,13 +80,7 @@
 			' ' +
 			fechaFinal.toLocaleString(locale, { year: 'numeric' });
 
-		// console.log(fechaInicial.toLocaleString(locale, { month: 'long', year: 'numeric', day: 'numeric', hour: 'numeric'}));
-		// console.log(fechaFinal.toLocaleString(locale, { month: 'long', year: 'numeric', day: 'numeric', hour: 'numeric'}));
-
-		console.log(inicio, fin);
-
 		labels = diff(inicio, fin);
-		console.log(labels);
 	}
 
 	function generateLabel(venta: string) {
@@ -112,18 +106,13 @@
 			});
 		}
 
+		const items = [...ordenes, ...ventas];
 		parsedData.forEach((value: number, key: string) => {
-			ordenes.forEach((orden: Orden) => {
-				if (orden.created_at === undefined) return;
-				if (orden.total === undefined) return;
-				if (generateLabel(orden.created_at) !== key) return;
-				parsedData.set(key, value + orden.total);
-			});
-			ventas.forEach((venta: Venta) => {
-				if (venta.created_at === undefined) return;
-				if (venta.total === undefined) return;
-				if (generateLabel(venta.created_at) !== key) return;
-				parsedData.set(key, value + venta.total);
+			items.forEach((item: Orden | Venta) => {
+				if (item.created_at === undefined || item.total === undefined) return;
+				if (generateLabel(item.created_at) !== key) return;
+				const pdValue = parsedData.get(key) || 0;
+				parsedData.set(key, pdValue + item.total);
 			});
 		});
 	}
@@ -177,7 +166,6 @@
 			.gte('created_at', fechaInicial.toISOString())
 			.lte('created_at', fechaFinal.toISOString())
 			.order('created_at', { ascending: true });
-
 		if (error) {
 			console.error(error);
 			return;
