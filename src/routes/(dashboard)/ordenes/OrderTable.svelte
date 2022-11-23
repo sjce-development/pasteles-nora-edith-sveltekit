@@ -8,10 +8,21 @@
 	import { browser } from '$app/environment';
 	import Swal from 'sweetalert2';
 
+	export let page: number;
+	export let pageSize: number;
+
 	let ordenes: Orden[] = [];
 
+	let pagination = {
+		page,
+		pageSize,
+		total: 0
+	};
+
 	onMount(async () => {
-		const { data, error } = await supabase.from<Orden>('ordenes').select('*');
+		const { from, to } = Utils.getPagination({ page, pageSize });
+		console.log({from, to});
+		const { data, error } = await supabase.from<Orden>('ordenes').select('*').range(from, to);
 		if (error) {
 			return;
 		}
@@ -19,8 +30,10 @@
 	});
 
 	function goToPdf() {
+		const ordenesIds = ordenes.map((orden) => orden.id);
+		const url = `/pdf?ordenes=${ordenesIds.join(',')}`;
 		if (browser) {
-			window.open('/pdf', '_blank')?.focus();
+			window.open(url, '_blank')?.focus();
 		}
 	}
 
@@ -35,6 +48,40 @@
 			});
 		}
 		goto(`/ordenes/${id}`);
+	}
+
+	async function deleteOrden(id: number): Promise<void> {
+		// Ask for confirmation
+		const { isConfirmed } = await Swal.fire({
+			title: '¿Estás seguro?',
+			text: 'No podrás revertir esta acción',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Sí, eliminar',
+			cancelButtonText: 'Cancelar'
+		});
+
+		if (isConfirmed == false) {
+			return;
+		}
+
+		const { error } = await supabase.from<Orden>('ordenes').delete().match({ id });
+		if (error) {
+			Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'No se pudo eliminar la orden'
+			}).then(() => {
+				return;
+			});
+		}
+		Swal.fire({
+			icon: 'success',
+			title: 'Orden eliminada',
+			text: 'La orden se ha eliminado correctamente'
+		}).then(() => {
+			goto('/ordenes');
+		});
 	}
 </script>
 
@@ -52,7 +99,7 @@
 			<div class="col-md-6 text-nowrap">
 				<div id="dataTable_length" class="dataTables_length" aria-controls="dataTable">
 					<label class="form-label"
-						>Show <select class="d-inline-block form-select form-select-sm">
+						>Show <select class="d-inline-block form-select form-select-sm" bind:value={pagination.pageSize}>
 							<option value="10" selected>10</option>
 							<option value="25">25</option>
 							<option value="50">50</option>
@@ -84,7 +131,7 @@
 				<thead>
 					<tr>
 						<th class="fit">Impreso</th>
-						<th>Nombre</th>
+						<th>Telefono</th>
 						<th>Tamaño</th>
 						<th>Harina</th>
 						<th>Relleno</th>
@@ -102,12 +149,12 @@
 						<tr>
 							<td class="fit">
 								{#if orden.impreso}
-									<i style="color: green" class="fa-solid fa-print" />
+									<i style="color: green" class="fa-solid fa-print" data-bs-toggle="tooltip" data-bs-title="Default tooltip"/>
 								{:else}
 									<i style="color: orange" class="fa-solid fa-clock" />
 								{/if}
 							</td>
-							<td>{orden.nombre}</td>
+							<td>{orden.telefono}</td>
 							<td>{orden.tamano}</td>
 							<td>{orden.harina}</td>
 							<td>{orden.relleno}</td>
@@ -144,16 +191,18 @@
 								>
 									<i class="fas fa-edit" />
 								</button>
-								<button class="btn btn-danger btn-sm" type="button">
+								<button
+									class="btn btn-danger btn-sm"
+									type="button"
+									on:click={() => deleteOrden(orden.id || -1)}
+								>
 									<i class="fas fa-trash" />
 								</button>
 							</td>
 						</tr>
 					{:else}
 						<tr>
-							<td colspan="12" class="text-center">
-								No hay ordenes
-							</td>
+							<td colspan="12" class="text-center"> No hay ordenes </td>
 						</tr>
 					{/each}
 				</tbody>

@@ -1,7 +1,10 @@
 <script lang="ts">
+	import Swal from 'sweetalert2';
 	import type { Orden } from '$lib/models';
 	import Utils from '$lib/utils';
 	import type { PageData } from './$types';
+	import { supabase } from '$lib/supabase';
+	import { goto } from '$app/navigation';
 
 	export let data: PageData;
 
@@ -10,6 +13,28 @@
 	function onDateChange(e: any) {
 		const date = new Date(e.target.value);
 		orden.hora_de_entrega = Utils.formatHoraDeEntrega(date);
+	}
+
+	async function handleEditOrden() {
+		// Ask for confirmation
+		const { isConfirmed } = await Swal.fire({
+			title: '¿Estás seguro?',
+			text: 'Podrás revertir esta acción',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Sí, editar',
+			cancelButtonText: 'Cancelar'
+		});
+		if (isConfirmed) {
+			// Update the order
+			const { error } = await supabase.from('ordenes').update(orden).eq('id', orden.id);
+			if (error) {
+				Swal.fire('Error', error.message, 'error');
+			} else {
+				Swal.fire('¡Listo!', 'La orden ha sido editada', 'success');
+			}
+		}
+		goto('/ordenes');
 	}
 </script>
 
@@ -63,9 +88,18 @@
 					name="ordenCliente"
 					id="ordenCliente"
 					aria-describedby="ordenHelpId"
-					bind:value={orden.nombre}
+					disabled
+					bind:value={orden.telefono}
 				/>
 			</div>
+		</div>
+	</div>
+	<!-- Edit orden button -->
+	<div class="col-sm-12 col-md-6 col-lg-4">
+		<div class="mb-3">
+			<button type="button" class="btn btn-primary" on:click={handleEditOrden}>
+				Editar orden
+			</button>
 		</div>
 	</div>
 </form>

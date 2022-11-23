@@ -18,4 +18,4 @@
 	</span>
 </h3>
 <CreateOrderModal pasteles={data.pasteles} clientes={data.clientes} />
-<OrderTable />
+<OrderTable page={data.page} pageSize={data.pageSize} />

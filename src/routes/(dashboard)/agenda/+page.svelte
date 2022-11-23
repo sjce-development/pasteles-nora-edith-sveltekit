@@ -77,9 +77,15 @@
 		// window.location.href = `/ordenes/${id}`;
 		await goto(`/ordenes/${id}`);
 	}
+
+	function handleCrearOrden() {
+		goto('/ordenes');
+	}
 </script>
 
-<h3 class="text-dark mb-4">Agenda</h3>
+<h3 class="text-dark mb-4">
+	Agenda <span class="btn btn-primary" on:click={handleCrearOrden}>Crear orden</span>
+</h3>
 <div class="container">
 	<FullCalendar {options} />
 </div>

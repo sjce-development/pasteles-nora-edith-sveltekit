@@ -1,12 +1,12 @@
 <script lang="ts">
 	import CreateClientModal from '$lib/components/modals/CreateClientModal.svelte';
-	import type { Cliente, Orden, PastelesConfig } from '$lib/models';
+	import type { Cliente, Orden, OrdenSelect, PastelesConfig } from '$lib/models';
 	import Utils from '$lib/utils';
 	import { supabase } from '$lib/supabase';
 	import Select from 'svelte-select';
 	import Swal from 'sweetalert2';
 
-	export let orden: Orden;
+	export let orden: OrdenSelect;
 	export let clientes: Cliente[];
 	export let pasteles: PastelesConfig;
 
@@ -42,9 +42,9 @@
 							<label for="cliente" class="form-label">Cliente</label>
 							<div class="col-sm-10">
 								<Select
-									items={clientes.map((cliente) => cliente.nombre)}
+									items={clientes.map((cliente) => cliente.telefono)}
 									placeholder="Selecciona un cliente"
-									bind:value={orden.nombre}
+									bind:value={orden.client}
 								/>
 							</div>
 							<div class="col-sm-2">
