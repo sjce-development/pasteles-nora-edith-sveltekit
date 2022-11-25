@@ -4,6 +4,11 @@ export enum Estados {
   terminado = 'terminado',
 }
 
+export enum EstadosPago {
+  pendiente = 'pendiente',
+  pagado = 'pagado',
+}
+
 export type Pastel = {
   id: number;
   created_at: string;

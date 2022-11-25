@@ -166,11 +166,19 @@ export default class Utils {
 		return `${year}-${month}-${day} ${hour}:${minute}:00`;
 	}
 
-	static getPagination({ page, pageSize }: { page: number; pageSize: number }): {
+	static getPagination({
+		page,
+		pageSize,
+	}: { page: number; pageSize: number }): {
 		from: number;
 		to: number;
 	} {
-		const limit = pageSize ?? 10;
+		let limit;
+		if (pageSize === 1) {
+			limit = 1;
+			return { from: 0, to: 0 };
+		}
+		limit = pageSize ?? 10;
 		if (page === 1) {
 			return { from: 0, to: limit };
 		}

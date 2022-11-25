@@ -1,52 +1,23 @@
 <script lang="ts">
-	import { Estados, type Orden } from '$lib/models';
+	import { Estados, EstadosPago, type Orden } from '$lib/models';
 	import { supabase } from '$lib/supabase';
 	import Utils from '$lib/utils';
-	import { onMount } from 'svelte';
 	import Especificacion from '$lib/components/alerts/Especificacion.svelte';
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
 	import Swal from 'sweetalert2';
+	import { pageSizes } from '$lib/constants';
 
-	export let page: number;
-	export let pageSize: number;
-
-	let ordenes: Orden[] = [];
-
-	let pagination = {
-		page: 0,
-		pageSize: 0,
-		total: 0,
-		from: 0,
-		to: 0
+	export let ordenes: Orden[] = [];
+	export let pagination: {
+		page: number;
+		pageSize: number;
+		from: number;
+		to: number;
 	};
+	export let count: number;
 
-	onMount(async () => {
-		const { from, to } = Utils.getPagination({ page, pageSize });
-		const { data, error, count } = await supabase
-			.from<Orden>('ordenes')
-			.select('*', { count: 'exact' })
-			.range(from, to);
-		if (error) {
-			return;
-		}
-		ordenes = data;
-
-		if (from === 0) {
-			pagination.from = 1;
-		} else {
-			pagination.from = from;
-		}
-
-		if (count) {
-			pagination.total = count;
-			if (to > count) {
-				pagination.to = count;
-			} else {
-				pagination.to = to;
-			}
-		}
-	});
+	let selectedPageSize: number;
 
 	function goToPdf() {
 		const ordenesIds = ordenes.map((orden) => orden.id);
@@ -102,6 +73,21 @@
 			goto('/ordenes');
 		});
 	}
+
+	async function marcarOrdenComoPagada(id: number): Promise<void> {
+		const { isConfirmed } = await Swal.fire({
+			title: '¿Estás seguro?',
+			text: 'No podrás revertir esta acción',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Sí, marcar como pagado'
+		});
+		if (isConfirmed) {
+			await supabase.from('ordenes').update({ estado: EstadosPago.pagado }).eq('id', id);
+		}
+	}
 </script>
 
 <div class="card shadow">
@@ -120,13 +106,19 @@
 					<label class="form-label"
 						>Mostrar <select
 							class="d-inline-block form-select form-select-sm"
-							bind:value={pagination.pageSize}
+							bind:value={selectedPageSize}
 						>
-							<option value="10" selected>10</option>
-							<option value="25">25</option>
-							<option value="50">50</option>
-							<option value="100">100</option>
+							{#each pageSizes as pageSize}
+								<option value={pageSize} selected={pagination.pageSize === pageSize}
+									>{pageSize}</option
+								>
+							{/each}
 						</select>
+						<a
+							class="btn btn-primary"
+							href="/ordenes?page={pagination.page}&pageSize={selectedPageSize}"
+							role="button">Cambiar paginación</a
+						>
 					</label>
 				</div>
 			</div>
@@ -198,18 +190,21 @@
 
 							<td>
 								{#if orden.estado === Estados.terminado}
-									✅
+									<span>✅</span>
 								{:else if orden.estado === Estados.en_curso}
-									🕛
+									<span>🕛</span>
 								{:else}
-									❌
+									<span>❌</span>
 								{/if}
 							</td>
 							<td>
 								{#if orden.pagado}
 									✅
 								{:else}
-									❌
+									<span
+										class="pointer"
+										on:click={() => {marcarOrdenComoPagada(orden.id || -1)}}>❌</span
+									>
 								{/if}
 							</td>
 							<td class="fit">
@@ -240,23 +235,57 @@
 		<div class="row">
 			<div class="col-md-6 align-self-center">
 				<p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">
-					Mostrando {pagination.from} a {pagination.to} de {pagination.total}
+					Mostrando {pagination.from === 0 ? 1 : pagination.from} a {pagination.to === 0
+						? 1
+						: pagination.to} de {count}
 				</p>
 			</div>
 			<div class="col-md-6">
 				<nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
 					<ul class="pagination">
-						<li class="page-item disabled">
-							<a class="page-link" aria-label="Previous" href="#!"
-								><span aria-hidden="true">«</span></a
+						{#if pagination.page > 1}
+							<li class="page-item">
+								<a
+									class="page-link"
+									aria-label="Previous"
+									href="/ordenes?page={pagination.page - 1}&pageSize={pagination.pageSize}"
+								>
+									<span aria-hidden="true">«</span>
+								</a>
+							</li>
+							<li class="page-item">
+								<a
+									class="page-link"
+									aria-label="Next"
+									href="/ordenes?page={pagination.page - 1}&pageSize={pagination.pageSize}"
+								>
+									<span aria-hidden="true">{pagination.page - 1}</span>
+								</a>
+							</li>
+						{/if}
+						<li class="page-item">
+							<a class="page-link active" href="/ordenes?page=${pagination.page}"
+								>{pagination.page}</a
 							>
 						</li>
-						<li class="page-item active"><a class="page-link" href="#!">1</a></li>
-						<li class="page-item"><a class="page-link" href="#!">2</a></li>
-						<li class="page-item"><a class="page-link" href="#!">3</a></li>
-						<li class="page-item">
-							<a class="page-link" aria-label="Next" href="#!"><span aria-hidden="true">»</span></a>
-						</li>
+						{#if pagination.page * pagination.pageSize < count}
+							<li class="page-item">
+								<a
+									class="page-link"
+									aria-label="Next"
+									href="/ordenes?page={pagination.page + 1}&pageSize={pagination.pageSize}"
+									><span aria-hidden="true">{pagination.page + 1}</span></a
+								>
+							</li>
+							<li class="page-item">
+								<a
+									class="page-link"
+									aria-label="Next"
+									href="/ordenes?page={pagination.page + 1}&pageSize={pagination.pageSize}"
+									><span aria-hidden="true">»</span></a
+								>
+							</li>
+						{/if}
 					</ul>
 				</nav>
 			</div>
