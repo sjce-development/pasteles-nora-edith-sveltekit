@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "cls && vite dev --host",
+		"dev": "cls && vite dev",
 		"build": "vite build",
 		"preview": "cls && vite preview",
 		"test": "playwright test",

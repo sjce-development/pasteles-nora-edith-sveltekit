@@ -1,19 +1,46 @@
 <script lang="ts">
-	import type { Cliente } from '$lib/models';
+	import type { Cliente, Orden } from '$lib/models';
 	import EditClientModal from '$lib/components/modals/EditClientModal.svelte';
 	import { supabase } from '$lib/supabase';
 	import { onMount } from 'svelte';
+	import Swal from 'sweetalert2';
+	import { goto } from '$app/navigation';
 
 	let clientes: Cliente[] = [];
-
+	let ordenes: Orden[] = [];
 	onMount(async () => {
-		const { data, error } = await supabase.from('clientes').select('*');
-		if (error) {
-			alert(JSON.stringify(error, null, 2));
-			return;
-		}
-		clientes = data;
+		clientes = await fetchClientes();
+		ordenes = await fetchOrdenes();
+		clientes.forEach((cliente, i) => {
+			clientes[i].cantidad_ordenes = ordenes.filter((orden) => orden.telefono === cliente.telefono).length;
+		});
 	});
+
+	async function fetchClientes(): Promise<Cliente[]> {
+		const { data, error } = await supabase.from<Cliente>('clientes').select('*');
+		if (error) {
+			await Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'Algo salió mal al cargar los clientes'
+			});
+			return [] as Cliente[];
+		}
+		return data;
+	}
+
+	async function fetchOrdenes(): Promise<Orden[]> {
+		const { data, error } = await supabase.from<Orden>('ordenes').select('*');
+		if (error) {
+			await Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'Algo salió mal al cargar las ordenes'
+			});
+			return [] as Orden[];
+		}
+		return data;
+	}
 </script>
 
 <div class="card shadow">
@@ -60,6 +87,7 @@
 						<th class="fit">Telefono</th>
 						<th class="fit">Correo</th>
 						<th class="fit">Cliente desde</th>
+						<th class="fit">Cantidad de ordenes</th>
 						<th class="fit" />
 					</tr>
 				</thead>
@@ -74,6 +102,7 @@
 									.toLocaleString('es-MX', { dateStyle: 'long' })
 									.split(',')[0]}</td
 							>
+							<td class="fit">{cliente.cantidad_ordenes}</td>
 							<td class="fit">
 								<button
 									class="btn btn-primary btn-sm"
@@ -84,7 +113,8 @@
 									<i class="fa-solid fa-pencil" />
 								</button>
 								<button class="btn btn-primary btn-sm" type="button"
-									><i class="fa-solid fa-cart-shopping" /></button
+									on:click={() => {goto(`clientes/${cliente.id}`)}}>
+									<i class="fa-solid fa-cart-shopping" /></button
 								>
 								<button class="btn btn-danger btn-sm" type="button"
 									><i class="fa-solid fa-trash" /></button

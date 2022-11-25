@@ -12,6 +12,7 @@
 	let orden: OrdenSelect = {} as OrdenSelect;
 
 	async function guardarOrden() {
+		console.log({orden});
 		const newOrden: Orden = await Utils.convertirOrdenSelect(orden);
 		console.table(newOrden);
 

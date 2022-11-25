@@ -1,70 +1,29 @@
 <script lang="ts">
-	import { Estados, type Orden } from '$lib/models';
-	import { supabase } from '$lib/supabase';
+	import { Estados, type Cliente, type Orden } from '$lib/models';
 	import Utils from '$lib/utils';
 	import { onMount } from 'svelte';
+	import type { PageData } from './$types';
 	import Especificacion from '$lib/components/alerts/Especificacion.svelte';
-	import { goto } from '$app/navigation';
-	import { browser } from '$app/environment';
 	import Swal from 'sweetalert2';
+	import { goto } from '$app/navigation';
+	import { supabase } from '$lib/supabase';
+	export let data: PageData;
 
-	export let page: number;
-	export let pageSize: number;
-
-	let ordenes: Orden[] = [];
-
-	let pagination = {
-		page: 0,
-		pageSize: 0,
-		total: 0,
-		from: 0,
-		to: 0
-	};
+	let cliente: Cliente = {} as Cliente;
+	let ordenes: Orden[] = [] as Orden[];
 
 	onMount(async () => {
-		const { from, to } = Utils.getPagination({ page, pageSize });
-		const { data, error, count } = await supabase
-			.from<Orden>('ordenes')
-			.select('*', { count: 'exact' })
-			.range(from, to);
-		if (error) {
-			return;
-		}
-		ordenes = data;
-
-		if (from === 0) {
-			pagination.from = 1;
-		} else {
-			pagination.from = from;
-		}
-
-		if (count) {
-			pagination.total = count;
-			if (to > count) {
-				pagination.to = count;
-			} else {
-				pagination.to = to;
-			}
-		}
+		cliente = data.cliente;
 	});
-
-	function goToPdf() {
-		const ordenesIds = ordenes.map((orden) => orden.id);
-		const url = `/pdf?ordenes=${ordenesIds.join(',')}`;
-		if (browser) {
-			window.open(url, '_blank')?.focus();
-		}
-	}
 
 	async function goToOrden(id: number): Promise<void> {
 		if (id === -1) {
-			Swal.fire({
+			await Swal.fire({
 				icon: 'error',
 				title: 'Oops...',
 				text: 'No se pudo encontrar la orden'
-			}).then(() => {
-				return;
 			});
+			return;
 		}
 		goto(`/ordenes/${id}`);
 	}
@@ -104,45 +63,14 @@
 	}
 </script>
 
+<h1>Cliente: {cliente.nombre}</h1>
+<h3><i class="fa-solid fa-phone" />:{cliente.telefono}</h3>
+
 <div class="card shadow">
 	<div class="card-header py-3">
 		<span class="text-primary m-0 fw-bold">Ordenes</span>
-		<span>
-			<button class="btn btn-primary btn-sm" type="button" on:click={goToPdf}>
-				<i class="fa-solid fa-print" /> Imprimir ordenes
-			</button>
-		</span>
 	</div>
 	<div class="card-body">
-		<div class="row">
-			<div class="col-md-6 text-nowrap">
-				<div id="dataTable_length" class="dataTables_length" aria-controls="dataTable">
-					<label class="form-label"
-						>Mostrar <select
-							class="d-inline-block form-select form-select-sm"
-							bind:value={pagination.pageSize}
-						>
-							<option value="10" selected>10</option>
-							<option value="25">25</option>
-							<option value="50">50</option>
-							<option value="100">100</option>
-						</select>
-					</label>
-				</div>
-			</div>
-			<div class="col-md-6">
-				<div class="text-md-end dataTables_filter" id="dataTable_filter">
-					<label class="form-label"
-						><input
-							type="search"
-							class="form-control form-control-sm"
-							aria-controls="dataTable"
-							placeholder="Search"
-						/></label
-					>
-				</div>
-			</div>
-		</div>
 		<div
 			class="table-responsive table mt-2"
 			id="dataTable"
@@ -236,30 +164,6 @@
 					{/each}
 				</tbody>
 			</table>
-		</div>
-		<div class="row">
-			<div class="col-md-6 align-self-center">
-				<p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">
-					Mostrando {pagination.from} a {pagination.to} de {pagination.total}
-				</p>
-			</div>
-			<div class="col-md-6">
-				<nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
-					<ul class="pagination">
-						<li class="page-item disabled">
-							<a class="page-link" aria-label="Previous" href="#!"
-								><span aria-hidden="true">«</span></a
-							>
-						</li>
-						<li class="page-item active"><a class="page-link" href="#!">1</a></li>
-						<li class="page-item"><a class="page-link" href="#!">2</a></li>
-						<li class="page-item"><a class="page-link" href="#!">3</a></li>
-						<li class="page-item">
-							<a class="page-link" aria-label="Next" href="#!"><span aria-hidden="true">»</span></a>
-						</li>
-					</ul>
-				</nav>
-			</div>
 		</div>
 	</div>
 </div>

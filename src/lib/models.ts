@@ -65,6 +65,7 @@ export type Cliente = {
   nombre: string;
   telefono: string;
   correo: string;
+  cantidad_ordenes?: number;
 }
 
 export type ChartConfig = {

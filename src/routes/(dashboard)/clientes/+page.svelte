@@ -1,6 +1,6 @@
 <script lang="ts">
 	import CreateClientModal from '$lib/components/modals/CreateClientModal.svelte';
-	import ClientTable from '$lib/components/tables/ClientTable.svelte';
+	import ClientTable from './ClientTable.svelte';
 </script>
 
 <h3 class="text-dark mb-4">
