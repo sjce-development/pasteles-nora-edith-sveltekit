@@ -168,8 +168,8 @@
 						<th>Fecha de entrega</th>
 						<th>Anticipo</th>
 						<th>Restante</th>
-						<th class="fit">Pagado</th>
 						<th class="fit">Estado</th>
+						<th class="fit">Pagado</th>
 						<th />
 					</tr>
 				</thead>

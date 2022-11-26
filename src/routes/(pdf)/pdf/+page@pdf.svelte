@@ -14,16 +14,18 @@
 	});
 
 	async function actualizarOrdenAImpresa(ordenes: Orden[]): Promise<Orden[]> {
-	const { data, error } = await supabase
-		.from<Orden>("ordenes")
-		.update({ impreso:  true})
-		.in("id", ordenes.map((orden) => orden.id));
-	if (error) {
-		throw Error("Error al actualizar las ordenes");
+		const { data, error } = await supabase
+			.from<Orden>('ordenes')
+			.update({ impreso: true })
+			.in(
+				'id',
+				ordenes.map((orden) => orden.id)
+			);
+		if (error) {
+			throw Error('Error al actualizar las ordenes');
+		}
+		return data;
 	}
-	return data;
-}
-
 </script>
 
 <!-- Go home arrow -->
