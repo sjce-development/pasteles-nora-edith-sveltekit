@@ -20,10 +20,23 @@
 	let selectedPageSize: number;
 
 	function goToPdf() {
-		const ordenesIds = ordenes.map((orden) => orden.id);
+		const ordenesIds = ordenes.map((orden) => {
+			if (orden.impreso === false) {
+				return orden.id;
+			}
+		});
+		if (ordenesIds[0] === undefined) {
+			Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'No hay ordenes por imprimir',
+			});
+			return;
+		}
 		const url = `/pdf?ordenes=${ordenesIds.join(',')}`;
 		if (browser) {
-			window.open(url, '_blank')?.focus();
+			// window.open(url, '_blank')?.focus();
+			window.open(url, '_blank');
 		}
 	}
 
@@ -86,6 +99,7 @@
 		});
 		if (isConfirmed) {
 			await supabase.from('ordenes').update({ estado: EstadosPago.pagado }).eq('id', id);
+			window.location.reload();
 		}
 	}
 </script>
@@ -164,10 +178,7 @@
 						<tr>
 							<td class="fit">
 								{#if orden.impreso}
-									<i
-										style="color: green"
-										class="fa-solid fa-print"
-									/>
+									<i style="color: green" class="fa-solid fa-print" />
 								{:else}
 									<i style="color: orange" class="fa-solid fa-clock" />
 								{/if}
@@ -201,7 +212,9 @@
 								{:else}
 									<span
 										class="pointer"
-										on:click={() => {marcarOrdenComoPagada(orden.id || -1)}}>❌</span
+										on:click={() => {
+											marcarOrdenComoPagada(orden.id || -1);
+										}}>❌</span
 									>
 								{/if}
 							</td>

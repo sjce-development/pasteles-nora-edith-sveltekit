@@ -105,13 +105,13 @@
 		{/each}
 	{/if}
 	<div class="mb-3">
-		<label for="nombre" class="form-label">Cantidad de personas *</label>
+		<label for="nombre" class="form-label">Nombre</label>
 		<input
 			type="text"
 			class="form-control"
 			name="nombre"
 			id="nombre"
-			placeholder="Ej. 10-15"
+			placeholder="{title}"
 		/>
 	</div>
 	<div class="mb-3">

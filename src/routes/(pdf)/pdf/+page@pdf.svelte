@@ -1,14 +1,29 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import type { Orden } from '$lib/models';
+	import { supabase } from '$lib/supabase';
 	import Utils from '$lib/utils';
 	import type { PageData } from '.svelte-kit/types/src/routes/(dashboard)/$types';
 	import { onMount } from 'svelte';
 
 	export let data: PageData;
 
-	onMount(() => {
+	onMount(async () => {
+		await actualizarOrdenAImpresa(data.ordenes);
 		print();
 	});
+
+	async function actualizarOrdenAImpresa(ordenes: Orden[]): Promise<Orden[]> {
+	const { data, error } = await supabase
+		.from<Orden>("ordenes")
+		.update({ impreso:  true})
+		.in("id", ordenes.map((orden) => orden.id));
+	if (error) {
+		throw Error("Error al actualizar las ordenes");
+	}
+	return data;
+}
+
 </script>
 
 <!-- Go home arrow -->

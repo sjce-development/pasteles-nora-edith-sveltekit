@@ -32,9 +32,5 @@ export const load: PageServerLoad = async ({ url }: { url: URL }) => {
 	}
 	const ordenes: Orden[] = data;
 	// Get estados from database
-	await fetch("/api/ordenes/update", {
-		method: "PUT",
-		body: JSON.stringify(ordenes.map((orden) => orden.id)),
-	});
 	return { ordenes };
 };
