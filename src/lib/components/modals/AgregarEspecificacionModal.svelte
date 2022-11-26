@@ -111,7 +111,7 @@
 			class="form-control"
 			name="nombre"
 			id="nombre"
-			placeholder="Ej. 10-15 personas"
+			placeholder="Ej. 10-15"
 		/>
 	</div>
 	<div class="mb-3">

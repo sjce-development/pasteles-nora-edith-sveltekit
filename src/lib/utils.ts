@@ -86,13 +86,45 @@ export default class Utils {
 			throw error;
 		}
 
-		const tamano: Especificacion | undefined = data.find(
-			(especificacion: Especificacion) =>
-				especificacion.nombre === orden.tamano.toString(),
-		);
-		if (tamano) {
-			total += tamano.precio;
-		}
+		// console.log(data);
+		data.forEach((especificacion) => {
+			const { precio } = especificacion;
+			let { nombre } = especificacion;
+			nombre = nombre.toLowerCase();
+			// console.log({
+			// 	tamano: orden.tamano,
+			// 	harina: orden.harina,
+			// 	relleno: orden.relleno,
+			// 	decorado: orden.decorado,
+			// 	nombre,
+			// 	valid:
+			// 		orden.tamano === nombre ||
+			// 		orden.harina === nombre ||
+			// 		orden.relleno === nombre ||
+			// 		orden.decorado.includes(nombre),
+			// });
+			if (orden.tamano === nombre) {
+				total += precio;
+			}
+			if (orden.harina === nombre) {
+				total += precio;
+			}
+			if (orden.relleno === nombre) {
+				total += precio;
+			}
+			if (orden.decorado.includes(nombre)) {
+				total += precio;
+			}
+		});
+
+		// const tamano: Especificacion | undefined = data.find(
+		// 	(especificacion: Especificacion) =>
+		// 		especificacion.nombre === orden.tamano.toString(),
+		// );
+		// if (tamano) {
+		// 	total += tamano.precio;
+		// }
+		console.log({ especificaciones: data, total });
 
 		const harina: Especificacion | undefined = data.find(
 			(especificacion: Especificacion) =>
@@ -101,6 +133,7 @@ export default class Utils {
 		if (harina) {
 			total += harina.precio;
 		}
+		console.log(harina, total);
 
 		const relleno: Especificacion | undefined = data.find(
 			(especificacion: Especificacion) =>
@@ -109,15 +142,20 @@ export default class Utils {
 		if (relleno) {
 			total += relleno.precio;
 		}
+		console.log(relleno, total);
 
-		orden.decorado.forEach((decorado: string) => {
-			const item: Especificacion | undefined = data.find(
-				(especificacion: Especificacion) => especificacion.nombre === decorado,
-			);
-			if (item) {
-				total += item.precio;
-			}
-		});
+		if (orden.decorado) {
+			orden.decorado.forEach((decorado: string) => {
+				const item: Especificacion | undefined = data.find(
+					(especificacion: Especificacion) =>
+						especificacion.nombre === decorado,
+				);
+				if (item) {
+					total += item.precio;
+				}
+			});
+			console.log(orden.decorado, total);
+		}
 		return total;
 	}
 
@@ -128,19 +166,21 @@ export default class Utils {
 
 		const newOrden: Orden = {
 			anticipo: orden.anticipo,
-			decorado: orden.decorado.map((especificacion: { value: string }) => {
-				return especificacion.value;
-			}),
+			decorado:
+				orden.decorado != null
+					? orden.decorado.map((especificacion: { value: string }) => {
+							return especificacion.value;
+					  })
+					: [],
 			nombre,
 			harina: orden.harina.value,
 			relleno: orden.relleno.value,
-			tamano: orden.tamano.value,
+			tamano: orden.tamano.label,
 			estado: "pendiente",
 			hora_de_entrega: new Date(orden.hora_de_entrega).toISOString(),
 			impreso: false,
 			pagado: false,
 			telefono,
-			numero_de_panes: 1,
 		};
 		const total = await this.calcularTotalOrden(newOrden);
 		newOrden.total = total;
@@ -149,6 +189,7 @@ export default class Utils {
 
 	static formatDate(date: string | Date): string {
 		return new Date(date).toLocaleString(locale, {
+			// timeZone: 'UTC',
 			year: "numeric",
 			month: "short",
 			day: "numeric",
@@ -185,5 +226,14 @@ export default class Utils {
 		const from = page * limit;
 		const to = from + pageSize;
 		return { from, to };
+	}
+
+	static formatPhoneNumber(phoneNumberString: string) {
+		const cleaned = (`${phoneNumberString}`).replace(/\D/g, '');
+		const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+		if (match) {
+			return `(${match[1]}) ${match[2]}-${match[3]}`;
+		}
+		return null;
 	}
 }

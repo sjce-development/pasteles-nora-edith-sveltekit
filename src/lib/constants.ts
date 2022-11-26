@@ -21,4 +21,4 @@ export const months = [
 	"Diciembre",
 ];
 
-export const pageSizes = [1, 10, 20, 50, 100];
+export const pageSizes = [10, 20, 50, 100];

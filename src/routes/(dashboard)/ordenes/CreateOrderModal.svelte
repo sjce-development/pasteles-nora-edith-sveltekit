@@ -12,16 +12,11 @@
 	let orden: OrdenSelect = {} as OrdenSelect;
 
 	async function guardarOrden() {
-		console.log({orden});
 		const newOrden: Orden = await Utils.convertirOrdenSelect(orden);
-		console.table(newOrden);
-
 		if (newOrden.anticipo === newOrden.total) {
 			newOrden.pagado = true;
 		}
-
-		const { data, error } = await supabase.from<Orden>('ordenes').insert(newOrden);
-
+		const { error } = await supabase.from<Orden>('ordenes').insert(newOrden);
 		if (error) {
 			await Swal.fire({
 				icon: 'error',

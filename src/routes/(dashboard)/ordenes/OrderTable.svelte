@@ -150,7 +150,7 @@
 						<th>Tamaño</th>
 						<th>Harina</th>
 						<th>Relleno</th>
-						<th>Especificaciones</th>
+						<th class="fit">Especificaciones</th>
 						<th>Fecha de entrega</th>
 						<th>Anticipo</th>
 						<th>Restante</th>
@@ -167,14 +167,12 @@
 									<i
 										style="color: green"
 										class="fa-solid fa-print"
-										data-bs-toggle="tooltip"
-										data-bs-title="Default tooltip"
 									/>
 								{:else}
 									<i style="color: orange" class="fa-solid fa-clock" />
 								{/if}
 							</td>
-							<td>{orden.telefono}</td>
+							<td>{Utils.formatPhoneNumber(orden.telefono)}</td>
 							<td>{orden.nombre}</td>
 							<td>{orden.tamano}</td>
 							<td>{orden.harina}</td>

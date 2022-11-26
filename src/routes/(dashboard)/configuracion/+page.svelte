@@ -13,35 +13,6 @@
 
 	const categorias: Categoria[] = data.categorias;
 	const especificaciones: Especificacion[] = data.especificaciones;
-	let espeficacionesPorCategoria: [
-		{
-			categoria: Categoria;
-			especificaciones: Especificacion[];
-		}
-	];
-	// onMount(async () => {
-	// 	categorias.forEach((categoria) => {
-	// 		if (espeficacionesPorCategoria === undefined) {
-	// 			espeficacionesPorCategoria = [
-	// 				{
-	// 					categoria,
-	// 					especificaciones: especificaciones.filter(
-	// 						(especificacion) => especificacion.categoria === categoria.nombre
-	// 					)
-	// 				}
-	// 			];
-	// 			return;
-	// 		} else {
-	// 			espeficacionesPorCategoria.push({
-	// 				categoria,
-	// 				especificaciones: especificaciones.filter(
-	// 					(especificacion) => especificacion.categoria === categoria.nombre
-	// 				)
-	// 			});
-	// 		}
-	// 		espeficacionesPorCategoria = [...espeficacionesPorCategoria];
-	// 	});
-	// });
 
 	function getEspecificacion(categoria: Categoria) {
 		return especificaciones.filter(

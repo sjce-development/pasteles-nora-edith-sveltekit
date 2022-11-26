@@ -14,11 +14,9 @@ export const load: PageServerLoad = async ({ url }: { url: URL }) => {
 	const page = parseInt(url.searchParams.get("page") || "1");
 	const pageSize = parseInt(url.searchParams.get("pageSize") || "10");
 	const { from, to } = Utils.getPagination({ page, pageSize });
-    console.log({from, to});
 	const pasteles: PastelesConfig = await setPastelesConfig();
 	const clientes: Cliente[] = await getClientes();
-    const ordenes: Orden[] = await getOrdenes(from, to);
-    console.log({ordenes});
+	const ordenes: Orden[] = await getOrdenes(from, to);
 	const count = await getCount();
 	return {
 		pasteles,
@@ -71,7 +69,7 @@ async function getEspecificacion(categoria: string): Promise<Especificacion[]> {
 	return data;
 }
 
-async function getOrdenes( from: number, to: number): Promise<Orden[]> {
+async function getOrdenes(from: number, to: number): Promise<Orden[]> {
 	const { data, error } = await supabase
 		.from<Orden>("ordenes")
 		.select("*")
@@ -79,15 +77,15 @@ async function getOrdenes( from: number, to: number): Promise<Orden[]> {
 	if (error) {
 		return [] as Orden[];
 	}
-    return data;
+	return data;
 }
 
 async function getCount(): Promise<number> {
-    const { error, count } = await supabase
-        .from<Orden>("ordenes")
-        .select("*", { count: "exact" });
-    if (error) {
-        return 0;
-    }
-    return count || 0;
+	const { error, count } = await supabase
+		.from<Orden>("ordenes")
+		.select("*", { count: "exact" });
+	if (error) {
+		return 0;
+	}
+	return count || 0;
 }

@@ -51,7 +51,6 @@ export type Orden = {
   decorado: string[];
   impreso: boolean;
   pagado: boolean;
-  numero_de_panes: number;
 }
 
 export type OrdenSelect = {
@@ -60,7 +59,7 @@ export type OrdenSelect = {
   client: { value: string; };
   harina: { value: string; };
   relleno: { value: string; };
-  tamano: { value: string; };
+  tamano: { value: string; label: string; };
   hora_de_entrega: string;
 }
 
