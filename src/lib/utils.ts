@@ -188,8 +188,10 @@ export default class Utils {
 	}
 
 	static formatDate(date: string | Date): string {
-		return new Date(date).toLocaleString(locale, {
-			// timeZone: 'UTC',
+		const newDate = new Date(date);
+		// Substract 7 hours from newDate
+		newDate.setHours(newDate.getHours() - 7);
+		return newDate.toLocaleString(locale, {
 			year: "numeric",
 			month: "short",
 			day: "numeric",

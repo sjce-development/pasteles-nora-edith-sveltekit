@@ -78,9 +78,8 @@
 			icon: 'success',
 			title: 'Orden eliminada',
 			text: 'La orden se ha eliminado correctamente'
-		}).then(() => {
-			goto('/ordenes');
-		});
+		})
+		window.location.reload();
 	}
 
 	async function marcarOrdenComoPagada(id: number): Promise<void> {
@@ -189,7 +188,7 @@
 									<Especificacion {especificacion} />
 								{/each}
 							</td>
-							<td class="fit">{Utils.formatDate(orden.hora_de_entrega)}</td>
+							<td class="fit">{Utils.formatHoraDeEntrega(orden.hora_de_entrega)}</td>
 							<td>{Utils.formatCurrency(orden.anticipo)}</td>
 							<td>{Utils.formatCurrency((orden.total || 0) - orden.anticipo)}</td>
 
