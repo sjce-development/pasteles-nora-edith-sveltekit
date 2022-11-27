@@ -111,6 +111,14 @@
 	}
 
 	async function realizarVenta() {
+		if (carrito.length === 0) {
+			Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'No hay pasteles en el carrito'
+			});
+			return;
+		}
 		const result = await Swal.fire({
 			title: '¿Estás seguro?',
 			text: '¿Estás seguro de realizar la venta?',

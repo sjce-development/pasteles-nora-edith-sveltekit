@@ -33,6 +33,7 @@
 		}
 		const url = `/pdf?ordenes=${ordenesIds.join(',')}`;
 		window.open(url, '_blank');
+		window.location.reload();
 	}
 
 	async function goToOrden(id: number): Promise<void> {
@@ -126,7 +127,7 @@
 						<a
 							class="btn btn-primary"
 							href="/ordenes?page={pagination.page}&pageSize={selectedPageSize}"
-							role="button">Cambiar paginación</a
+							role="button">Cambiar cantidad de resultados mostrados</a
 						>
 					</label>
 				</div>
