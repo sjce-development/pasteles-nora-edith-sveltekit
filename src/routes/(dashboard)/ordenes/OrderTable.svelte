@@ -5,7 +5,7 @@
 	import Especificacion from '$lib/components/alerts/Especificacion.svelte';
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
-	import Swal from 'sweetalert2';
+	import Swal, { type SweetAlertResult } from 'sweetalert2';
 	import { pageSizes } from '$lib/constants';
 
 	export let ordenes: Orden[] = [];
@@ -78,7 +78,7 @@
 			icon: 'success',
 			title: 'Orden eliminada',
 			text: 'La orden se ha eliminado correctamente'
-		})
+		});
 		window.location.reload();
 	}
 
@@ -93,7 +93,28 @@
 			confirmButtonText: 'Sí, marcar como pagado'
 		});
 		if (isConfirmed) {
-			await supabase.from('ordenes').update({ estado: EstadosPago.pagado }).eq('id', id);
+			await supabase.from('ordenes').update({ pagado: true }).eq('id', id);
+			window.location.reload();
+		}
+	}
+
+	async function cambiarEstadoDeOrden(id: number): Promise<void> {
+		const { value: estado } = await Swal.fire({
+			title: 'Cambiar estado de orden',
+			input: 'select',
+			inputOptions: {
+				[Estados.pendiente]: 'Pendiente',
+				[Estados.en_curso]: 'En curso',
+				[Estados.terminado]: 'Terminado'
+			},
+			inputPlaceholder: 'Selecciona un estado',
+			showCancelButton: true,
+			inputValidator: (value) => {
+				return value ? null : 'Debes seleccionar un estado';
+			}
+		});
+		if (estado) {
+			await supabase.from('ordenes').update({ estado }).eq('id', id);
 			window.location.reload();
 		}
 	}
@@ -192,7 +213,12 @@
 							<td>{Utils.formatCurrency(orden.anticipo)}</td>
 							<td>{Utils.formatCurrency((orden.total || 0) - orden.anticipo)}</td>
 
-							<td>
+							<td
+								class="pointer"
+								on:click={() => {
+									cambiarEstadoDeOrden(orden.id ?? -1);
+								}}
+							>
 								{#if orden.estado === Estados.terminado}
 									<span>✅</span>
 								{:else if orden.estado === Estados.en_curso}
