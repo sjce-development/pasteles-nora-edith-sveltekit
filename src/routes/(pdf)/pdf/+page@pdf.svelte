@@ -38,7 +38,7 @@
 			<tr>
 				<th>Nombre</th>
 				<th>Tamaño</th>
-				<th>Parina</th>
+				<th>Harina</th>
 				<th>Relleno</th>
 				<th>Decorado</th>
 				<th>Anticipo</th>
