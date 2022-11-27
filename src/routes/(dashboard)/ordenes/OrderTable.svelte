@@ -20,24 +20,19 @@
 	let selectedPageSize: number;
 
 	function goToPdf() {
-		const ordenesIds = ordenes.map((orden) => {
-			if (orden.impreso === false) {
-				return orden.id;
-			}
-		});
-		if (ordenesIds[0] === undefined) {
+		const ordenesIds = ordenes
+			.filter((orden: Orden) => orden.impreso === false)
+			.map((orden: Orden) => orden.id);
+		if (ordenesIds.length === 0) {
 			Swal.fire({
 				icon: 'error',
 				title: 'Oops...',
-				text: 'No hay ordenes por imprimir',
+				text: 'No hay ordenes por imprimir'
 			});
 			return;
 		}
 		const url = `/pdf?ordenes=${ordenesIds.join(',')}`;
-		if (browser) {
-			// window.open(url, '_blank')?.focus();
-			window.open(url, '_blank');
-		}
+		window.open(url, '_blank');
 	}
 
 	async function goToOrden(id: number): Promise<void> {
