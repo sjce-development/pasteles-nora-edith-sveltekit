@@ -238,4 +238,28 @@ export default class Utils {
 		}
 		return null;
 	}
+
+	static getMonthsAgo(months: number) {
+		const date = new Date();
+		date.setMonth(date.getMonth() - months);
+		return date;
+	}
+
+	static getWeeksAgo(weeks: number) {
+		const date = new Date();
+		date.setDate(date.getDate() - weeks);
+		return date;
+	}
+
+	static getDaysAgo(days: number) {
+		const date = new Date();
+		date.setDate(date.getDate() - days);
+		return date;
+	}
+
+	static getStartOfDay(date: Date): Date {
+		const newDate = new Date(date);
+		newDate.setHours(0, 0, 0, 0);
+		return newDate;
+	}
 }

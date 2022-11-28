@@ -22,3 +22,30 @@ export const months = [
 ];
 
 export const pageSizes = [10, 20, 50, 100];
+export const dateRanges = [
+	{ label: "Hoy", value: 0 },
+	{
+		label: "Ayer",
+		value: 1,
+	},
+	{
+		label: "Esta semana",
+		value: 7,
+	},
+	{
+		label: "Este mes",
+		value: 30,
+	},
+	{
+		label: "Últimos 3 meses",
+		value: 30 * 3,
+	},
+	{
+		label: "Últimos 6 meses",
+		value: 30 * 6,
+	},
+	{
+		label: "Último año",
+		value: 365,
+	},
+];

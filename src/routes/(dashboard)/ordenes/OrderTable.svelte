@@ -1,14 +1,15 @@
 <script lang="ts">
-	import { Estados, EstadosPago, type Orden } from '$lib/models';
+	import { Estados, type Orden } from '$lib/models';
 	import { supabase } from '$lib/supabase';
 	import Utils from '$lib/utils';
 	import Especificacion from '$lib/components/alerts/Especificacion.svelte';
 	import { goto } from '$app/navigation';
-	import { browser } from '$app/environment';
-	import Swal, { type SweetAlertResult } from 'sweetalert2';
-	import { pageSizes } from '$lib/constants';
+	import Swal from 'sweetalert2';
+	import { dateRanges, pageSizes } from '$lib/constants';
+	import { onMount } from 'svelte';
 
 	export let ordenes: Orden[] = [];
+
 	export let pagination: {
 		page: number;
 		pageSize: number;
@@ -16,8 +17,11 @@
 		to: number;
 	};
 	export let count: number;
+	export let selectedDateRange: number;
 
-	let selectedPageSize: number;
+	onMount(async () => {
+		console.log(selectedDateRange);
+	});
 
 	function goToPdf() {
 		const ordenesIds = ordenes
@@ -118,6 +122,14 @@
 			window.location.reload();
 		}
 	}
+
+	function changeDateRange() {
+		const url = new URL(window.location.href);
+		url.searchParams.set('page', '1');
+		url.searchParams.set('pageSize', pagination.pageSize.toString());
+		url.searchParams.set('dateRange', selectedDateRange.toString());
+		goto(url);
+	}
 </script>
 
 <div class="card shadow">
@@ -132,25 +144,34 @@
 	<div class="card-body">
 		<div class="row">
 			<div class="col-md-6 text-nowrap">
-				<div id="dataTable_length" class="dataTables_length" aria-controls="dataTable">
-					<label class="form-label"
-						>Mostrar <select
-							class="d-inline-block form-select form-select-sm"
-							bind:value={selectedPageSize}
-						>
-							{#each pageSizes as pageSize}
-								<option value={pageSize} selected={pagination.pageSize === pageSize}
-									>{pageSize}</option
-								>
-							{/each}
-						</select>
-						<a
-							class="btn btn-primary"
-							href="/ordenes?page={pagination.page}&pageSize={selectedPageSize}"
-							role="button">Cambiar cantidad de resultados mostrados</a
-						>
-					</label>
-				</div>
+				<label class="form-label"
+					>Mostrar
+					<select class="d-inline-block form-select form-select-sm" bind:value={pagination.pageSize}>
+						{#each pageSizes as pageSize}
+							<option value={pageSize} selected={pagination.pageSize === pageSize}
+								>{pageSize}</option
+							>
+						{/each}
+					</select>
+					<select
+						class="d-inline-block form-select form-select-sm"
+						bind:value={selectedDateRange}
+						on:change={changeDateRange}
+					>
+						{#each dateRanges as dateRange}
+							{#if selectedDateRange === dateRange.value}
+								<option selected value={dateRange.value}>{dateRange.label}</option>
+							{:else}
+								<option value={dateRange.value}>{dateRange.label}</option>
+							{/if}
+						{/each}
+					</select>
+					<a
+						class="btn btn-primary"
+						href="/ordenes?page={pagination.page}&pageSize={pagination.pageSize}"
+						role="button">Cambiar</a
+					>
+				</label>
 			</div>
 			<div class="col-md-6">
 				<div class="text-md-end dataTables_filter" id="dataTable_filter">
