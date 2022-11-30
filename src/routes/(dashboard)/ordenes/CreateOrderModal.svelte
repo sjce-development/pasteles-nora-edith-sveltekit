@@ -1,6 +1,13 @@
 <script lang="ts">
 	import CreateClientModal from '$lib/components/modals/CreateClientModal.svelte';
-	import type { Cliente, Especificacion, Orden, OrdenSelect, PastelesConfig } from '$lib/models';
+	import {
+		Estados,
+		type Cliente,
+		type Especificacion,
+		type Orden,
+		type OrdenSelect,
+		type PastelesConfig
+	} from '$lib/models';
 	import Utils from '$lib/utils';
 	import { supabase } from '$lib/supabase';
 	import Select from 'svelte-select';
@@ -53,11 +60,35 @@
 	}
 
 	async function guardarOrden() {
-		const newOrden: Orden = await Utils.convertirOrdenSelect(orden);
-		if (newOrden.anticipo === newOrden.total) {
-			newOrden.pagado = true;
+		const nombre: string = orden.client.value.split('-')[0];
+		const telefono: string = orden.client.value.split('-')[1].replace(' ', '');
+
+		const decorado = orden.decorado;
+		let decoradoValues: string[];
+		if (decorado != null) {
+			decoradoValues = decorado.map((especificacion: { value: string; label: string }) => {
+				return especificacion.value;
+			});
+		} else {
+			decoradoValues = [];
 		}
+		const newOrden: Orden = {
+			anticipo: orden.anticipo,
+			decorado: decoradoValues,
+			nombre,
+			harina: orden.harina.value,
+			relleno: orden.relleno.value,
+			tamano: orden.tamano.label,
+			estado: Estados.pendiente,
+			hora_de_entrega: new Date(orden.hora_de_entrega).toISOString(),
+			impreso: false,
+			pagado: orden.anticipo === total,
+			telefono,
+			total
+		};
+
 		const { error } = await supabase.from<Orden>('ordenes').insert(newOrden);
+
 		if (error) {
 			await Swal.fire({
 				icon: 'error',
@@ -66,8 +97,31 @@
 			});
 			return;
 		}
+
 		await Swal.fire('Orden creada', 'La orden se ha creado correctamente', 'success');
+
 		window.location.reload();
+	}
+
+	function encontrarPrecioDeEspecificacion(especificacion: string): number {
+		const especificacionEncontrada = especificaciones.find(
+			(especificacionEncontrada) => especificacionEncontrada.nombre === especificacion
+		);
+		if (especificacionEncontrada) {
+			return especificacionEncontrada.precio;
+		}
+		return 0;
+	}
+
+	function cambiarPrecioDeEspecificacion(especificacion: string, event: Event) {
+		const input = event.target as HTMLInputElement;
+		const precio = parseFloat(input.value);
+		especificaciones.forEach((esp) => {
+			if (esp.nombre === especificacion) {
+				esp.precio = precio;
+			}
+		});
+		handleTotal();
 	}
 </script>
 
@@ -159,6 +213,33 @@
 						on:change={handleTotal}
 					/>
 				</div>
+				{#if orden.decorado?.length}
+					{#each orden.decorado as decorado}
+						<div class="mb-3">
+							<div class="row">
+								<div class="col">
+									<input
+										type="text"
+										class="form-control"
+										disabled
+										value={decorado.label}
+										style="overflow: scroll;"
+									/>
+								</div>
+								<div class="col">
+									<input
+										type="text"
+										class="form-control"
+										value={encontrarPrecioDeEspecificacion(decorado.label)}
+										on:change={(event) => {
+											cambiarPrecioDeEspecificacion(decorado.label, event);
+										}}
+									/>
+								</div>
+							</div>
+						</div>
+					{/each}
+				{/if}
 				<!-- Total -->
 				<div class="mb-3">
 					<label for="total" class="form-label">Total</label>

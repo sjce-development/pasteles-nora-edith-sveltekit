@@ -16,15 +16,15 @@ export const load: PageServerLoad = async ({ url }: { url: URL }) => {
 	const selectedDateRange = parseInt(url.searchParams.get("dateRange") ?? "7");
 
 	const { from, to } = Utils.getPagination({ page, pageSize });
-	const pasteles: PastelesConfig = await setPastelesConfig();
-	const clientes: Cliente[] = await getClientes();
-	const ordenes: Orden[] = await getOrdenes(from, to, selectedDateRange);
-	const count = await getCount();
+	// const pasteles: PastelesConfig = await setPastelesConfig();
+	// const clientes: Cliente[] = await getClientes();
+	// const ordenes: Orden[] = await getOrdenes(from, to, selectedDateRange);
+	// const count = await getCount();
 	return {
-		pasteles,
-		clientes,
-		ordenes,
-		count,
+		pasteles: await setPastelesConfig(),
+		clientes: await getClientes(),
+		ordenes: await getOrdenes(from, to, selectedDateRange),
+		count: await getCount(),
 		pagination: {
 			page,
 			pageSize,
@@ -79,14 +79,12 @@ async function getOrdenes(
 ): Promise<Orden[]> {
 	const top = Utils.getDaysAgo(selectedDateRange).toISOString();
 	const bottom = Utils.getDaysFromNow(selectedDateRange).toISOString();
-	console.log(`${top} | ${bottom}`);
 	const { data, error } = await supabase
 		.from<Orden>("ordenes")
 		.select("*")
 		.range(from, to)
 		.gt("hora_de_entrega", top)
 		.lt("hora_de_entrega", bottom);
-	// console.log(data);
 	if (error) {
 		return [] as Orden[];
 	}
