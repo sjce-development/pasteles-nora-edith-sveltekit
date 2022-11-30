@@ -78,14 +78,14 @@ async function getOrdenes(
 	selectedDateRange: number,
 ): Promise<Orden[]> {
 	const top = Utils.getDaysAgo(selectedDateRange).toISOString();
-	const today = Utils.getStartOfDay(new Date()).toISOString();
-	console.log(`${top} | ${today}`);
+	const bottom = Utils.getDaysFromNow(selectedDateRange).toISOString();
+	console.log(`${top} | ${bottom}`);
 	const { data, error } = await supabase
 		.from<Orden>("ordenes")
 		.select("*")
 		.range(from, to)
 		.gt("hora_de_entrega", top)
-		.lt("hora_de_entrega", today);
+		.lt("hora_de_entrega", bottom);
 	// console.log(data);
 	if (error) {
 		return [] as Orden[];

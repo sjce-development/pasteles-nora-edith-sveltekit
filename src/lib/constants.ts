@@ -22,17 +22,10 @@ export const months = [
 
 export const pageSizes = [10, 20, 50, 100];
 export const dateRanges = [
-	{ label: 'Proximo año', value: -365 },
-	{ label: 'Proximos 6 meses', value: -30 * 6 },
-	{ label: 'Proximos 3 meses', value: -30 * 3 },
-	{ label: 'Proximo mes', value: -30 },
-	{ label: 'Proxima semana', value: -7 },
-	{ label: 'Mañana', value: -1 },
-	{ label: 'Hoy', value: 0 },
-	{ label: 'Ayer', value: 1 },
-	{ label: 'Esta semana', value: 7 },
-	{ label: 'Este mes', value: 30 },
-	{ label: 'Últimos 3 meses', value: 30 * 3 },
-	{ label: 'Últimos 6 meses', value: 30 * 6 },
-	{ label: 'Último año', value: 365 }
+	{ label: 'Un día', value: 1 },
+	{ label: 'Una semana', value: 7 },
+	{ label: 'Un mes', value: 30 },
+	{ label: '3 meses', value: 30 * 3 },
+	{ label: '6 meses', value: 30 * 6 },
+	{ label: 'Un año', value: 365 }
 ];

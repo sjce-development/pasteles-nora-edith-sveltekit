@@ -6,7 +6,7 @@ export const load: PageServerLoad = async () => {
     const { data, error } = await supabase
         .from<Orden>('ordenes')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('hora_de_entrega', { ascending: false });
     if (error) {
         return [] as Orden[];
     };

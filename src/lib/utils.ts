@@ -257,9 +257,21 @@ export default class Utils {
 		return date;
 	}
 
+	static getDaysFromNow(days: number) {
+		const date = new Date();
+		date.setDate(date.getDate() + days);
+		return date;
+	}
+
 	static getStartOfDay(date: Date): Date {
 		const newDate = new Date(date);
 		newDate.setHours(0, 0, 0, 0);
+		return newDate;
+	}
+
+	static getEndOfDay(date: Date): Date {
+		const newDate = new Date(date);
+		newDate.setHours(23, 59, 59, 999);
 		return newDate;
 	}
 }
