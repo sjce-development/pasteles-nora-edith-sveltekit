@@ -8,7 +8,9 @@ const config = {
 	preprocess: preprocess(),
 
 	kit: {
-		adapter: vercel(),
+		adapter: vercel({
+			edge: true
+		}),
 		csrf: {
 			checkOrigin: false,
 		}

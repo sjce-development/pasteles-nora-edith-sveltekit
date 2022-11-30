@@ -29,3 +29,11 @@ export const dateRanges = [
 	{ label: '6 meses', value: 30 * 6 },
 	{ label: 'Un año', value: 365 }
 ];
+
+export const MetodosDePago = {
+	efectivo: 'Efectivo',
+	transferencia: 'Transferencia',
+	cheque: 'Cheque',
+	tarjetaCredito: 'Tarjeta de crédito',
+	tarjetaDebito: 'Tarjeta de débito'
+};

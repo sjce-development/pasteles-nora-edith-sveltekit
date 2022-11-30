@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import AgregarPastelModal from '$lib/components/modals/AgregarPastelModal.svelte';
-	import { PUBLIC_BUCKET } from '$lib/constants';
+	import { MetodosDePago, PUBLIC_BUCKET } from '$lib/constants';
 	import type { CarritoItem, Pastel, Venta } from '$lib/models';
 	import { supabase } from '$lib/supabase';
 	import Utils from '$lib/utils';
@@ -17,6 +17,8 @@
 
 	let filteredPasteles: Pastel[] = [];
 	let searchValue: string = '';
+
+	let metodoDePago: string = MetodosDePago.efectivo;
 
 	onMount(async () => {
 		const { data, error } = await supabase.from<Pastel>('pasteles').select('*');
@@ -38,7 +40,7 @@
 		let pastel = pasteles[index];
 		// si no hay pasteles, preguntar si quiere agregar mas
 		if (pastel.cantidad == 0) {
-			const result = await Swal.fire({
+			const { isConfirmed } = await Swal.fire({
 				title: 'No hay pasteles',
 				text: '¿Desea agregar más pasteles?',
 				icon: 'question',
@@ -46,7 +48,7 @@
 				confirmButtonText: 'Si',
 				cancelButtonText: 'No'
 			});
-			if (result.isConfirmed) {
+			if (isConfirmed) {
 				// agregar mas pasteles
 				const result = await Swal.fire({
 					title: '¿Cuántos pasteles desea agregar?',
@@ -142,7 +144,8 @@
 					{
 						nombre: item.nombre,
 						cantidad: item.cantidadCarrito,
-						total
+						total,
+						tipo_de_pago: metodoDePago
 					}
 				]);
 			});
@@ -152,7 +155,9 @@
 	}
 
 	async function deletePastel(pastelIndex: number) {
-		const result = await Swal.fire({
+		const pastel = pasteles[pastelIndex];
+
+		const { isConfirmed } = await Swal.fire({
 			title: '¿Estás seguro?',
 			text: '¿Estás seguro de eliminar el pastel?',
 			icon: 'warning',
@@ -161,8 +166,10 @@
 			cancelButtonColor: '#d33',
 			confirmButtonText: 'Sí, eliminar'
 		});
-		if (result.isConfirmed) {
-			await supabase.from<Pastel>('pasteles').delete().eq('id', pasteles[pastelIndex].id);
+
+		if (isConfirmed) {
+			await supabase.from<Pastel>('pasteles').delete().eq('id', pastel.id);
+			await supabase.storage.from('pasteles').remove([pastel.nombre]);
 			await Swal.fire('Eliminado', 'El pastel se ha eliminado correctamente', 'success');
 			window.location.reload();
 		}
@@ -207,6 +214,13 @@
 		<div class="card shadow">
 			<div class="card-header py-3">
 				<p class="text-primary m-0 fw-bold">Cuenta</p>
+				<hr />
+				<label for="" class="form-label">Metodo de pago</label>
+				<select class="form-select" bind:value={metodoDePago}>
+					{#each Object.values(MetodosDePago) as value}
+						<option {value}>{value}</option>
+					{/each}
+				</select>
 			</div>
 			<div class="card-body">
 				<div
@@ -308,8 +322,8 @@
 						<tbody>
 							{#if filteredPasteles}
 								{#each filteredPasteles as pastel, i}
-									<tr class="pointer" on:click={() => addToCart(i)}>
-										<td
+									<tr>
+										<td class="pointer" on:click={() => addToCart(i)}
 											><img
 												class="rounded-circle me-2"
 												width="30"
@@ -318,8 +332,8 @@
 												alt={pastel.nombre}
 											/>{pastel.nombre}</td
 										>
-										<td>{pastel.precio}</td>
-										<td>{pastel.cantidad}</td>
+										<td class="pointer" on:click={() => addToCart(i)}>{pastel.precio}</td>
+										<td class="pointer" on:click={() => addToCart(i)}>{pastel.cantidad}</td>
 										<td>
 											<!-- Borrar pastel -->
 											<button class="btn btn-danger btn-sm" on:click={() => deletePastel(i)}

@@ -24,6 +24,7 @@ export type Venta = {
 	nombre: string;
 	cantidad: number;
 	total: number;
+	tipo_de_pago: string;
 };
 
 export type CarritoItem = {
