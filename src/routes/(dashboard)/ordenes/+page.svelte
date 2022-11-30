@@ -18,6 +18,9 @@
 	</span>
 </h3>
 <CreateOrderModal pasteles={data.pasteles} clientes={data.clientes} />
-<OrderTable 
-	ordenes={data.ordenes} pagination={data.pagination} count={data.count}
-	selectedDateRange={data.selectedDateRange}/>
+<OrderTable
+	ordenes={data.ordenes}
+	pagination={data.pagination}
+	count={data.count}
+	selectedDateRange={data.selectedDateRange}
+/>

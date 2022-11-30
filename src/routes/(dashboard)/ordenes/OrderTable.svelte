@@ -146,7 +146,10 @@
 			<div class="col-md-6 text-nowrap">
 				<label class="form-label"
 					>Mostrar
-					<select class="d-inline-block form-select form-select-sm" bind:value={pagination.pageSize}>
+					<select
+						class="d-inline-block form-select form-select-sm"
+						bind:value={pagination.pageSize}
+					>
 						{#each pageSizes as pageSize}
 							<option value={pageSize} selected={pagination.pageSize === pageSize}
 								>{pageSize}</option
