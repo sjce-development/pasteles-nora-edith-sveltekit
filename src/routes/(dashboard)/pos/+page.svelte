@@ -15,19 +15,23 @@
 	let title: string = 'Agregar pastel';
 	let modalId: string = 'agregar-pastel-modal';
 
+	let filteredPasteles: Pastel[] = [];
+	let searchValue: string = '';
+
 	onMount(async () => {
 		const { data, error } = await supabase.from<Pastel>('pasteles').select('*');
 		if (error) {
-			// Invoke swal for error
-			Swal.fire({
+			await Swal.fire({
 				title: 'Error',
 				text: JSON.stringify(error, null, 2),
 				icon: 'error',
 				confirmButtonText: 'Ok'
 			});
-			return;
 		}
-		pasteles = data;
+		if (data !== null) {
+			pasteles = data;
+		}
+		filteredPasteles = pasteles;
 	});
 
 	async function addToCart(index: number) {
@@ -167,6 +171,22 @@
 	function getImage(pastel: Pastel) {
 		return `${PUBLIC_BUCKET}pasteles/${pastel.nombre}`;
 	}
+
+	function handleSearch() {
+		if (searchValue === '') {
+			filteredPasteles = [...pasteles];
+			return;
+		}
+		filteredPasteles = pasteles.filter((pastel: Pastel) =>
+			pastel.nombre.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
+		);
+		filteredPasteles = [...filteredPasteles];
+	}
+
+	function resetSearch() {
+		searchValue = '';
+		filteredPasteles = [...pasteles];
+	}
 </script>
 
 <h3 class="text-dark mb-4">
@@ -256,29 +276,24 @@
 			<div class="card-body">
 				<div class="row">
 					<div class="col-md-6 text-nowrap">
-						<div id="dataTable_length" class="dataTables_length" aria-controls="dataTable">
-							<label class="form-label"
-								>Show&nbsp;<select class="d-inline-block form-select form-select-sm">
-									<option value="10" selected>10</option>
-									<option value="25">25</option>
-									<option value="50">50</option>
-									<option value="100">100</option>
-								</select>&nbsp;</label
-							>
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="text-md-end dataTables_filter" id="dataTable_filter">
+						<div class="text-md">
 							<label class="form-label"
 								><input
 									type="search"
 									class="form-control form-control-sm"
-									aria-controls="dataTable"
-									placeholder="Search"
+									placeholder="Busqueda"
+									bind:value={searchValue}
+									on:change={handleSearch}
 								/></label
 							>
+							<button type="button" class="btn btn-primary" on:click={resetSearch}
+								>Reiniciar filtro</button
+							>
 						</div>
+						<!-- <div id="dataTable_length" class="dataTables_length" aria-controls="dataTable">
+						</div> -->
 					</div>
+					<div class="col-md-6" />
 				</div>
 				<div class="table-responsive table mt-2" role="grid">
 					<table class="table my-0 table-hover">
@@ -291,8 +306,8 @@
 							</tr>
 						</thead>
 						<tbody>
-							{#if pasteles}
-								{#each pasteles as pastel, i}
+							{#if filteredPasteles}
+								{#each filteredPasteles as pastel, i}
 									<tr class="pointer" on:click={() => addToCart(i)}>
 										<td
 											><img

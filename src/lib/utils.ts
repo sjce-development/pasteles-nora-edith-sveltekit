@@ -77,17 +77,20 @@ export default class Utils {
 		});
 	}
 
-	static async calcularTotalOrden(orden: Orden): Promise<number> {
+	static async calcularTotalOrden(orden: Orden, especificaciones?: Especificacion[]): Promise<number> {
 		let total = 0;
-		const { data, error } = await supabase
-			.from<Especificacion>("especificaciones")
-			.select("*");
-		if (error) {
-			throw error;
+		if (especificaciones === undefined || especificaciones === null) {
+			const { data, error } = await supabase
+				.from<Especificacion>("especificaciones")
+				.select("*");
+			if (error) {
+				throw error;
+			}
+			especificaciones = data;
 		}
 
 		// console.log(data);
-		data.forEach((especificacion) => {
+		especificaciones.forEach((especificacion) => {
 			const { precio } = especificacion;
 			let { nombre } = especificacion;
 			nombre = nombre.toLowerCase();
@@ -106,47 +109,36 @@ export default class Utils {
 			if (orden.tamano === nombre) {
 				total += precio;
 			}
-			if (orden.harina === nombre) {
+			else if (orden.harina === nombre) {
 				total += precio;
 			}
-			if (orden.relleno === nombre) {
+			else if (orden.relleno === nombre) {
 				total += precio;
 			}
-			if (orden.decorado.includes(nombre)) {
+			else if (orden.decorado.includes(nombre)) {
 				total += precio;
 			}
 		});
 
-		// const tamano: Especificacion | undefined = data.find(
-		// 	(especificacion: Especificacion) =>
-		// 		especificacion.nombre === orden.tamano.toString(),
-		// );
-		// if (tamano) {
-		// 	total += tamano.precio;
-		// }
-		console.log({ especificaciones: data, total });
-
-		const harina: Especificacion | undefined = data.find(
+		const harina: Especificacion | undefined = especificaciones.find(
 			(especificacion: Especificacion) =>
 				especificacion.nombre === orden.harina,
 		);
 		if (harina) {
 			total += harina.precio;
 		}
-		console.log(harina, total);
 
-		const relleno: Especificacion | undefined = data.find(
+		const relleno: Especificacion | undefined = especificaciones.find(
 			(especificacion: Especificacion) =>
 				especificacion.nombre === orden.relleno,
 		);
 		if (relleno) {
 			total += relleno.precio;
 		}
-		console.log(relleno, total);
 
 		if (orden.decorado) {
 			orden.decorado.forEach((decorado: string) => {
-				const item: Especificacion | undefined = data.find(
+				const item: Especificacion | undefined = especificaciones?.find(
 					(especificacion: Especificacion) =>
 						especificacion.nombre === decorado,
 				);

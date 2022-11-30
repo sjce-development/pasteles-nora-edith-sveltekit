@@ -1,15 +1,56 @@
 <script lang="ts">
 	import CreateClientModal from '$lib/components/modals/CreateClientModal.svelte';
-	import type { Cliente, Orden, OrdenSelect, PastelesConfig } from '$lib/models';
+	import type { Cliente, Especificacion, Orden, OrdenSelect, PastelesConfig } from '$lib/models';
 	import Utils from '$lib/utils';
 	import { supabase } from '$lib/supabase';
 	import Select from 'svelte-select';
 	import Swal from 'sweetalert2';
+	import { onMount } from 'svelte';
 
 	export let clientes: Cliente[];
 	export let pasteles: PastelesConfig;
 
+	let especificaciones: Especificacion[];
 	let orden: OrdenSelect = {} as OrdenSelect;
+
+	let total: number = 0;
+
+	onMount(async () => {
+		const { data: especificacionesData } = await supabase
+			.from<Especificacion>('especificaciones')
+			.select('*');
+		if (especificacionesData) {
+			especificaciones = especificacionesData;
+		}
+	});
+
+	async function handleTotal() {
+		console.log(orden);
+		total = 0;
+		especificaciones.forEach((especificacion) => {
+			const { precio } = especificacion;
+			let { nombre } = especificacion;
+
+			nombre = nombre.toLowerCase();
+
+			if (orden.decorado?.length > 0) {
+				orden.decorado.forEach((decorado) => {
+					if (decorado.value === nombre) {
+						total += precio;
+					}
+				});
+			}
+			if (orden.harina?.value === nombre) {
+				total += precio;
+			}
+			if (orden.relleno?.value === nombre) {
+				total += precio;
+			}
+			if (orden.tamano?.label === nombre) {
+				total += precio;
+			}
+		});
+	}
 
 	async function guardarOrden() {
 		const newOrden: Orden = await Utils.convertirOrdenSelect(orden);
@@ -81,6 +122,7 @@
 						placeholder="Selecciona un tamaño"
 						justValue={true}
 						bind:value={orden.tamano}
+						on:change={handleTotal}
 					/>
 				</div>
 				<!-- Harina -->
@@ -91,6 +133,7 @@
 						items={pasteles.harinas}
 						placeholder="Selecciona un tipo de harina"
 						bind:value={orden.harina}
+						on:change={handleTotal}
 					/>
 				</div>
 				<!-- Relleno -->
@@ -101,6 +144,7 @@
 						items={pasteles.rellenos}
 						placeholder="Selecciona un relleno"
 						bind:value={orden.relleno}
+						on:change={handleTotal}
 					/>
 				</div>
 				<!-- Especificaciones -->
@@ -112,6 +156,18 @@
 						placeholder="Selecciona la/s especificaciónes"
 						multiple={true}
 						bind:value={orden.decorado}
+						on:change={handleTotal}
+					/>
+				</div>
+				<!-- Total -->
+				<div class="mb-3">
+					<label for="total" class="form-label">Total</label>
+					<input
+						type="number"
+						class="form-control"
+						id="total"
+						placeholder="Total"
+						bind:value={total}
 					/>
 				</div>
 				<!-- Anticipo -->
