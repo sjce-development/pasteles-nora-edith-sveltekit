@@ -160,8 +160,8 @@
 							><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400" />&nbsp;Profile</a
 						><a class="dropdown-item" href="#!"
 							><i class="fas fa-cogs fa-sm fa-fw me-2 text-gray-400" />&nbsp;Settings</a
-						><a class="dropdown-item" href="#!"
-							><i class="fas fa-list fa-sm fa-fw me-2 text-gray-400" />&nbsp;Activity log</a
+						><a class="dropdown-item" href="/configuracion/usuarios"
+							><i class="fas fa-list fa-sm fa-fw me-2 text-gray-400" />&nbsp;Manejar Usuarios</a
 						>
 						<div class="dropdown-divider" />
 						<span class="dropdown-item pointer" on:click={logout}

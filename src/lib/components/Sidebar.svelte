@@ -1,5 +1,43 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { Roles } from '$lib/constants';
+	import type { UserProfile } from '$lib/models';
 	import { routes } from '$lib/routes';
+	import { supabase } from '$lib/supabase';
+	import type { User } from '@supabase/supabase-js';
+	import { onMount } from 'svelte';
+
+	let user: User | null;
+	let profile: UserProfile | null;
+	onMount(async () => {
+		user = supabase.auth.user();
+		if (user === null) {
+			goto('/login');
+			return;
+		}
+		profile = await getProfile();
+	})
+
+	async function getProfile(): Promise<UserProfile> {
+		if (user === null) {
+			goto('/login');
+			return {} as UserProfile;
+		}
+		const { data, error } = await supabase
+			.from<UserProfile>('profile')
+			.select('*')
+			.eq('user_id', user.id)
+			.single();
+		if (error) {
+			return {} as UserProfile;
+		}
+		if (data) {
+			return data;
+		} else {
+			goto('/login');
+			return {} as UserProfile;
+		}
+	}
 </script>
 
 <nav
@@ -30,12 +68,16 @@
 		<hr class="sidebar-divider my-0" />
 		<ul class="navbar-nav text-light" id="accordionSidebar">
 			{#each routes as route}
-				<li class="nav-item">
-					<a class="nav-link" href={route.path}>
-						<i class={route.icon} />
-						<span>{route.name}</span>
-					</a>
-				</li>
+				{#if profile?.role === Roles.recepcionista && route.name === 'Dashboard'}
+					 <!-- content here -->
+				{:else}
+					<li class="nav-item">
+						<a class="nav-link" href={route.path}>
+							<i class={route.icon} />
+							<span>{route.name}</span>
+						</a>
+					</li>
+				{/if}
 			{/each}
 		</ul>
 		<div class="text-center d-none d-md-inline">

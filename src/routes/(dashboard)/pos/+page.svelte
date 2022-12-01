@@ -191,7 +191,7 @@
 	}
 
 	async function deletePastel(pastelIndex: number) {
-		const pastel = pasteles[pastelIndex];
+		const pastel = filteredPasteles[pastelIndex];
 
 		const { isConfirmed } = await Swal.fire({
 			title: '¿Estás seguro?',
@@ -224,7 +224,6 @@
 			pastel.nombre.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
 		);
 		filteredPasteles = [...filteredPasteles];
-		console.log(filteredPasteles);
 	}
 
 	function resetSearch() {
