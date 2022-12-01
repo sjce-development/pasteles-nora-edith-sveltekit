@@ -63,9 +63,9 @@
 		}
 	}
 
-	async function checkIfUserExists(): Promise<boolean> {
+	// async function checkIfUserExists(): Promise<boolean> {
 		
-	}
+	// }
 
 	async function createUserProfile() {
 		const user = supabase.auth.user();
