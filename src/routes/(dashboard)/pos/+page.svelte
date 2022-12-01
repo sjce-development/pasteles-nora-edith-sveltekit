@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import AgregarPastelModal from '$lib/components/modals/AgregarPastelModal.svelte';
 	import { MetodosDePago, PUBLIC_BUCKET } from '$lib/constants';
-	import type { CarritoItem, Pastel, Venta } from '$lib/models';
+	import type { CarritoItem, Pastel, Ticket, Venta } from '$lib/models';
 	import { supabase } from '$lib/supabase';
 	import Utils from '$lib/utils';
 	import { onMount } from 'svelte';
@@ -98,7 +98,7 @@
 			carrito = [...carrito, pasteles[index]];
 			carrito[carrito.length - 1].cantidadCarrito = 1;
 		}
-
+		console.log(carrito);
 		getCartTotal();
 	}
 
@@ -149,9 +149,44 @@
 					}
 				]);
 			});
-			await Swal.fire('Venta realizada', 'La venta se ha realizado correctamente', 'success');
-			window.location.reload();
+			Swal.fire('Venta realizada', 'La venta se ha realizado correctamente', 'success').then(() => {
+				carrito = [];
+				total = 0;
+				metodoDePago = 'Efectivo';
+			});
+			// Desea imprimir ticket
+			const { isConfirmed } = await Swal.fire({
+				title: '¿Desea imprimir el ticket?',
+				icon: 'question',
+				showCancelButton: true,
+				confirmButtonText: 'Si',
+				cancelButtonText: 'No'
+			});
+			if (isConfirmed) {
+				crearTicket();
+			} else {
+				window.location.reload();
+			}
 		}
+	}
+
+	async function crearTicket() {
+		let ticket = {} as Ticket;
+		ticket.persona_turno = 'Juan';
+		ticket.productos = carrito.map((item) => {
+			return {
+				id: item.id,
+				nombre: item.nombre,
+				cantidad: item.cantidadCarrito,
+				precio: item.precio
+			};
+		});
+		const { data, error } = await supabase.from('tickets').insert([ticket]);
+		if (error) {
+			console.log(error);
+			return;
+		}
+		goto(`ticket?ticket=${JSON.stringify(ticket)}`)
 	}
 
 	async function deletePastel(pastelIndex: number) {

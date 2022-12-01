@@ -127,3 +127,17 @@ export type ModalField = {
 	type: string;
 	required: string;
 };
+
+export type TicketProducto = {
+	id?: string;
+	nombre: string;
+	cantidad: number;
+	precio: number;
+};
+
+export type Ticket = {
+	id?: string;
+	created_at?: string;
+	persona_turno: string;
+	productos: TicketProducto[];
+}

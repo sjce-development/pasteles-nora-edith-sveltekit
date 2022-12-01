@@ -278,6 +278,21 @@
 								>
 									<i class="fas fa-trash" />
 								</button>
+								<button
+									class="btn btn-primary btn-sm"
+									type="button"
+									on:click={async () => {
+										// Swal quieres imprimir el ticket
+										await Swal.fire({
+											title: '¿Quieres imprimir el ticket?',
+											showDenyButton: true,
+											confirmButtonText: 'Imprimir',
+											denyButtonText: 'Cancelar'
+										});
+									}}
+								>
+									<i class="fa-solid fa-receipt" />
+								</button>
 							</td>
 						</tr>
 					{:else}
