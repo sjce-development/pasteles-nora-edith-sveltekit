@@ -141,3 +141,12 @@ export type Ticket = {
 	persona_turno: string;
 	productos: TicketProducto[];
 }
+
+export type UserProfile = {
+	id?: number;
+	created_at?: string;
+	user_id: string;
+	role: string;
+	nombre: string;
+	telefono?: string;
+}

@@ -1,15 +1,26 @@
 import type { Ticket } from '$lib/models';
+import { supabase } from '$lib/supabase';
 import type { PageServerLoad } from '.svelte-kit/types/src/routes/(pdf)/ticket/$types';
 
 export const load: PageServerLoad = async ({ url }: { url: URL }) => {
-	const ticketString: string = url.searchParams.get('ticket') ?? '';
-	const parsedTicket = JSON.parse(ticketString);
-	if (parsedTicket?.length) {
+	const ticketId: string = url.searchParams.get('ticketId') ?? '';
+	if (ticketId === '') {
 		return {
-			ticket: parsedTicket
+			status: 400,
+			error: new Error('Missing ticketId')
 		};
 	}
-	const ticket: Ticket = JSON.parse(ticketString);
+	const { data: ticket, error } = await supabase.from<Ticket>('tickets').select('*').eq('id', ticketId).single();
+	
+	if (error) {
+		return {
+			status: 500,
+			error
+		};
+	}
+
+	console.log(ticket);
+
 	return {
 		ticket
 	};

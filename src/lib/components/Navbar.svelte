@@ -148,7 +148,7 @@
 						class="dropdown-toggle nav-link"
 						aria-expanded="false"
 						data-bs-toggle="dropdown"
-						href="#!"
+						href="/profile"
 						><span class="d-none d-lg-inline me-2 text-gray-600 small">Admin</span><img
 							class="border rounded-circle img-profile"
 							src="/assets/img/logo.png"
@@ -156,7 +156,7 @@
 						/></a
 					>
 					<div class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
-						<a class="dropdown-item" href="#!"
+						<a class="dropdown-item" href="/profile"
 							><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400" />&nbsp;Profile</a
 						><a class="dropdown-item" href="#!"
 							><i class="fas fa-cogs fa-sm fa-fw me-2 text-gray-400" />&nbsp;Settings</a

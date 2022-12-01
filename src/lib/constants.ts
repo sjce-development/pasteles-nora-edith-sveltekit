@@ -37,3 +37,8 @@ export const MetodosDePago = {
 	tarjetaCredito: 'Tarjeta de crédito',
 	tarjetaDebito: 'Tarjeta de débito'
 };
+
+export const Roles = {
+	admin: 'admin',
+	recepcionista: 'recepcionista',
+}

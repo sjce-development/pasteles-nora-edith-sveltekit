@@ -98,7 +98,6 @@
 			carrito = [...carrito, pasteles[index]];
 			carrito[carrito.length - 1].cantidadCarrito = 1;
 		}
-		console.log(carrito);
 		getCartTotal();
 	}
 
@@ -181,12 +180,12 @@
 				precio: item.precio
 			};
 		});
-		const { data, error } = await supabase.from('tickets').insert([ticket]);
+		const { data, error } = await supabase.from<Ticket>('tickets').insert([ticket]).single();
 		if (error) {
 			console.log(error);
 			return;
 		}
-		goto(`ticket?ticket=${JSON.stringify(ticket)}`)
+		goto(`ticket?ticket=${data.id}`)
 	}
 
 	async function deletePastel(pastelIndex: number) {
