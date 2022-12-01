@@ -10,11 +10,18 @@
 	export let data: PageData;
 	let pastel: Pastel;
 
+	let nombreOriginal: string;
+
 	onMount(() => {
 		pastel = data.pastel;
+		nombreOriginal = pastel.nombre;
 	});
 
 	async function editarPastel(event: any) {
+		if (nombreOriginal !== pastel.nombre && pastel.hasImage) {
+			renameImage();
+		}
+
 		const { data, error } = await supabase
 			.from('pasteles')
 			.update({
@@ -33,6 +40,13 @@
 		}
 		await Swal.fire('Pastel editado', 'El pastel ha sido editado correctamente', 'success');
 		goto('/pos')
+	}
+
+	async function renameImage() {
+		const { data, error } = await supabase
+			.storage
+			.from('pasteles')
+			.move(nombreOriginal, pastel.nombre)
 	}
 </script>
 
