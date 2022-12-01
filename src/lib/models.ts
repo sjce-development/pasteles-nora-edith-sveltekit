@@ -16,6 +16,7 @@ export type Pastel = {
 	precio: number;
 	cantidad: number;
 	imagen?: string;
+	hasImage: boolean;
 };
 
 export type Venta = {

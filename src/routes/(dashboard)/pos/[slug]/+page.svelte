@@ -45,7 +45,7 @@
 	<form on:submit|preventDefault={editarPastel}>
 		<div class="form-group">
 			<label for="nombre">Nombre</label>
-			<input type="text" class="form-control" id="nombre" bind:value={pastel.nombre} disabled/>
+			<input type="text" class="form-control" id="nombre" bind:value={pastel.nombre}/>
 		</div>
 		<div class="form-group">
 			<label for="precio">Precio</label>

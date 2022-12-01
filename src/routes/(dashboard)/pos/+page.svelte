@@ -20,8 +20,11 @@
 
 	let metodoDePago: string = MetodosDePago.efectivo;
 
+	let images: any[] = [];
+
 	onMount(async () => {
 		const { data, error } = await supabase.from<Pastel>('pasteles').select('*');
+
 		if (error) {
 			await Swal.fire({
 				title: 'Error',
@@ -210,6 +213,22 @@
 	}
 
 	function getImage(pastel: Pastel) {
+		// supabase.storage
+		// 	.from('pasteles')
+		// 	.list('', {
+		// 		search: pastel.nombre
+		// 	})
+		// 	.then(({ data, error }) => {
+		// 		if (error) {
+		// 			console.log(error);
+		// 			return;
+		// 		}
+		// 		if (data) {
+		// 			return supabase.storage.from('pasteles').getPublicUrl(data[0].name)
+		// 		} else {
+		// 			return;
+		// 		}
+		// 	});
 		return `${PUBLIC_BUCKET}pasteles/${pastel.nombre}`;
 	}
 
@@ -222,6 +241,7 @@
 			pastel.nombre.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
 		);
 		filteredPasteles = [...filteredPasteles];
+		console.log(filteredPasteles);
 	}
 
 	function resetSearch() {
@@ -277,7 +297,7 @@
 						<tbody>
 							{#each carrito as item}
 								<tr>
-									{#if item.imagen}
+									{#if item.hasImage}
 										<td>
 											<img
 												class="img-fluid img-thumbnail"
@@ -368,15 +388,27 @@
 							{#if filteredPasteles}
 								{#each filteredPasteles as pastel, i}
 									<tr>
-										<td class="pointer" on:click={() => addToCart(i)}
-											><img
-												class="rounded-circle me-2"
-												width="30"
-												height="30"
-												src={getImage(pastel)}
-												alt={pastel.nombre}
-											/>{pastel.nombre}</td
-										>
+										{#if pastel.hasImage}
+											<td class="pointer" on:click={() => addToCart(i)}
+												><img
+													class="rounded-circle me-2"
+													width="30"
+													height="30"
+													src={getImage(pastel)}
+													alt={pastel.nombre}
+												/>{pastel.nombre}</td
+											>
+										{:else}
+											<td class="pointer" on:click={() => addToCart(i)}
+												><img
+													class="rounded-circle me-2"
+													width="30"
+													height="30"
+													src="https://via.placeholder.com/150"
+													alt={pastel.nombre}
+												/>{pastel.nombre}</td
+											>
+										{/if}
 										<td class="pointer" on:click={() => addToCart(i)}>{pastel.precio}</td>
 										<td class="pointer" on:click={() => addToCart(i)}>{pastel.cantidad}</td>
 										<td>
