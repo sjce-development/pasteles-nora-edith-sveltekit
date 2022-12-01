@@ -20,8 +20,6 @@
 
 	let metodoDePago: string = MetodosDePago.efectivo;
 
-	let images: any[] = [];
-
 	onMount(async () => {
 		const { data, error } = await supabase.from<Pastel>('pasteles').select('*');
 
@@ -40,7 +38,7 @@
 	});
 
 	async function addToCart(index: number) {
-		let pastel = pasteles[index];
+		let pastel = filteredPasteles[index];
 		// si no hay pasteles, preguntar si quiere agregar mas
 		if (pastel.cantidad == 0) {
 			const { isConfirmed } = await Swal.fire({
@@ -73,6 +71,7 @@
 					const data = (await result?.value)?.data;
 					if (data) {
 						pastel.cantidad += data[0].cantidad;
+						filteredPasteles = [...filteredPasteles];
 						pasteles = [...pasteles];
 					}
 				}
@@ -98,7 +97,7 @@
 			}
 			carrito = [...carrito];
 		} else {
-			carrito = [...carrito, pasteles[index]];
+			carrito = [...carrito, filteredPasteles[index]];
 			carrito[carrito.length - 1].cantidadCarrito = 1;
 		}
 		getCartTotal();
@@ -213,22 +212,6 @@
 	}
 
 	function getImage(pastel: Pastel) {
-		// supabase.storage
-		// 	.from('pasteles')
-		// 	.list('', {
-		// 		search: pastel.nombre
-		// 	})
-		// 	.then(({ data, error }) => {
-		// 		if (error) {
-		// 			console.log(error);
-		// 			return;
-		// 		}
-		// 		if (data) {
-		// 			return supabase.storage.from('pasteles').getPublicUrl(data[0].name)
-		// 		} else {
-		// 			return;
-		// 		}
-		// 	});
 		return `${PUBLIC_BUCKET}pasteles/${pastel.nombre}`;
 	}
 

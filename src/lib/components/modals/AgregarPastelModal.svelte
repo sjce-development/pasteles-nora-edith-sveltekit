@@ -53,12 +53,13 @@
 			});
 			return;
 		}
-		console.log('here');
+
 		const { data: dataPastel, error: errorPastel } = await supabase.from('pasteles').insert([
 			{
 				nombre,
 				precio,
-				cantidad
+				cantidad,
+				hasImage: imagen !== undefined
 			}
 		]);
 		if (errorPastel) {
