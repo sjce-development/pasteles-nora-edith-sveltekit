@@ -185,7 +185,7 @@
 			console.log(error);
 			return;
 		}
-		goto(`ticket?ticket=${data.id}`)
+		goto(`ticket?ticket=${data.id}`);
 	}
 
 	async function deletePastel(pastelIndex: number) {
@@ -277,14 +277,25 @@
 						<tbody>
 							{#each carrito as item}
 								<tr>
-									<td>
-										<img
-											class="img-fluid img-thumbnail"
-											src={getImage(item)}
-											alt={item.nombre}
-											width="100"
-										/></td
-									>
+									{#if item.imagen}
+										<td>
+											<img
+												class="img-fluid img-thumbnail"
+												src={getImage(item)}
+												alt={item.nombre}
+												width="100"
+											/>
+										</td>
+									{:else}
+										<td>
+											<img
+												class="img-fluid img-thumbnail"
+												src="https://via.placeholder.com/150"
+												alt={item.nombre}
+												width="100"
+											/>
+										</td>
+									{/if}
 									<td>
 										{item.nombre}
 									</td>

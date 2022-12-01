@@ -20,7 +20,6 @@
 		const nombreError = 'El nombre es requerido';
 		const precioError = 'El precio es requerido';
 		const cantidadError = 'La cantidad es requerida';
-		const imagenError = 'La imagen es requerida';
 
 		if (nombre === '' && !errors.includes(nombreError)) {
 			errors = [...errors, nombreError];
@@ -40,11 +39,11 @@
 			errors = errors.filter((error) => error !== cantidadError);
 		}
 
-		if (imagen === undefined && !errors.includes(imagenError)) {
-			errors = [...errors, imagenError];
-		} else {
-			errors = errors.filter((error) => error !== imagenError);
-		}
+		// if (imagen === undefined && !errors.includes(imagenError)) {
+		// 	errors = [...errors, imagenError];
+		// } else {
+		// 	errors = errors.filter((error) => error !== imagenError);
+		// }
 		if (errors.length > 0) {
 			await Swal.fire({
 				title: 'Error',
