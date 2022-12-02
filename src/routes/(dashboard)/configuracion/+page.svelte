@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import AgregarEspecificacionModal from '$lib/components/modals/AgregarEspecificacionModal.svelte';
 	import EditarEspecificacionModal from '$lib/components/modals/EditarEspecificacionModal.svelte';
 	import ModalButton from '$lib/components/modals/ModalButton.svelte';
@@ -53,6 +54,7 @@
 	}
 </script>
 
+<p class="text-lg pointer" on:click={() => {goto('/ordenes')}} > ⬅️ Regresar </p>
 <h3 class="text-dark mb-4">Configuración</h3>
 <!-- Tarjetas -->
 <div class="row">
