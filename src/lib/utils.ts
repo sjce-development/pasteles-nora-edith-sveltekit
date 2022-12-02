@@ -266,4 +266,10 @@ export default class Utils {
 		newDate.setHours(23, 59, 59, 999);
 		return newDate;
 	}
+
+	static unSlug(slug: string) {
+		slug = slug.replaceAll("_", " ");
+		slug = slug.replaceAll("-", " ");
+		return slug;
+	}
 }

@@ -19,7 +19,6 @@
 		}
 		const res = await fetch(`/api/users?user_id=${user.id}`);
 		profile = await res.json();
-		console.log(profile);
 	});
 
 	async function logout() {

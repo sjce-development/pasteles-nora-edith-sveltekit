@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ url }: { url: URL }) => {
 	// Get page number from query string
 	const page = parseInt(url.searchParams.get("page") || "1");
 	const pageSize = parseInt(url.searchParams.get("pageSize") || "10");
-	const selectedDateRange = parseInt(url.searchParams.get("dateRange") ?? "7");
+	const selectedDateRange = parseInt(url.searchParams.get("dateRange") ?? "30");
 
 	const { from, to } = Utils.getPagination({ page, pageSize });
 	// const pasteles: PastelesConfig = await setPastelesConfig();
