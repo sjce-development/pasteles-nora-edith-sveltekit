@@ -94,18 +94,6 @@ export default class Utils {
 			const { precio } = especificacion;
 			let { nombre } = especificacion;
 			nombre = nombre.toLowerCase();
-			// console.log({
-			// 	tamano: orden.tamano,
-			// 	harina: orden.harina,
-			// 	relleno: orden.relleno,
-			// 	decorado: orden.decorado,
-			// 	nombre,
-			// 	valid:
-			// 		orden.tamano === nombre ||
-			// 		orden.harina === nombre ||
-			// 		orden.relleno === nombre ||
-			// 		orden.decorado.includes(nombre),
-			// });
 			if (orden.tamano === nombre) {
 				total += precio;
 			}
