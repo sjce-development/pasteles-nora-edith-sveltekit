@@ -12,7 +12,7 @@
 	export let data: PageData;
 
 	const categorias: Categoria[] = data.categorias;
-	const especificaciones: Especificacion[] = data.especificaciones;
+	let especificaciones: Especificacion[] = data.especificaciones;
 
 	function getEspecificacion(categoria: Categoria) {
 		return especificaciones.filter(
