@@ -3,6 +3,7 @@
 	import type { Categoria, Especificacion } from '$lib/models';
 	import { supabase } from '$lib/supabase';
 	import BaseModal from './BaseModal.svelte';
+	import { onMount } from 'svelte';
 
 	export let title: string;
 	export let id: string;
@@ -93,7 +94,7 @@
 	}
 </script>
 
-<BaseModal {cta} id={id.replaceAll('+', 'mas')} {title}>
+<BaseModal {cta} id={id} {title}>
 	{#if errors.length > 0}
 		{#each errors as error}
 			<div class="alert alert-danger d-flex" style="justify-content: space-between;" role="alert">

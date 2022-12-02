@@ -3,9 +3,13 @@ import { supabase } from '$lib/supabase';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-    const categorias = getCategorias();
-    const especificaciones = getEspecificaciones();
-
+    const categorias = await getCategorias();
+    const especificaciones = await getEspecificaciones();
+    especificaciones.forEach((especificacion) => {
+        if (especificacion.nombre.includes('+')) {
+            especificacion.nombre = especificacion.nombre.replace('+', '𐊛');
+        }
+    })
     return { categorias, especificaciones };
 };
 
