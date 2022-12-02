@@ -10,7 +10,7 @@
 		class="btn btn-primary"
 		class:btn-sm={hasIcon === true}
 		data-bs-toggle="modal"
-		data-bs-target="#{modalId}"
+		data-bs-target="#{modalId.replaceAll(' ', '')}"
 	>
 		{#if hasIcon}
 			<slot />

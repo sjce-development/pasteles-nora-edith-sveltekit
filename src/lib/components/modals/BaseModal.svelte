@@ -4,7 +4,7 @@
 	export let title: string;
 </script>
 
-<div class="modal fade" {id} tabindex="-1" aria-hidden="true">
+<div class="modal fade" id={id.replaceAll(' ', '')} tabindex="-1" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">

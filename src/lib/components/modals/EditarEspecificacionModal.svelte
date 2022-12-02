@@ -93,7 +93,7 @@
 	}
 </script>
 
-<BaseModal {cta} {id} {title}>
+<BaseModal {cta} id={id.replaceAll('+', 'mas')} {title}>
 	{#if errors.length > 0}
 		{#each errors as error}
 			<div class="alert alert-danger d-flex" style="justify-content: space-between;" role="alert">
