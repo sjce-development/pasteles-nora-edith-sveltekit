@@ -16,6 +16,7 @@
 
 	let parsedData: ParseData[] = [];
 
+	let searchValue: string;
 	let filteredParsedData: ParseData[] = [];
 
 	onMount(async () => {
@@ -41,8 +42,7 @@
 
 		// Sort parsed data by cantidad
 		parsedData.sort((a, b) => b.cantidad - a.cantidad);
-
-		parsedData = [...parsedData];
+		filteredParsedData = [...parsedData];
 	});
 
 	async function fetchVentas() {
@@ -62,6 +62,13 @@
 		if (error) throw Error(error.message);
 		pasteles = data;
 	}
+
+	async function handleSearch() {
+		filteredParsedData = parsedData.filter((pastel) =>
+			pastel.nombre.toLowerCase().includes(searchValue.toLowerCase())
+		);
+		filteredParsedData = [...filteredParsedData];
+	}
 </script>
 
 <div class="card shadow">
@@ -71,7 +78,8 @@
 			type="text"
 			class="form-control"
 			placeholder="Buscar"
-			
+			bind:value={searchValue}
+			on:keyup={handleSearch}
 		/>
 	</div>
 	<div class="card-body pt-0">
@@ -90,7 +98,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each parsedData as data}
+					{#each filteredParsedData as data}
 						<tr>
 							<td class="fit">{data.nombre}</td>
 							<td class="fit">{data.cantidad}</td>
