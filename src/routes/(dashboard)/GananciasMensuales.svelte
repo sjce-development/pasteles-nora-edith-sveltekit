@@ -26,7 +26,6 @@
 	let ventas: Venta[] = [];
 
 	onMount(async () => {
-		// Initialize correct dates to 1 year ago.
 		fechaInicial.setFullYear(fechaInicial.getFullYear() - 1);
 		fechaInicialElement.valueAsDate = fechaInicial;
 		fechaFinalElement.valueAsDate = fechaFinal;
@@ -49,8 +48,13 @@
 
 	function diff(from: string, to: string) {
 		let arr = [];
+		from = `${Utils.translateMonthName(from.split(' ')[0])} ${from.split(' ')[1]}`;
+		to = `${Utils.translateMonthName(to.split(' ')[0])} ${to.split(' ')[1]}`;
 		let datFrom = new Date('1 ' + from);
 		let datTo = new Date('1 ' + to);
+
+		console.log(datFrom, datTo);
+
 		let fromYear = datFrom.getFullYear();
 		let toYear = datTo.getFullYear();
 		let diffYear = 12 * (toYear - fromYear) + datTo.getMonth();
@@ -70,16 +74,13 @@
 		fechaFinal.setDate(0);
 		fechaFinal.setMonth(fechaFinal.getMonth() + 1);
 
-		let inicio =
-			Utils.capitalize(fechaInicial.toLocaleString(locale, { month: 'long' })) +
-			' ' +
-			fechaInicial.toLocaleString(locale, { year: 'numeric' });
-
+		let inicio = `${Utils.capitalize(
+			fechaInicial.toLocaleString(locale, { month: 'long' })
+		)} ${fechaInicial.toLocaleString(locale, { year: 'numeric' })}`;
 		let fin =
 			Utils.capitalize(fechaFinal.toLocaleString(locale, { month: 'long' })) +
 			' ' +
 			fechaFinal.toLocaleString(locale, { year: 'numeric' });
-
 		labels = diff(inicio, fin);
 	}
 
@@ -107,11 +108,16 @@
 		}
 
 		const items = [...ordenes, ...ventas];
+		const item0 = items[0];
 		parsedData.forEach((value: number, key: string) => {
 			items.forEach((item: Orden | Venta) => {
-				if (item.created_at === undefined || item.total === undefined) return;
-				if (generateLabel(item.created_at) !== key) return;
-				const pdValue = parsedData.get(key) || 0;
+				if (item.created_at === undefined || item.total === undefined) {
+					return;
+				}
+				if (generateLabel(item.created_at) !== key) {
+					return;
+				}
+				const pdValue = parsedData.get(key) ?? 0;
 				parsedData.set(key, pdValue + item.total);
 			});
 		});
@@ -151,7 +157,6 @@
 			.gte('created_at', fechaInicial.toISOString())
 			.lte('created_at', fechaFinal.toISOString())
 			.order('created_at', { ascending: true });
-
 		if (error) {
 			console.error(error);
 		} else {

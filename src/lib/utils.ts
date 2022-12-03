@@ -1,17 +1,11 @@
-import type {
-	Categoria,
-	Especificacion,
-	Orden,
-	OrdenSelect,
-	SelectItem,
-} from "$lib/models";
-import { supabase } from "$lib/supabase";
-import { locale } from "$lib/constants";
+import type { Categoria, Especificacion, Orden, OrdenSelect, SelectItem } from '$lib/models';
+import { supabase } from '$lib/supabase';
+import { locale } from '$lib/constants';
 
 export default class Utils {
 	static formatCurrency(amount: number, absolute?: boolean) {
-		const options = { style: "currency", currency: "MXN" };
-		const numberFormat = new Intl.NumberFormat("es-MX", options);
+		const options = { style: 'currency', currency: 'MXN' };
+		const numberFormat = new Intl.NumberFormat('es-MX', options);
 		if (absolute) {
 			amount = Math.abs(amount);
 		}
@@ -37,10 +31,10 @@ export default class Utils {
 		if (items.length === 0) {
 			return [];
 		}
-		const group = "categoria";
+		const group = 'categoria';
 		return items.map((item: Categoria) => {
 			const label: string = item.nombre;
-			const value: string = item.nombre.toLowerCase().replace(" ", "-");
+			const value: string = item.nombre.toLowerCase().replace(' ', '-');
 			return { value, label, group };
 		});
 	}
@@ -61,11 +55,11 @@ export default class Utils {
 			try {
 				value = eval(item.nombre);
 			} catch (e) {
-				value = item.nombre.toLowerCase().replace(" ", "-");
+				value = item.nombre.toLowerCase().replace(' ', '-');
 			}
 
 			switch (group) {
-				case "tamanos": {
+				case 'tamanos': {
 					label = `${item.nombre}"`;
 					break;
 				}
@@ -77,12 +71,13 @@ export default class Utils {
 		});
 	}
 
-	static async calcularTotalOrden(orden: Orden, especificaciones?: Especificacion[]): Promise<number> {
+	static async calcularTotalOrden(
+		orden: Orden,
+		especificaciones?: Especificacion[]
+	): Promise<number> {
 		let total = 0;
 		if (especificaciones === undefined || especificaciones === null) {
-			const { data, error } = await supabase
-				.from<Especificacion>("especificaciones")
-				.select("*");
+			const { data, error } = await supabase.from<Especificacion>('especificaciones').select('*');
 			if (error) {
 				throw error;
 			}
@@ -96,29 +91,24 @@ export default class Utils {
 			nombre = nombre.toLowerCase();
 			if (orden.tamano === nombre) {
 				total += precio;
-			}
-			else if (orden.harina === nombre) {
+			} else if (orden.harina === nombre) {
 				total += precio;
-			}
-			else if (orden.relleno === nombre) {
+			} else if (orden.relleno === nombre) {
 				total += precio;
-			}
-			else if (orden.decorado.includes(nombre)) {
+			} else if (orden.decorado.includes(nombre)) {
 				total += precio;
 			}
 		});
 
 		const harina: Especificacion | undefined = especificaciones.find(
-			(especificacion: Especificacion) =>
-				especificacion.nombre === orden.harina,
+			(especificacion: Especificacion) => especificacion.nombre === orden.harina
 		);
 		if (harina) {
 			total += harina.precio;
 		}
 
 		const relleno: Especificacion | undefined = especificaciones.find(
-			(especificacion: Especificacion) =>
-				especificacion.nombre === orden.relleno,
+			(especificacion: Especificacion) => especificacion.nombre === orden.relleno
 		);
 		if (relleno) {
 			total += relleno.precio;
@@ -127,8 +117,7 @@ export default class Utils {
 		if (orden.decorado) {
 			orden.decorado.forEach((decorado: string) => {
 				const item: Especificacion | undefined = especificaciones?.find(
-					(especificacion: Especificacion) =>
-						especificacion.nombre === decorado,
+					(especificacion: Especificacion) => especificacion.nombre === decorado
 				);
 				if (item) {
 					total += item.precio;
@@ -141,8 +130,8 @@ export default class Utils {
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	static async convertirOrdenSelect(orden: OrdenSelect): Promise<Orden> {
-		const nombre: string = orden.client.value.split("-")[0];
-		const telefono: string = orden.client.value.split("-")[1].replace(" ", "");
+		const nombre: string = orden.client.value.split('-')[0];
+		const telefono: string = orden.client.value.split('-')[1].replace(' ', '');
 
 		const newOrden: Orden = {
 			anticipo: orden.anticipo,
@@ -156,11 +145,11 @@ export default class Utils {
 			harina: orden.harina.value,
 			relleno: orden.relleno.value,
 			tamano: orden.tamano.label,
-			estado: "pendiente",
+			estado: 'pendiente',
 			hora_de_entrega: new Date(orden.hora_de_entrega).toISOString(),
 			impreso: false,
 			pagado: false,
-			telefono,
+			telefono
 		};
 		const total = await this.calcularTotalOrden(newOrden);
 		newOrden.total = total;
@@ -172,27 +161,24 @@ export default class Utils {
 		// Substract 7 hours from newDate
 		newDate.setHours(newDate.getHours() - 7);
 		return newDate.toLocaleString(locale, {
-			year: "numeric",
-			month: "short",
-			day: "numeric",
-			hour: "numeric",
-			minute: "numeric",
-			hour12: true,
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric',
+			hour: 'numeric',
+			minute: 'numeric',
+			hour12: true
 		});
 	}
 
 	static formatHoraDeEntrega(date: string | Date): string {
 		// Make date into format yyyy-mm-dd yy:mm:ss
-		const newDate = new Date(date).toISOString().split("T");
-		const [year, month, day] = newDate[0].split("-");
-		const [hour, minute] = newDate[1].split(":");
+		const newDate = new Date(date).toISOString().split('T');
+		const [year, month, day] = newDate[0].split('-');
+		const [hour, minute] = newDate[1].split(':');
 		return `${year}-${month}-${day} ${hour}:${minute}:00`;
 	}
 
-	static getPagination({
-		page,
-		pageSize,
-	}: { page: number; pageSize: number }): {
+	static getPagination({ page, pageSize }: { page: number; pageSize: number }): {
 		from: number;
 		to: number;
 	} {
@@ -211,7 +197,7 @@ export default class Utils {
 	}
 
 	static formatPhoneNumber(phoneNumberString: string) {
-		const cleaned = (`${phoneNumberString}`).replace(/\D/g, '');
+		const cleaned = `${phoneNumberString}`.replace(/\D/g, '');
 		const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
 		if (match) {
 			return `(${match[1]}) ${match[2]}-${match[3]}`;
@@ -256,8 +242,29 @@ export default class Utils {
 	}
 
 	static unSlug(slug: string) {
-		slug = slug.replaceAll("_", " ");
-		slug = slug.replaceAll("-", " ");
+		slug = slug.replaceAll('_', ' ');
+		slug = slug.replaceAll('-', ' ');
 		return slug;
+	}
+
+	static translateMonthName(monthName: string) {
+		monthName = monthName.toLowerCase();
+		const monthNames: {
+			[key: string]: string;
+		} = {
+			enero: 'January',
+			febrero: 'February',
+			marzo: 'March',
+			abril: 'April',
+			mayo: 'May',
+			junio: 'June',
+			julio: 'July',
+			agosto: 'August',
+			septiembre: 'September',
+			octubre: 'October',
+			noviembre: 'November',
+			diciembre: 'December'
+		};
+		return monthNames[monthName];
 	}
 }

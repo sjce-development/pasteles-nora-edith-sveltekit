@@ -68,6 +68,7 @@
 	}
 
 	async function fetchVentas(): Promise<Venta[]> {
+		// console.log(`Fecha Inicial: ${fechaInicial.value} | Fecha Final: ${fechaFinal.value}`);
 		const data = await fetch(
 			'/api/ventas?fechaInicial=' + fechaInicial.value + '&fechaFinal=' + fechaFinal.value
 		);
@@ -96,9 +97,9 @@
 <main>
 	<section class="d-sm-flex justify-content-between align-items-center mb-4">
 		<h3 class="text-dark mb-0">Dashboard</h3>
-		<a class="btn btn-primary btn-sm d-none d-sm-inline-block" role="button" href="#!"
-			><i class="fas fa-download fa-sm text-white-50" />&nbsp;Generate Report</a
-		>
+		<!-- <a class="btn btn-primary btn-sm d-none d-sm-inline-block" role="button" href="#!">
+			<i class="fas fa-download fa-sm text-white-50" />&nbsp;Generate Report
+		</a> -->
 	</section>
 	<section class="row">
 		<div class="col mb-3">

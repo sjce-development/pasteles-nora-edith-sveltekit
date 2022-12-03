@@ -224,7 +224,7 @@
 								{/if}
 							</td>
 							<td>{Utils.formatPhoneNumber(orden.telefono)}</td>
-							<td>{orden.nombre}</td>
+							<td>{Utils.capitalize(orden.nombre)}</td>
 							<td>{orden.tamano}</td>
 							<td>{orden.harina}</td>
 							<td>{orden.relleno}</td>
