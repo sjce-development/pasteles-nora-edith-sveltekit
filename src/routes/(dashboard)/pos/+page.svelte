@@ -187,7 +187,7 @@
 			console.error(error);
 			return;
 		}
-		goto(`ticket?ticket=${data.id}`);
+		goto(`ticket?ticketId=${data.id}`);
 	}
 
 	async function deletePastel(pastelIndex: number) {
