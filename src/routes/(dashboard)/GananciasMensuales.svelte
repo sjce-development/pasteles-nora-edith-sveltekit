@@ -48,12 +48,12 @@
 
 	function diff(from: string, to: string) {
 		let arr = [];
+
 		from = `${Utils.translateMonthName(from.split(' ')[0])} ${from.split(' ')[1]}`;
 		to = `${Utils.translateMonthName(to.split(' ')[0])} ${to.split(' ')[1]}`;
+
 		let datFrom = new Date('1 ' + from);
 		let datTo = new Date('1 ' + to);
-
-		console.log(datFrom, datTo);
 
 		let fromYear = datFrom.getFullYear();
 		let toYear = datTo.getFullYear();
