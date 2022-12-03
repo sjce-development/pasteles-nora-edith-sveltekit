@@ -357,7 +357,7 @@
 									class="form-control form-control-sm"
 									placeholder="Busqueda"
 									bind:value={searchValue}
-									on:change={handleSearch}
+									on:keyup={handleSearch}
 								/></label
 							>
 							<button type="button" class="btn btn-primary" on:click={resetSearch}
