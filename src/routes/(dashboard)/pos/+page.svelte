@@ -184,7 +184,7 @@
 		});
 		const { data, error } = await supabase.from<Ticket>('tickets').insert([ticket]).single();
 		if (error) {
-			console.log(error);
+			console.error(error);
 			return;
 		}
 		goto(`ticket?ticket=${data.id}`);
@@ -245,6 +245,19 @@
 		>
 	</span>
 </h3>
+<div class="row g-3 align-items-center mb-3">
+	<div class="col-auto">
+		<label for="cantidadEnCaja" class="col-form-label fs-3">Cantidad en caja</label>
+	</div>
+	<div class="col-auto">
+		<input type="text" class="form-control" value="$520" />
+	</div>
+	<div class="col-auto">
+		<span class="form-text">
+			Ultima actualización: {new Date().toLocaleDateString()}
+		</span>
+	</div>
+</div>
 <div class="row">
 	<div class="col-sm-5">
 		<div class="card shadow">

@@ -19,10 +19,6 @@
 	export let count: number;
 	export let selectedDateRange: number;
 
-	onMount(async () => {
-		console.log(selectedDateRange);
-	});
-
 	function goToPdf() {
 		const ordenesIds = ordenes
 			.filter((orden: Orden) => orden.impreso === false)

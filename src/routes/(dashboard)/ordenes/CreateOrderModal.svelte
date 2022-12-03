@@ -32,7 +32,6 @@
 	});
 
 	async function handleTotal() {
-		console.log(orden);
 		total = 0;
 		especificaciones.forEach((especificacion) => {
 			const { precio } = especificacion;

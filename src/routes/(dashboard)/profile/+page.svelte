@@ -10,7 +10,6 @@
 
 	onMount(() => {
 		user = supabase.auth.user();
-    console.log(user);
 		if (!user) {
 			goto('/login');
 		}

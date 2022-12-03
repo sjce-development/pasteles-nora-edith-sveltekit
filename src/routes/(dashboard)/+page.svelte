@@ -22,19 +22,32 @@
 	let fechaFinal: HTMLInputElement;
 
 	onMount(async () => {
+		fechaInicial.valueAsDate = new Date(new Date().setFullYear(new Date().getFullYear() - 2));
 		ventas = data.ventas;
 		ordenes = data.ordenes;
 		setData();
 	});
 
 	function setFechas() {
-		const date = new Date();
-		date.setFullYear(date.getFullYear() - 1);
-		const yearAgo = date.toISOString().split('T')[0];
+		if (fechaInicial.valueAsDate === null || fechaFinal.valueAsDate === null) {
+			const date = new Date();
+			date.setFullYear(date.getFullYear() - 1);
+			const yearAgo = date.toISOString().split('T')[0];
 
-		const now = new Date().toISOString().split('T')[0];
-		fechaFinal.value = now;
-		fechaInicial.value = yearAgo;
+			const now = new Date().toISOString().split('T')[0];
+			fechaFinal.value = now;
+			fechaInicial.value = yearAgo;
+		}
+		// If fechaInicial is greater than fechaFinal, swap them
+		if (
+			fechaInicial.valueAsDate !== null &&
+			fechaFinal.valueAsDate !== null &&
+			fechaInicial.valueAsDate > fechaFinal.valueAsDate
+		) {
+			const temp = fechaInicial.valueAsDate;
+			fechaInicial.valueAsDate = fechaFinal.valueAsDate;
+			fechaFinal.valueAsDate = temp;
+		}
 	}
 
 	function setData() {
@@ -68,7 +81,6 @@
 	}
 
 	async function fetchVentas(): Promise<Venta[]> {
-		// console.log(`Fecha Inicial: ${fechaInicial.value} | Fecha Final: ${fechaFinal.value}`);
 		const data = await fetch(
 			'/api/ventas?fechaInicial=' + fechaInicial.value + '&fechaFinal=' + fechaFinal.value
 		);
@@ -109,7 +121,6 @@
 				class="form-control"
 				name="fechaInicial"
 				id="fechaInicial"
-				aria-describedby="helpId"
 				bind:this={fechaInicial}
 				on:change={fetchData}
 			/>

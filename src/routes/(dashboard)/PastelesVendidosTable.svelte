@@ -5,10 +5,18 @@
 	import { onMount } from 'svelte';
 	import Utils from '$lib/utils';
 
+	type ParseData = {
+		nombre: string;
+		cantidad: number;
+		total: number;
+	};
+
 	let ventas: Venta[] = [];
 	let pasteles: Pastel[] = [];
 
-	let parsedData: any[] = [];
+	let parsedData: ParseData[] = [];
+
+	let filteredParsedData: ParseData[] = [];
 
 	onMount(async () => {
 		await fetchVentas();
@@ -57,8 +65,14 @@
 </script>
 
 <div class="card shadow">
-	<div class="card-header pt-3">
+	<div class="d-flex card-header pt-3">
 		<p class="text-primary m-0 fw-bold">Pasteles Vendidos</p>
+		<input
+			type="text"
+			class="form-control"
+			placeholder="Buscar"
+			
+		/>
 	</div>
 	<div class="card-body pt-0">
 		<div

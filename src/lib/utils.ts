@@ -84,7 +84,6 @@ export default class Utils {
 			especificaciones = data;
 		}
 
-		// console.log(data);
 		especificaciones.forEach((especificacion) => {
 			const { precio } = especificacion;
 			let { nombre } = especificacion;
@@ -123,7 +122,6 @@ export default class Utils {
 					total += item.precio;
 				}
 			});
-			console.log(orden.decorado, total);
 		}
 		return total;
 	}
@@ -168,6 +166,13 @@ export default class Utils {
 			minute: 'numeric',
 			hour12: true
 		});
+	}
+
+	static getLocalDate(date: Date): Date {
+		const newDate = new Date(date);
+		// Substract 7 hours from newDate
+		newDate.setHours(newDate.getHours() - 7);
+		return newDate;
 	}
 
 	static formatHoraDeEntrega(date: string | Date): string {

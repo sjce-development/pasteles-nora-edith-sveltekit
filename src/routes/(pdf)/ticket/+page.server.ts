@@ -19,8 +19,6 @@ export const load: PageServerLoad = async ({ url }: { url: URL }) => {
 		};
 	}
 
-	console.log(ticket);
-
 	return {
 		ticket
 	};
