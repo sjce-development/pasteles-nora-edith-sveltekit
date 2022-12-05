@@ -41,6 +41,7 @@
 			><i class="fas fa-bars" />
 		</button> -->
 		<!-- Search bar -->
+		<button type="button" class="btn btn-danger">BETA</button>
 		<!-- <form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
 			<div class="input-group">
 				<input

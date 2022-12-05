@@ -16,7 +16,7 @@
 			return;
 		}
 		profile = await getProfile();
-	})
+	});
 
 	async function getProfile(): Promise<UserProfile> {
 		if (user === null) {
@@ -63,13 +63,15 @@
 					/>
 				</svg>
 			</div>
-			<div class="sidebar-brand-text mx-3"><span>Nora Edith</span></div>
+			<div class="sidebar-brand-text mx-3">
+				<span>Nora Edith</span>
+			</div>
 		</a>
 		<hr class="sidebar-divider my-0" />
 		<ul class="navbar-nav text-light" id="accordionSidebar">
 			{#each routes as route}
 				{#if profile?.role === Roles.recepcionista && route.name === 'Dashboard'}
-					 <!-- content here -->
+					<!-- content here -->
 				{:else}
 					<li class="nav-item">
 						<a class="nav-link" href={route.path}>
