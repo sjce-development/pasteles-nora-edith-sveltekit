@@ -176,9 +176,17 @@
 		</div>
 	</section>
 	<!-- End: Chart -->
-	<section class="row">
-		<div class="col">
-			<ClientesFrecuentesTable />
-		</div>
-	</section>
+	{#if ordenes.length > 0}
+		<section class="row">
+			<div class="col">
+				<ClientesFrecuentesTable />
+			</div>
+		</section>
+	{:else}
+		<section class="row">
+			<div class="col card shadow pt-3 pb-2 mt-3">
+				<h3 class="text-center">No hay <span><a href="/ordenes">ordenes</a></span></h3>
+			</div>
+		</section>
+	{/if}
 </main>
