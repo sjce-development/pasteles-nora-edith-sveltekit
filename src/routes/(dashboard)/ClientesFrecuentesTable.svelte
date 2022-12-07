@@ -12,6 +12,7 @@
 		await fetchOrdenes();
 		await fetchClientes();
 
+
 		// Add name of client to parsed data
 		clientes.forEach((cliente) => {
 			parsedData.push({

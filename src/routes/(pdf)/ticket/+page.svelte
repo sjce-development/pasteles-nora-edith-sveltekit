@@ -31,7 +31,7 @@
 		<br />
 		R.F.C: MEMN710204JS4
 		<br />
-		<!-- turno: {ticket[0].persona_turno} -->
+		turno: {ticket?.persona_turno}
 		<br />
 		<!-- operacion: {ticket[0].id} -->
 	</p>

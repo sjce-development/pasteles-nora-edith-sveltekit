@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { Roles } from '$lib/constants';
 	import type { UserProfile } from '$lib/models';
+	import { currentProfile, currentUser } from '$lib/stores';
 	import { supabase } from '$lib/supabase';
 	import Utils from '$lib/utils';
 	import type { User } from '@supabase/supabase-js';
@@ -13,12 +14,14 @@
 	onMount(async () => {
 		// check if user is logged in
 		user = supabase.auth.user();
-		if (!user) {
+		if (user === null) {
 			goto('/login');
 			return;
 		}
 		const res = await fetch(`/api/users?user_id=${user.id}`);
 		profile = await res.json();
+		currentUser.set(user);
+		currentProfile.set(profile);
 	});
 
 	async function logout() {

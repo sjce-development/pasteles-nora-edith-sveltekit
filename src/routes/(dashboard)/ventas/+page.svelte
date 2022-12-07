@@ -12,16 +12,15 @@
 	let fechaElement: HTMLInputElement;
 
 	onMount(function () {
-		// add 7 hours to fecha
 		fechaElement.value = Utils.formatDate(fecha);
-		console.log('fecha', fecha.toLocaleString());
 		fechaElement.valueAsDate = fecha;
 	});
 
 	function handleOnFechaChange() {
 		const url = new URL(window.location.href);
 		url.searchParams.set('date', fechaElement.value);
-		goto(url);
+		window.open(url, '_blank');
+		window.location.reload();
 	}
 </script>
 

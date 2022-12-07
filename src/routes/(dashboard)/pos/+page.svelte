@@ -2,9 +2,11 @@
 	import { goto } from '$app/navigation';
 	import AgregarPastelModal from '$lib/components/modals/AgregarPastelModal.svelte';
 	import { MetodosDePago, PUBLIC_BUCKET } from '$lib/constants';
-	import type { CarritoItem, Pastel, Ticket, Venta } from '$lib/models';
+	import type { CarritoItem, Pastel, Ticket, UserProfile, Venta } from '$lib/models';
+	import { currentProfile } from '$lib/stores';
 	import { supabase } from '$lib/supabase';
 	import Utils from '$lib/utils';
+	import type { User } from '@supabase/supabase-js';
 	import { onMount } from 'svelte';
 	import Swal from 'sweetalert2';
 
@@ -20,7 +22,13 @@
 
 	let metodoDePago: string = MetodosDePago.efectivo;
 
+	let profile: UserProfile;
+
 	onMount(async () => {
+		currentProfile.subscribe((value) => {
+			profile = value;
+		});
+
 		const { data, error } = await supabase.from<Pastel>('pasteles').select('*');
 
 		if (error) {
@@ -173,7 +181,7 @@
 
 	async function crearTicket() {
 		let ticket = {} as Ticket;
-		ticket.persona_turno = 'Juan';
+		ticket.persona_turno = profile.nombre;
 		ticket.productos = carrito.map((item) => {
 			return {
 				id: item.id,
@@ -187,7 +195,8 @@
 			console.error(error);
 			return;
 		}
-		goto(`ticket?ticketId=${data.id}`);
+		window.open(`ticket?ticketId=${data.id}`, '_blank');
+		window.location.reload();
 	}
 
 	async function deletePastel(pastelIndex: number) {
