@@ -16,10 +16,6 @@ export const load: PageServerLoad = async ({ url }: { url: URL }) => {
 	const selectedDateRange = parseInt(url.searchParams.get("dateRange") ?? "30");
 
 	const { from, to } = Utils.getPagination({ page, pageSize });
-	// const pasteles: PastelesConfig = await setPastelesConfig();
-	// const clientes: Cliente[] = await getClientes();
-	// const ordenes: Orden[] = await getOrdenes(from, to, selectedDateRange);
-	// const count = await getCount();
 	return {
 		pasteles: await setPastelesConfig(),
 		clientes: await getClientes(),
