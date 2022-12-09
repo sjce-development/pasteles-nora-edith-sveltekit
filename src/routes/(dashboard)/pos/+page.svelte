@@ -253,8 +253,12 @@
 			{title}</button
 		>
 	</span>
+
+	<!-- <span>
+		<button class="btn btn-primary">Venta orden</button>
+	</span> -->
 </h3>
-<div class="row g-3 align-items-center mb-3">
+<!-- <div class="row g-3 align-items-center mb-3">
 	<div class="col-auto">
 		<label for="cantidadEnCaja" class="col-form-label fs-3">Cantidad en caja</label>
 	</div>
@@ -266,7 +270,7 @@
 			Ultima actualización: {new Date().toLocaleDateString()}
 		</span>
 	</div>
-</div>
+</div> -->
 <div class="row">
 	<div class="col-sm-5">
 		<div class="card shadow">
