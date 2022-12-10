@@ -6,13 +6,12 @@
 	import { supabase } from '$lib/supabase';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import AnadirImagen from './AnadirImagen.svelte';
 
 	export let data: PageData;
 
 	const orden: Orden = data.orden;
-
-	// onMount(() => {
-	// });
+	const imageUrl: string = data.imageUrl ?? '';
 
 	function onDateChange(e: any) {
 		const date = new Date(e.target.value);
@@ -43,7 +42,20 @@
 </script>
 
 <h3 class="text-dark mb-4">Orden</h3>
-
+{#if imageUrl !== ''}
+	<img src={imageUrl} alt={imageUrl} class="image-wrapper" />
+{:else}
+	<div class="mb-3">
+		<button
+			type="button"
+			class="btn btn-primary"
+			data-bs-toggle="modal"
+			data-bs-target="#añadirImagen"
+		>
+			Añadir Imagen 📸
+		</button>
+	</div>
+{/if}
 <form>
 	<div class="row">
 		<!-- Telefono -->
@@ -157,3 +169,13 @@
 		</div>
 	</div>
 </form>
+{#if orden.id !== undefined}
+	<AnadirImagen ordenId={orden.id} />
+{/if}
+
+<style>
+	.image-wrapper {
+		max-height: 300px;
+		position: static;
+	}
+</style>
