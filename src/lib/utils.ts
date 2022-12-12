@@ -180,7 +180,7 @@ export default class Utils {
 		const newDate = new Date(date).toISOString().split('T');
 		const [year, month, day] = newDate[0].split('-');
 		const [hour, minute] = newDate[1].split(':');
-		return `${year}-${month}-${day} ${hour}:${minute}:00`;
+		return `${year}-${month}-${day} ${hour}:${minute}`;
 	}
 
 	static getPagination({ page, pageSize }: { page: number; pageSize: number }): {
