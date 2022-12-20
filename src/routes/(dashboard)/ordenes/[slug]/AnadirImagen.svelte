@@ -6,6 +6,7 @@
 
 	async function handleSubirImagen(event: any) {
 		const imagen: File = event.target[0].files[0] as File;
+
 		const { data, error } = await supabase.storage
 			.from('photos-ordenes')
 			.upload(`${ordenId}/${imagen.name}`, imagen);

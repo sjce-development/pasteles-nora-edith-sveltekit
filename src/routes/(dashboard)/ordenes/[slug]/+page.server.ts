@@ -1,21 +1,14 @@
+import { Tables } from '$lib/constants';
+import type { Especificacion, Orden } from '$lib/models';
 import { supabase } from '$lib/supabase';
+import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
 	const id: number = Number.parseInt(url.pathname.split('/')[2]);
-	const { data, error } = await supabase.from('ordenes').select('*').eq('id', id).single();
-	if (error) {
-		return {
-			status: 500,
-			error: error.message
-		};
-	}
-	if (!data) {
-		return {
-			status: 404,
-			error: 'Not found'
-		};
-	}
+	
+	const orden = await getOrden(id);
+	const especificaciones = await getEspecificaciones();
 
 	const image = await getOrderImage(id);
 	let imageUrl: string;
@@ -24,11 +17,35 @@ export const load: PageServerLoad = async ({ url }) => {
 	} else {
 		imageUrl = '';
 	}
+
 	return {
-		orden: data,
+		orden,
+		especificaciones,
 		imageUrl
 	};
 };
+
+async function getEspecificaciones() {
+	const { data, error } = await supabase.from<Especificacion>(Tables.especificaciones).select('*');
+	if (error) {
+		return [] as Especificacion[];
+	}
+	if (!data) {
+		return [] as Especificacion[];
+	}
+	return data;
+}
+
+async function getOrden(id: number): Promise<Orden> {
+	const { data, error: err } = await supabase.from('ordenes').select('*').eq('id', id).single();
+	if (err) {
+		return {} as Orden;
+	}
+	if (!data) {
+		return {} as Orden;
+	}
+	return data;
+}
 
 async function getOrderImage(id: number) {
 	const { data, error } = await supabase.storage

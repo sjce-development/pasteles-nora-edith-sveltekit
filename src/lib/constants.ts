@@ -42,3 +42,15 @@ export const Roles = {
 	admin: 'admin',
 	recepcionista: 'recepcionista',
 }
+
+export const Tables = {
+	categorias: 'categorias',
+	clientes: 'clientes',
+	especificaciones: 'especificaciones',
+	estados_orden: 'estados_orden',
+	ordenes: 'ordenes',
+	pasteles: 'pasteles',
+	profile: 'profile',
+	tickets: 'tickets',
+	ventas: 'ventas' 
+}
