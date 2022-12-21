@@ -1,20 +1,35 @@
 <script lang="ts">
 	import Swal from 'sweetalert2';
-	import { Estados, type Especificacion, type Orden } from '$lib/models';
+	import { Estados, type Especificacion, type Orden, type SelectItem } from '$lib/models';
 	import Utils from '$lib/utils';
 	import type { PageData } from './$types';
 	import { supabase } from '$lib/supabase';
 	import { goto } from '$app/navigation';
 	import AnadirImagen from './AnadirImagen.svelte';
 	import Select from 'svelte-select';
+	import { onMount } from 'svelte';
 
 	export let data: PageData;
 
 	const orden: Orden = data.orden;
-	const especificaciones: Especificacion[] = data.especificaciones;
-	const imageUrl: string = data.imageUrl ?? '';
+	const especificaciones: SelectItem[] = data.especificaciones;
+	let imageUrl: string = data.imageUrl ?? '';
 
-	let decorado: any;
+	let decorado: SelectItem[] = [];
+
+	$: console.log(decorado);
+
+	onMount(() => {
+		console.log('orden.decorado', orden.decorado);
+		// Add orden decorado array to decorado
+		orden.decorado.forEach((ordenDecorado) => {
+			decorado.push({
+				group: 'decorado',
+				value: ordenDecorado,
+				label: ordenDecorado
+			});
+		});
+	});
 
 	function onDateChange(e: any) {
 		const date = new Date(e.target.value);
@@ -33,6 +48,9 @@
 		});
 		if (isConfirmed) {
 			// Update the order
+
+			orden.decorado = decorado.map((item) => item.value.toString());
+
 			const { error } = await supabase.from('ordenes').update(orden).eq('id', orden.id);
 			if (error) {
 				Swal.fire('Error', error.message, 'error');
@@ -47,10 +65,12 @@
 <h3 class="text-dark mb-4">Orden</h3>
 <div class="row">
 	<div class="col-sm-4">
-			<h5>Imagen de la orden</h5>
-			{#if imageUrl !== ''}
-				<img src={imageUrl} alt={imageUrl} class="img-thumbnail" />
-			{/if}
+		<h5>Imagen de la orden</h5>
+		{#if imageUrl !== ''}
+			<img src={imageUrl} alt={imageUrl} class="img-thumbnail rounded" />
+		{:else}
+			<div class="alert alert-warning" role="alert">No hay imagen para esta orden</div>
+		{/if}
 	</div>
 	<div class="col-sm-8">
 		<form>
@@ -185,19 +205,16 @@
 						</select>
 					</div>
 				</div>
-				<!-- Decorado -->
-				<div class="col-sm-12 col-md-6 col-lg-4">
-					<div class="mb-3">
-						<label for="ordenDecorado" class="form-label">Decorado</label>
-						<select class="form-select" bind:value={decorado}>
-							<Select
-								items={especificaciones}
-								placeholder="Selecciona un cliente"
-								bind:value={decorado}
-							/>
-						</select>
-					</div>
-				</div>
+			</div>
+			<div class="mb-3">
+				<label for="ordenDecorado" class="form-label">Decorado</label>
+				<Select
+					name="especificaciones"
+					items={especificaciones}
+					placeholder="Selecciona la/s especificaciónes"
+					multiple={true}
+					bind:value={decorado}
+				/>
 			</div>
 			<!-- Edit orden button -->
 			<div class="col-sm-12 col-md-6 col-lg-4">
@@ -213,10 +230,3 @@
 {#if orden.id !== undefined}
 	<AnadirImagen ordenId={orden.id} />
 {/if}
-
-<style>
-	.image-wrapper {
-		max-height: 300px;
-		position: static;
-	}
-</style>

@@ -1,14 +1,14 @@
 import { Tables } from '$lib/constants';
 import type { Especificacion, Orden } from '$lib/models';
 import { supabase } from '$lib/supabase';
-import { error } from '@sveltejs/kit';
+import Utils from '$lib/utils';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
 	const id: number = Number.parseInt(url.pathname.split('/')[2]);
 	
 	const orden = await getOrden(id);
-	const especificaciones = await getEspecificaciones();
+	const especificaciones = Utils.formatEspecificacion(await getEspecificaciones());
 
 	const image = await getOrderImage(id);
 	let imageUrl: string;
@@ -26,7 +26,10 @@ export const load: PageServerLoad = async ({ url }) => {
 };
 
 async function getEspecificaciones() {
-	const { data, error } = await supabase.from<Especificacion>(Tables.especificaciones).select('*');
+	const { data, error } = await supabase
+		.from<Especificacion>(Tables.especificaciones)
+		.select('*')
+		.eq('categoria', 'decorado');
 	if (error) {
 		return [] as Especificacion[];
 	}

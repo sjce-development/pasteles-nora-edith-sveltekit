@@ -19,6 +19,17 @@
 	export let count: number;
 	export let selectedDateRange: number;
 
+	let searchValue: string;
+
+	let filteredOrdenes: Orden[] = [];
+
+	$: console.log(filteredOrdenes);
+
+	onMount(() => {
+		searchValue = '';
+		filteredOrdenes = ordenes;
+	});
+
 	function goToPdf() {
 		const ordenesIds = ordenes
 			.filter((orden: Orden) => orden.impreso === false)
@@ -126,6 +137,25 @@
 		url.searchParams.set('dateRange', selectedDateRange.toString());
 		goto(url);
 	}
+
+	const handleSearch = () => {
+		filteredOrdenes = ordenes.filter((orden: Orden) => {
+			return (
+				orden.telefono.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||
+				orden.nombre.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||
+				orden.tamano.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||
+				orden.harina.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||
+				orden.relleno.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||
+				(orden?.created_at ?? '').toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||
+				orden.anticipo.toString().includes(searchValue.toLocaleLowerCase()) ||
+				orden.estado.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) ||
+				(orden?.total ?? 0).toString().includes(searchValue.toLocaleLowerCase()) ||
+				orden.decorado.find((decorado) =>
+					decorado.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
+				)
+			);
+		});
+	};
 </script>
 
 <div class="card shadow">
@@ -180,6 +210,8 @@
 							class="form-control form-control-sm"
 							aria-controls="dataTable"
 							placeholder="Search"
+							bind:value={searchValue}
+							on:keyup={handleSearch}
 						/></label
 					>
 				</div>
@@ -210,7 +242,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each ordenes as orden}
+					{#each filteredOrdenes as orden}
 						<tr>
 							<td class="fit">
 								{#if orden.impreso}

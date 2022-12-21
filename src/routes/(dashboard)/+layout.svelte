@@ -41,6 +41,8 @@
 								<Loader />
 							</div>
 						{:else}
+							<!-- svelte-ignore a11y-invalid-attribute -->
+							<a href="javascript:history.back()"style="text-decoration: none;">⬅️ Regresar</a>
 							<slot />
 						{/if}
 					</div>
