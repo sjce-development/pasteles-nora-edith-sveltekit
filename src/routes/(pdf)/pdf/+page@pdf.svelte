@@ -41,9 +41,6 @@
 				<th>Harina</th>
 				<th>Relleno</th>
 				<th>Decorado</th>
-				<th>Anticipo</th>
-				<th>Restante</th>
-				<th>Pagado</th>
 				<th>Entrega</th>
 			</tr>
 		</thead>
@@ -55,9 +52,6 @@
 					<td>{orden.harina}</td>
 					<td>{orden.relleno}</td>
 					<td>{orden.decorado}</td>
-					<td>{orden.anticipo ?? Utils.formatCurrency(0)}</td>
-					<td>{orden.total || 0 - orden.anticipo}</td>
-					<td>{orden.pagado ? 'Sí' : 'No'}</td>
 					<td
 						>{Utils.formatHoraDeEntrega(orden.hora_de_entrega).substring(
 							0,
