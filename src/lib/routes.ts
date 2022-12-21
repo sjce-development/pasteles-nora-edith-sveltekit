@@ -34,5 +34,10 @@ export const routes: Route[] = [
 		name: 'Registrar',
 		path: '/register',
 		icon: 'fa-solid fa-address-book'
-	}
+	},
+	// {
+	// 	name: 'Generar corte',
+	// 	path: '/corte',
+	// 	icon: 'fas fa-file-invoice-dollar'
+	// },
 ];

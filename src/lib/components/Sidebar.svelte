@@ -46,7 +46,7 @@
 	<div class="container-fluid d-flex flex-column p-0">
 		<a
 			class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0"
-			href="#!"
+			href="/"
 		>
 			<div class="sidebar-brand-icon rotate-n-15">
 				<svg
