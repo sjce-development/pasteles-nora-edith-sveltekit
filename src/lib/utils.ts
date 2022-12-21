@@ -272,4 +272,40 @@ export default class Utils {
 		};
 		return monthNames[monthName];
 	}
+
+	/**
+	 * Adds 7 hours to the date
+	 * @param date Date to transform
+	 * @param startOfDay Sets the time to 0, 0, 0, 0
+	 * @param endOfDay Sets the time to 23, 59, 59, 999
+	 * @returns Transformed date
+	 */
+	static UTCtoLocale(date: Date, startOfDay?: boolean, endOfDay?: boolean): Date {
+		const newDate = new Date(date);
+		if (startOfDay) {
+			newDate.setHours(0, 0, 0, 0);
+		} else if (endOfDay) {
+			newDate.setHours(23, 59, 59, 999);
+		}
+		newDate.setHours(newDate.getHours() + 7);
+		return newDate;	
+	}
+
+	/**
+	 * Substracts 7 hours to the date
+	 * @param date Date to transform
+	 * @param startOfDay Sets the time to 0, 0, 0, 0
+	 * @param endOfDay Sets the time to 23, 59, 59, 999
+	 * @returns Transformed date
+	 */
+	static LocaleToUTC(date: Date, startOfDay?: boolean, endOfDay?: boolean): Date {
+		const newDate = new Date(date);
+		if (startOfDay) {
+			newDate.setHours(0, 0, 0, 0);
+		} else if (endOfDay) {
+			newDate.setHours(23, 59, 59, 999);
+		}
+		newDate.setHours(newDate.getHours() - 7);
+		return newDate;
+	}
 }
