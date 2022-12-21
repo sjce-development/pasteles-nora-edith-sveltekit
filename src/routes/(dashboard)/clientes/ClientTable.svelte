@@ -8,12 +8,18 @@
 
 	let clientes: Cliente[] = [];
 	let ordenes: Orden[] = [];
+
+	let filteredClientes: Cliente[] = [];
+	let searchValue: string = '';
+
 	onMount(async () => {
 		clientes = await fetchClientes();
 		ordenes = await fetchOrdenes();
 		clientes.forEach((cliente, i) => {
 			clientes[i].cantidad_ordenes = ordenes.filter((orden) => orden.telefono === cliente.telefono).length;
 		});
+
+		filteredClientes = [...clientes];
 	});
 
 	async function fetchClientes(): Promise<Cliente[]> {
@@ -41,6 +47,18 @@
 		}
 		return data;
 	}
+
+	const handleSearch = () => {
+		filteredClientes = clientes.filter((cliente) => {
+			const search = searchValue.toLowerCase();
+			return cliente.nombre.toLowerCase().includes(search) ||
+				cliente.telefono.toLowerCase().includes(search) ||
+				cliente.correo.toLowerCase().includes(search) || 
+				(cliente.cantidad_ordenes ?? 0).toString().toLowerCase().includes(search) ||
+				new Date(cliente.created_at ?? '').toLocaleString('es-MX', { dateStyle: 'long' }).split(',')[0].includes(search);
+		});
+		filteredClientes = [...filteredClientes];
+	};
 </script>
 
 <div class="card shadow">
@@ -69,6 +87,8 @@
 							class="form-control form-control-sm"
 							aria-controls="dataTable"
 							placeholder="Search"
+							bind:value={searchValue}
+							on:keyup={handleSearch}
 						/></label
 					>
 				</div>
@@ -92,7 +112,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each clientes as cliente}
+					{#each filteredClientes as cliente}
 						<tr>
 							<td class="fit">{cliente.nombre}</td>
 							<td class="fit">{cliente.telefono}</td>
@@ -124,14 +144,6 @@
 						<EditClientModal {cliente} />
 					{/each}
 				</tbody>
-				<tfoot>
-					<tr>
-						<td><strong>Nombre</strong></td>
-						<td><strong>Telefono</strong></td>
-						<td><strong>Correo</strong></td>
-						<td><strong>Cliente desde</strong></td>
-					</tr>
-				</tfoot>
 			</table>
 		</div>
 		<div class="row">
