@@ -78,15 +78,15 @@
 				upsert: false
 			});
 
-		if (errorImagen) {
-			Swal.fire({
-				icon: 'error',
-				title: 'Oops...',
-				text: 'Algo salió mal, intente de nuevo'
-			});
-			await supabase.from('pasteles').delete().eq('id', dataPastel[0].id);
-			return;
-		}
+		// if (errorImagen) {
+		// 	Swal.fire({
+		// 		icon: 'error',
+		// 		title: 'Oops...',
+		// 		text: 'Algo salió mal, intente de nuevo'
+		// 	});
+		// 	await supabase.from('pasteles').delete().eq('id', dataPastel[0].id);
+		// 	return;
+		// }
 		await Swal.fire('Pastel agregado', 'El pastel ha sido agregado correctamente', 'success');
 		window.location.reload();
 	}
