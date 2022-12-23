@@ -333,7 +333,7 @@
 						{/each}
 					</select>
 				</div>
-				<label for="" class="form-label">Factuado</label>
+				<label for="" class="form-label">Facturado</label>
 				<select class="form-select" bind:value={facturado}>
 					<option value={false} selected>No</option>
 					<option value={true}>Sí</option>
