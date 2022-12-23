@@ -23,8 +23,6 @@
 
 	let filteredOrdenes: Orden[] = [];
 
-	$: console.log(filteredOrdenes);
-
 	onMount(() => {
 		searchValue = '';
 		filteredOrdenes = ordenes;

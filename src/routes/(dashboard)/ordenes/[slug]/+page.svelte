@@ -17,11 +17,7 @@
 
 	let decorado: SelectItem[] = [];
 
-	$: console.log(decorado);
-
 	onMount(() => {
-		console.log('orden.decorado', orden.decorado);
-		// Add orden decorado array to decorado
 		orden.decorado.forEach((ordenDecorado) => {
 			decorado.push({
 				group: 'decorado',
