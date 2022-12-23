@@ -40,4 +40,9 @@ export const routes: Route[] = [
 		path: '/corte',
 		icon: 'fas fa-file-invoice-dollar'
 	},
+	// {
+	// 	name: 'Notas',
+	// 	path: '/notas',
+	// 	icon: 'fas fa-sticky-note'
+	// }
 ];

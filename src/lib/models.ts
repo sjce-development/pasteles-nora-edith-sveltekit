@@ -26,6 +26,7 @@ export type Venta = {
 	cantidad: number;
 	total: number;
 	tipo_de_pago: string;
+	facturado: boolean;
 };
 
 export type CarritoItem = {
@@ -77,8 +78,7 @@ export type Cliente = {
 export type ChartConfig = {
 	type: string;
 	data: ChartData;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	options: any;
+	options: unknown;
 };
 
 export type ChartData = {

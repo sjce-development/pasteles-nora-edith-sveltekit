@@ -83,7 +83,8 @@ const getVentasDate = async (date1: Date) => {
 	const { data, error } = await supabase
 		.from<Venta>(Tables.ventas)
 		.select('*')
-        .lt('created_at', Utils.LocaleToUTC(date1, undefined, true).toISOString())
+		.eq('facturado', false)
+		.lt('created_at', Utils.LocaleToUTC(date1, undefined, true).toISOString())
 		.gt('created_at', Utils.LocaleToUTC(date1, true).toISOString());
 
 	if (error) {

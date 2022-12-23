@@ -24,6 +24,8 @@
 
 	let profile: UserProfile;
 
+	let facturado: boolean = false;
+
 	onMount(async () => {
 		currentProfile.subscribe((value) => {
 			profile = value;
@@ -145,6 +147,19 @@
 		});
 		if (result.isConfirmed) {
 			carrito.forEach(async (item: CarritoItem) => {
+				if (item.nombre === 'Orden Anónima') {
+					await supabase.from<Venta>('ventas').insert([
+						{
+							nombre: item.nombre,
+							cantidad: item.cantidadCarrito,
+							total,
+							tipo_de_pago: metodoDePago,
+							facturado
+						}
+					]);
+					return;
+				}
+
 				await supabase
 					.from<Pastel>('pasteles')
 					.update({ cantidad: item.cantidad - item.cantidadCarrito })
@@ -154,7 +169,8 @@
 						nombre: item.nombre,
 						cantidad: item.cantidadCarrito,
 						total,
-						tipo_de_pago: metodoDePago
+						tipo_de_pago: metodoDePago,
+						facturado
 					}
 				]);
 			});
@@ -239,6 +255,36 @@
 		searchValue = '';
 		filteredPasteles = [...pasteles];
 	}
+
+	const addPagoDeOrdenAnonima = async () => {
+		// Get total of orden to pagar from a swal alert
+		const result = await Swal.fire({
+			title: '¿Cuánto es el total de la orden?',
+			input: 'number',
+			inputAttributes: {
+				min: '0',
+				step: '1'
+			},
+			showCancelButton: true,
+			confirmButtonText: 'Pagar',
+			showLoaderOnConfirm: true,
+			allowOutsideClick: () => !Swal.isLoading()
+		});
+
+		if (result.isConfirmed) {
+			carrito = [
+				...carrito,
+				{
+					id: 0,
+					nombre: 'Orden Anónima',
+					precio: result.value,
+					cantidad: 1,
+					cantidadCarrito: 1
+				}
+			];
+		}
+		getCartTotal();
+	};
 </script>
 
 <h3 class="text-dark mb-4">
@@ -253,35 +299,44 @@
 			{title}</button
 		>
 	</span>
-
-	<!-- <span>
-		<button class="btn btn-primary">Venta orden</button>
-	</span> -->
+	<span class="dropdown open">
+		<button
+			class="btn btn-primary dropdown-toggle"
+			type="button"
+			id="triggerId"
+			data-bs-toggle="dropdown"
+			aria-haspopup="true"
+			aria-expanded="false"
+		>
+			Pago de ordenes
+		</button>
+		<div class="dropdown-menu" aria-labelledby="triggerId">
+			<!-- <a href="/pos/pago-de-orden" class="dropdown-item fs-6">Pago de orden registradas</a> -->
+			<button class="dropdown-item fs-6" on:click={addPagoDeOrdenAnonima}
+				>Pago de orden anónima</button
+			>
+		</div>
+	</span>
 </h3>
-<!-- <div class="row g-3 align-items-center mb-3">
-	<div class="col-auto">
-		<label for="cantidadEnCaja" class="col-form-label fs-3">Cantidad en caja</label>
-	</div>
-	<div class="col-auto">
-		<input type="text" class="form-control" value="$520" />
-	</div>
-	<div class="col-auto">
-		<span class="form-text">
-			Ultima actualización: {new Date().toLocaleDateString()}
-		</span>
-	</div>
-</div> -->
+
 <div class="row">
 	<div class="col-sm-5">
 		<div class="card shadow">
 			<div class="card-header py-3">
 				<p class="text-primary m-0 fw-bold">Cuenta</p>
 				<hr />
-				<label for="" class="form-label">Metodo de pago</label>
-				<select class="form-select" bind:value={metodoDePago}>
-					{#each Object.values(MetodosDePago) as value}
-						<option {value}>{value}</option>
-					{/each}
+				<div class="mb-3">
+					<label for="" class="form-label">Metodo de pago</label>
+					<select class="form-select" bind:value={metodoDePago}>
+						{#each Object.values(MetodosDePago) as value}
+							<option {value}>{value}</option>
+						{/each}
+					</select>
+				</div>
+				<label for="" class="form-label">Factuado</label>
+				<select class="form-select" bind:value={facturado}>
+					<option value={false} selected>No</option>
+					<option value={true}>Sí</option>
 				</select>
 			</div>
 			<div class="card-body">
