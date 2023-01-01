@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Estados, type Orden } from '$lib/models';
+	import { Estados, type Orden, type Ticket, type UserProfile } from '$lib/models';
 	import { supabase } from '$lib/supabase';
 	import Utils from '$lib/utils';
 	import Especificacion from '$lib/components/alerts/Especificacion.svelte';
@@ -7,6 +7,7 @@
 	import Swal from 'sweetalert2';
 	import { dateRanges, pageSizes } from '$lib/constants';
 	import { onMount } from 'svelte';
+	import type { User } from '@supabase/supabase-js';
 
 	export let ordenes: Orden[] = [];
 
@@ -23,9 +24,12 @@
 
 	let filteredOrdenes: Orden[] = [];
 
+	let user: User | null;
+
 	onMount(() => {
 		searchValue = '';
 		filteredOrdenes = ordenes;
+		user = supabase.auth.user();
 	});
 
 	function goToPdf() {
@@ -36,7 +40,9 @@
 			Swal.fire({
 				icon: 'error',
 				title: 'Oops...',
-				text: 'No hay ordenes por imprimir'
+				text: 'No hay ordenes por imprimir',
+				showCancelButton: true,
+  			confirmButtonText: 'Save'
 			});
 			return;
 		}
@@ -153,6 +159,53 @@
 				)
 			);
 		});
+	};
+
+	const imprimirTicket = async (orden: Orden) => {
+		const { isConfirmed } = await Swal.fire({
+			title: '¿Quieres imprimir el ticket?',
+			showDenyButton: true,
+			confirmButtonText: 'Imprimir',
+			denyButtonText: 'Cancelar'
+		});
+
+		if (isConfirmed) {
+			const { data: profile } = await supabase
+				.from<UserProfile>('profile')
+				.select('*')
+				.eq('user_id', user?.id)
+				.single();
+
+			if (!profile) {
+				await Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: `No se pudo imprimir el ticket. ${user?.email} no tiene un perfil asociado`
+				});
+				return;
+			}
+
+			const { data: ticket, error } = await supabase.from<Ticket>('tickets').insert({
+				persona_turno: profile.nombre,
+				productos: [
+					{
+						id: orden.id?.toString() ?? '0',
+						nombre: `Pastel de ${orden.nombre}`,
+						cantidad: 1,
+						precio: orden.total ?? 0
+					}
+				]
+			});
+			if (error) {
+				await Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: `No se pudo imprimir el ticket. ${error.message}`
+				});
+				return;
+			}
+			window.open(`ticket?ticketId=${ticket[0].id}`, '_blank');
+		}
 	};
 </script>
 
@@ -307,15 +360,7 @@
 								<button
 									class="btn btn-primary btn-sm"
 									type="button"
-									on:click={async () => {
-										// Swal quieres imprimir el ticket
-										await Swal.fire({
-											title: '¿Quieres imprimir el ticket?',
-											showDenyButton: true,
-											confirmButtonText: 'Imprimir',
-											denyButtonText: 'Cancelar'
-										});
-									}}
+									on:click={() => imprimirTicket(orden)}
 								>
 									<i class="fa-solid fa-receipt" />
 								</button>
