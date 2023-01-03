@@ -42,7 +42,7 @@
 				title: 'Oops...',
 				text: 'No hay ordenes por imprimir',
 				showCancelButton: true,
-  			confirmButtonText: 'Save'
+				confirmButtonText: 'Save'
 			});
 			return;
 		}
@@ -297,9 +297,9 @@
 						<tr>
 							<td class="fit">
 								{#if orden.impreso}
-									<i style="color: green" class="fa-solid fa-print" />
+									<i title="Impreso" style="color: green" class="fa-solid fa-print" />
 								{:else}
-									<i style="color: orange" class="fa-solid fa-clock" />
+									<i title="Impresión pendiente" style="color: orange" class="fa-solid fa-clock" />
 								{/if}
 							</td>
 							<td>{Utils.formatPhoneNumber(orden.telefono)}</td>
@@ -323,23 +323,23 @@
 								}}
 							>
 								{#if orden.estado === Estados.terminado}
-									<span>✅</span>
+									<span title="Terminado">✅</span>
 								{:else if orden.estado === Estados.en_curso}
-									<span>🕛</span>
+									<span title="En curso">🕛</span>
 								{:else}
-									<span>❌</span>
+									<span title="Pendiente">❌</span>
 								{/if}
 							</td>
-							<td>
+							<td
+								class="pointer"
+								on:click={() => {
+									marcarOrdenComoPagada(orden.id || -1);
+								}}
+							>
 								{#if orden.pagado}
-									✅
+									<span title="Pagado">✅</span>
 								{:else}
-									<span
-										class="pointer"
-										on:click={() => {
-											marcarOrdenComoPagada(orden.id || -1);
-										}}>❌</span
-									>
+									<span title="Pago pendiente">❌</span>
 								{/if}
 							</td>
 							<td class="fit">
@@ -347,6 +347,7 @@
 									class="btn btn-primary btn-sm"
 									type="button"
 									on:click={() => goToOrden(orden.id || -1)}
+									title="Editar orden"
 								>
 									<i class="fas fa-edit" />
 								</button>
@@ -354,6 +355,7 @@
 									class="btn btn-danger btn-sm"
 									type="button"
 									on:click={() => deleteOrden(orden.id || -1)}
+									title="Eliminar orden"
 								>
 									<i class="fas fa-trash" />
 								</button>
@@ -361,6 +363,7 @@
 									class="btn btn-primary btn-sm"
 									type="button"
 									on:click={() => imprimirTicket(orden)}
+									title="Imprimir ticket"
 								>
 									<i class="fa-solid fa-receipt" />
 								</button>
