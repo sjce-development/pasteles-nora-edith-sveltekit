@@ -27,11 +27,6 @@
 		return data;
 	}
 </script>
-
-<!-- Go home arrow -->
-<div>
-	<a href="/">Regresar a Dashboard</a>
-</div>
 <div class="table-responsive">
 	<table class="table table-primary">
 		<thead>

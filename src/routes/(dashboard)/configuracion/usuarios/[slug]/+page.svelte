@@ -80,7 +80,6 @@
 	}
 </script>
 
-<p class="text-lg pointer" on:click={() => {goto('/configuracion/usuarios/')}} > ⬅️ Regresar </p>
 <h1>Perfil de {profileName}</h1>
 
 <div class="mb-3">
