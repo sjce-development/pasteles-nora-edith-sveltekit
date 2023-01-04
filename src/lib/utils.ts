@@ -177,10 +177,34 @@ export default class Utils {
 
 	static formatHoraDeEntrega(date: string | Date): string {
 		// Make date into format yyyy-mm-dd yy:mm:ss
-		const newDate = new Date(date).toISOString().split('T');
-		const [year, month, day] = newDate[0].split('-');
-		const [hour, minute] = newDate[1].split(':');
-		return `${year}-${month}-${day} ${hour}:${minute}`;
+
+		const newDate = new Date(date);
+		// Substract 7 hours from newDate
+		newDate.setHours(newDate.getHours() - 7);
+		const dateString =  newDate.toLocaleString(locale, {
+			year: 'numeric',
+			month: 'numeric',
+			day: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit',
+			hour12: true
+		});
+
+		console.log(dateString);
+
+		// If hour is 00:00 pm then change it to 12:00 pm
+		if (dateString.includes('00:00 p. m.')) {
+			return dateString.replace('00:00 p. m.', '12:00 p. m.');
+		}
+		return dateString;
+
+
+
+
+		// const newDate = new Date(date).toISOString().split('T');
+		// const [year, month, day] = newDate[0].split('-');
+		// const [hour, minute] = newDate[1].split(':');
+		// return `${year}-${month}-${day} ${hour}:${minute}`;
 	}
 
 	static getPagination({ page, pageSize }: { page: number; pageSize: number }): {
