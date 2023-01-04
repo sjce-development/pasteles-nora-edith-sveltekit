@@ -39,7 +39,7 @@
 			errors = errors.filter((error) => error !== nombreError);
 		}
 
-		if (precio <= 0 && !errors.includes(precioError)) {
+		if (precio < 0 && !errors.includes(precioError)) {
 			errors = [...errors, precioError];
 		} else {
 			errors = errors.filter((error) => error !== precioError);
