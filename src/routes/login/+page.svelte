@@ -9,7 +9,7 @@
 	onMount(async () => {
 		const user = supabase.auth.user();
 		if (user) {
-			window.location.href = '/';
+			window.location.href = '/pos';
 		}
 	});
 
@@ -25,7 +25,7 @@
 				text: error.message
 			});
 		}
-		window.location.href = '/';
+		window.location.href = '/pos';
 	}
 </script>
 
