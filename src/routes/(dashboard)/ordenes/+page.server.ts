@@ -44,7 +44,6 @@ async function setPastelesConfig(): Promise<PastelesConfig> {
 	const tamanos: SelectItem[] = Utils.formatEspecificacion(
 		await getEspecificacion("tamano"),
 	);
-	console.log(tamanos)
 	const harinas: SelectItem[] = Utils.formatEspecificacion(
 		await getEspecificacion("harina"),
 	);

@@ -10,12 +10,7 @@
 	const ordenes = data.ordenes;
 
 	onMount(() => {
-		ordenes.forEach(async (orden) => {
-			const peso = await getPesoFromOrden(orden);
-			orden.peso = peso;
-			console.log('peso', peso);
-			return orden;
-		});
+		print();
 	});
 
 	async function getPesoFromOrden(orden: Orden) {

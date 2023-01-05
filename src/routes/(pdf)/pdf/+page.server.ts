@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ url }: { url: URL }) => {
 	for (const orden of ordenes) {
 		const { peso, numero_de_panes } = await getPesoFromOrden(orden);
 		orden.peso = peso ?? 0;
-		orden.numero_de_panes = numero_de_panes ?? 0;
+		orden.numero_de_panes = numero_de_panes ? parseInt(numero_de_panes) : 0;
 	}
 
 	return { ordenes };
@@ -41,7 +41,10 @@ async function actualizarOrdenesAImpresas(ordenes: Orden[]) {
 	const { error: err } = await supabase
 		.from<Orden>('ordenes')
 		.update({ impreso: true })
-		.in('id', ordenes.map((o) => o.id));
+		.in(
+			'id',
+			ordenes.map((o) => o.id)
+		);
 
 	if (err) {
 		throw error(404, `Error al actualizar las ordenes. ${err.message}`);
@@ -50,20 +53,19 @@ async function actualizarOrdenesAImpresas(ordenes: Orden[]) {
 
 async function getPesoFromOrden(orden: Orden) {
 	const { data, error: err } = await supabase
-		.from(Tables.especificaciones)
+		.from<Especificacion>(Tables.especificaciones)
 		.select('peso, numero_de_panes')
 		.eq('nombre', orden.tamano)
 		.eq('categoria', 'tamano')
 		.single();
 
 	if (err) {
-		return 0;
+		return {} as Especificacion;
 	}
 
 	if (data === null) {
-		return 0;
+		return {} as Especificacion;
 	}
 
 	return data;
-
 }
