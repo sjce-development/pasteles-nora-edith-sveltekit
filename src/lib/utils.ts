@@ -57,10 +57,9 @@ export default class Utils {
 			} catch (e) {
 				value = item.nombre.toLowerCase().replace(' ', '-');
 			}
-
 			switch (group) {
-				case 'tamanos': {
-					label = `${item.nombre}"`;
+				case 'tamano': {
+					label = `${item.nombre}" | ${item.peso ?? 0}g`;
 					break;
 				}
 				default:
@@ -190,21 +189,11 @@ export default class Utils {
 			hour12: true
 		});
 
-		console.log(dateString);
-
 		// If hour is 00:00 pm then change it to 12:00 pm
 		if (dateString.includes('00:00 p. m.')) {
 			return dateString.replace('00:00 p. m.', '12:00 p. m.');
 		}
 		return dateString;
-
-
-
-
-		// const newDate = new Date(date).toISOString().split('T');
-		// const [year, month, day] = newDate[0].split('-');
-		// const [hour, minute] = newDate[1].split(':');
-		// return `${year}-${month}-${day} ${hour}:${minute}`;
 	}
 
 	static getPagination({ page, pageSize }: { page: number; pageSize: number }): {

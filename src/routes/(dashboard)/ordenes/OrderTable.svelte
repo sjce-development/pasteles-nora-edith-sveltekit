@@ -100,7 +100,7 @@
 	async function marcarOrdenComoPagada(id: number): Promise<void> {
 		const { isConfirmed } = await Swal.fire({
 			title: '¿Estás seguro?',
-			text: 'No podrás revertir esta acción',
+			text: 'Podrás revertir esta acción',
 			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonColor: '#3085d6',
@@ -109,6 +109,25 @@
 		});
 		if (isConfirmed) {
 			await supabase.from('ordenes').update({ pagado: true }).eq('id', id);
+			window.location.reload();
+		}
+	}
+
+	async function actualizarEstadoDeImpresion(orden: Orden) {
+		const { isConfirmed } = await Swal.fire({
+			title: `¿Estás seguro de cambiar la orden a ${orden.impreso ? 'no impreso' : 'impreso'}?`,
+			text: 'Podrás revertir esta acción',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: `Sí, marcar como ${orden.impreso ? 'no impreso' : 'impreso'}`
+		});
+		if (isConfirmed) {
+			if (orden.id === undefined) {
+				return;
+			}
+			await supabase.from('ordenes').update({ impreso: !orden.impreso }).eq('id', orden.id);
 			window.location.reload();
 		}
 	}
@@ -278,6 +297,7 @@
 				<thead>
 					<tr>
 						<th class="fit">Impreso</th>
+						<th>ID</th>
 						<th>Telefono</th>
 						<th>Nombre</th>
 						<th>Tamaño</th>
@@ -295,13 +315,19 @@
 				<tbody>
 					{#each filteredOrdenes as orden}
 						<tr>
-							<td class="fit">
+							<td
+								class="fit"
+								on:click={() => {
+									actualizarEstadoDeImpresion(orden);
+								}}
+							>
 								{#if orden.impreso}
 									<i title="Impreso" style="color: green" class="fa-solid fa-print" />
 								{:else}
 									<i title="Impresión pendiente" style="color: orange" class="fa-solid fa-clock" />
 								{/if}
 							</td>
+							<td>{orden.id}</td>
 							<td>{Utils.formatPhoneNumber(orden.telefono)}</td>
 							<td>{Utils.capitalize(orden.nombre)}</td>
 							<td>{orden.tamano}</td>

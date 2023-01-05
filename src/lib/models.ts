@@ -54,6 +54,9 @@ export type Orden = {
 	decorado: string[];
 	impreso: boolean;
 	pagado: boolean;
+
+	peso?: number;
+	numero_de_panes?: number;
 };
 
 export type OrdenSelect = {
