@@ -393,6 +393,14 @@
 								>
 									<i class="fa-solid fa-receipt" />
 								</button>
+								<button
+									class="btn btn-primary btn-sm"
+									type="button"
+									title="Pago de orden"
+									on:click={() => goto(`/ordenes/pagar?ordenId=${orden.id}`)}
+								>
+									<i class="fa-regular fa-money-bill-1" />
+								</button>
 							</td>
 						</tr>
 					{:else}
