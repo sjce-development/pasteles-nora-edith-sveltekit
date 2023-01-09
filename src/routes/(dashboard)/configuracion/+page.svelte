@@ -148,7 +148,7 @@
 										{/if}
 										<td class="fit">
 											<ModalButton
-												modalId={`editar${especificacion.nombre}`}
+												modalId={`editar${especificacion.id}`}
 												hasIcon={true}
 												title=""
 											>
@@ -165,7 +165,7 @@
 									</tr>
 									<EditarEspecificacionModal
 										title={`Editar especificación: ${especificacion.nombre}`}
-										id={`editar${especificacion.nombre}`}
+										id={`editar${especificacion.id}`}
 										{categoria}
 										{especificacion}
 									/>
