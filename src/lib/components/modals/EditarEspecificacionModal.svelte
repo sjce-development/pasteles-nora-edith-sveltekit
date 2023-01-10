@@ -22,7 +22,7 @@
 		let peso: number = 0;
 		let numeroPanes: string;
 
-		if (categoria.nombre === 'harina') {
+		if (categoria.nombre === 'tamano') {
 			peso = Number.parseInt(event.target.peso.value);
 			numeroPanes = event.target.numeroPanes.value;
 		} else {
